@@ -49,7 +49,7 @@ export default function PremiosPage() {
           Nuestros <span className="text-gradient">Premios</span>
         </h1>
         <div className="neon-line" />
-        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#A78BFA]">
+        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#38BDF8]">
           Estos son los increíbles premios que puedes ganar en nuestro próximo
           sorteo. ¡Compra tus boletos y participa!
         </p>
@@ -64,7 +64,7 @@ export default function PremiosPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <p className="font-body text-sm text-[#A78BFA]">
+        <p className="font-body text-sm text-[#38BDF8]">
           ¿Listo para ganar alguno de estos premios?
         </p>
         <Link href="/boletos" className="btn-accent mt-4 inline-block">

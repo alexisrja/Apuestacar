@@ -23,7 +23,7 @@ export default function SorteoSlider({ sorteos }: { sorteos: Sorteo[] }) {
         type="button"
         onClick={() => scrollByCard(-1)}
         aria-label="Anterior"
-        className="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#4C1D95] bg-[#1A1A35]/90 text-white backdrop-blur-md transition-all hover:border-[#7C3AED] hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] sm:flex"
+        className="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#1E3A8A] bg-[#111A2E]/90 text-white backdrop-blur-md transition-all hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] sm:flex"
       >
         <svg
           className="h-5 w-5"
@@ -44,7 +44,7 @@ export default function SorteoSlider({ sorteos }: { sorteos: Sorteo[] }) {
         type="button"
         onClick={() => scrollByCard(1)}
         aria-label="Siguiente"
-        className="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#4C1D95] bg-[#1A1A35]/90 text-white backdrop-blur-md transition-all hover:border-[#7C3AED] hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] sm:flex"
+        className="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#1E3A8A] bg-[#111A2E]/90 text-white backdrop-blur-md transition-all hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] sm:flex"
       >
         <svg
           className="h-5 w-5"
@@ -77,11 +77,11 @@ export default function SorteoSlider({ sorteos }: { sorteos: Sorteo[] }) {
               className="card-neon flex w-[280px] flex-shrink-0 snap-center flex-col p-6 sm:w-[320px]"
             >
               <div className="flex items-start justify-between">
-                <span className="rounded-full border border-[#4C1D95] bg-[#27273B]/50 px-3 py-1 font-heading text-xs text-[#A78BFA]">
+                <span className="rounded-full border border-[#1E3A8A] bg-[#16223A]/50 px-3 py-1 font-heading text-xs text-[#38BDF8]">
                   SORTEO #{sorteo.numero}
                 </span>
                 {sorteo.destacado && (
-                  <span className="rounded-full bg-[#F43F5E]/20 px-3 py-1 font-heading text-xs text-[#F43F5E]">
+                  <span className="rounded-full bg-[#22D3EE]/20 px-3 py-1 font-heading text-xs text-[#22D3EE]">
                     DESTACADO
                   </span>
                 )}
@@ -95,24 +95,24 @@ export default function SorteoSlider({ sorteos }: { sorteos: Sorteo[] }) {
                   <h3 className="font-heading text-lg leading-tight text-white">
                     {sorteo.premio}
                   </h3>
-                  <p className="font-body text-xs text-[#A78BFA]">
+                  <p className="font-body text-xs text-[#38BDF8]">
                     {sorteo.titulo}
                   </p>
                 </div>
               </div>
 
-              <p className="mt-3 font-heading text-2xl text-[#F43F5E] glow-text">
+              <p className="mt-3 font-heading text-2xl text-[#22D3EE] glow-text">
                 {sorteo.valor}
               </p>
 
               <div className="mt-4">
-                <div className="flex justify-between font-body text-xs text-[#A78BFA]">
+                <div className="flex justify-between font-body text-xs text-[#38BDF8]">
                   <span>{pct}% vendido</span>
                   <span>{sorteo.fechaLabel}</span>
                 </div>
-                <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#27273B]">
+                <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#16223A]">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-[#7C3AED] to-[#F43F5E]"
+                    className="h-full rounded-full bg-gradient-to-r from-[#2563EB] to-[#22D3EE]"
                     style={{ width: `${pct}%` }}
                   />
                 </div>

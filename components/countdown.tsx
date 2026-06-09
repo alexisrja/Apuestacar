@@ -59,7 +59,7 @@ export default function Countdown({ targetDate }: { targetDate: string }) {
                 {display}
               </span>
             </div>
-            <span className="mt-1 font-body text-xs text-[#A78BFA]">
+            <span className="mt-1 font-body text-xs text-[#38BDF8]">
               {unit.label}
             </span>
           </div>

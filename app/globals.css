@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #7C3AED;
+  --color-primary: #2563EB;
   --color-on-primary: #FFFFFF;
-  --color-secondary: #A78BFA;
-  --color-accent: #F43F5E;
-  --color-background: #0F0F23;
+  --color-secondary: #38BDF8;
+  --color-accent: #22D3EE;
+  --color-background: #0A0F1E;
   --color-foreground: #E2E8F0;
-  --color-muted: #27273B;
-  --color-border: #4C1D95;
+  --color-muted: #16223A;
+  --color-border: #1E3A8A;
   --color-destructive: #EF4444;
-  --color-ring: #7C3AED;
+  --color-ring: #2563EB;
 
   --font-heading: "Russo One", sans-serif;
   --font-body: "Chakra Petch", sans-serif;
 
-  --color-surface: #1A1A35;
-  --color-surface-hover: #252545;
+  --color-surface: #111A2E;
+  --color-surface-hover: #1A2540;
 }
 
 @layer base {
@@ -33,22 +33,22 @@
 
 @layer utilities {
   .text-gradient {
-    background: linear-gradient(135deg, #7C3AED, #F43F5E);
+    background: linear-gradient(135deg, #2563EB, #22D3EE);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .glow-primary {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4), 0 0 40px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.4), 0 0 40px rgba(37, 99, 235, 0.2);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px rgba(244, 63, 94, 0.4), 0 0 40px rgba(244, 63, 94, 0.2);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4), 0 0 40px rgba(34, 211, 238, 0.2);
   }
 
   .glow-text {
-    text-shadow: 0 0 20px rgba(124, 58, 237, 0.6), 0 0 40px rgba(124, 58, 237, 0.3);
+    text-shadow: 0 0 20px rgba(37, 99, 235, 0.6), 0 0 40px rgba(37, 99, 235, 0.3);
   }
 
   .scanline::before {
@@ -73,18 +73,18 @@
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
     transition: all 0.3s ease;
   }
 
   .card-neon:hover {
-    box-shadow: 0 0 25px rgba(124, 58, 237, 0.3);
-    border-color: #7C3AED;
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.3);
+    border-color: #2563EB;
     transform: translateY(-2px);
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
     color: white;
     font-family: var(--font-heading);
     border-radius: 8px;
@@ -97,7 +97,7 @@
   }
 
   .btn-primary:hover {
-    box-shadow: 0 0 25px rgba(124, 58, 237, 0.5);
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.5);
     transform: translateY(-1px);
   }
 
@@ -106,8 +106,9 @@
   }
 
   .btn-accent {
-    background: linear-gradient(135deg, #F43F5E, #E11D48);
-    color: white;
+    background: linear-gradient(135deg, #22D3EE, #06B6D4);
+    color: #0A0F1E;
+    font-weight: 700;
     font-family: var(--font-heading);
     border-radius: 8px;
     padding: 12px 24px;
@@ -119,7 +120,7 @@
   }
 
   .btn-accent:hover {
-    box-shadow: 0 0 25px rgba(244, 63, 94, 0.5);
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.5);
     transform: translateY(-1px);
   }
 
@@ -141,8 +142,8 @@
   }
 
   .btn-outline:hover {
-    background: rgba(124, 58, 237, 0.1);
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    background: rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
   }
 
   .section-title {
@@ -160,7 +161,7 @@
 
   .neon-line {
     height: 2px;
-    background: linear-gradient(90deg, transparent, #7C3AED, #F43F5E, transparent);
+    background: linear-gradient(90deg, transparent, #2563EB, #22D3EE, transparent);
     width: 100px;
     margin: 16px auto;
   }

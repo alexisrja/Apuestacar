@@ -54,11 +54,11 @@ export default function Home() {
   return (
     <>
       <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pb-28 sm:pt-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.15)_0%,transparent_60%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(37,99,235,0.15)_0%,transparent_60%)]" />
         <div className="page-fade relative mx-auto max-w-5xl text-center">
           <Link
             href="/boletos/12"
-            className="mb-6 inline-block rounded-full border border-[#4C1D95] bg-[#27273B]/50 px-4 py-1.5 font-body text-xs text-[#A78BFA] transition-colors hover:border-[#7C3AED] hover:text-white"
+            className="mb-6 inline-block rounded-full border border-[#1E3A8A] bg-[#16223A]/50 px-4 py-1.5 font-body text-xs text-[#38BDF8] transition-colors hover:border-[#2563EB] hover:text-white"
           >
             🏆 Sorteo #12 — Gran Premio Final · Ver detalles →
           </Link>
@@ -67,7 +67,7 @@ export default function Home() {
             <br />
             Con Apuestacar
           </h1>
-          <p className="mx-auto mt-4 max-w-xl font-body text-base leading-relaxed text-[#A78BFA] sm:text-lg">
+          <p className="mx-auto mt-4 max-w-xl font-body text-base leading-relaxed text-[#38BDF8] sm:text-lg">
             Compra tus boletos y participa en la rifa más emocionante. Premios
             increíbles, resultados transparentes y diversión asegurada.
           </p>
@@ -101,9 +101,9 @@ export default function Home() {
             />
           </h2>
           <div className="neon-line" />
-          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#A78BFA]">
+          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#38BDF8]">
             Desliza para explorar los sorteos. Toca{" "}
-            <span className="font-heading text-[#7C3AED]">Ver Detalles</span>{" "}
+            <span className="font-heading text-[#2563EB]">Ver Detalles</span>{" "}
             para más información.
           </p>
           <div className="mt-10">
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#4C1D95]/50 px-4 py-16 sm:py-24">
+      <section className="border-t border-[#1E3A8A]/50 px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-5xl">
           <h2 className="section-title text-white">
             ¿Cómo funciona?
@@ -138,13 +138,13 @@ export default function Home() {
             ].map((item, i) => (
               <Reveal key={item.step} delay={i * 90}>
                 <div className="card-neon p-6 text-center">
-                  <span className="font-heading text-3xl text-[#7C3AED] glow-text">
+                  <span className="font-heading text-3xl text-[#2563EB] glow-text">
                     {item.step}
                   </span>
                   <h3 className="mt-3 font-heading text-lg text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-2 font-body text-sm text-[#A78BFA]">
+                  <p className="mt-2 font-body text-sm text-[#38BDF8]">
                     {item.desc}
                   </p>
                 </div>
@@ -160,7 +160,7 @@ export default function Home() {
             Premios del Sorteo
           </h2>
           <div className="neon-line" />
-          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#A78BFA]">
+          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#38BDF8]">
             Estos son los increíbles premios que puedes ganar en nuestro
             próximo sorteo.
           </p>
@@ -179,7 +179,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#4C1D95]/50 px-4 py-16 sm:py-24">
+      <section className="border-t border-[#1E3A8A]/50 px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-5xl">
           <h2 className="section-title text-white">
             Ganadores Recientes
@@ -200,13 +200,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#4C1D95]/50 px-4 py-16 sm:py-24">
+      <section className="border-t border-[#1E3A8A]/50 px-4 py-16 sm:py-24">
         <Reveal className="mx-auto max-w-3xl text-center">
           <h2 className="section-title text-white">
             ¿Listo para ganar?
           </h2>
           <div className="neon-line" />
-          <p className="mt-4 font-body text-base text-[#A78BFA]">
+          <p className="mt-4 font-body text-base text-[#38BDF8]">
             No dejes pasar la oportunidad de cambiar tu vida. Compra tus boletos
             ahora y participa en el próximo sorteo.
           </p>

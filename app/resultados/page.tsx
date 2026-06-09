@@ -62,38 +62,38 @@ export default function ResultadosPage() {
           Resultados <span className="text-gradient">Anteriores</span>
         </h1>
         <div className="neon-line" />
-        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#A78BFA]">
+        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#38BDF8]">
           Conoce a los ganadores de nuestros sorteos anteriores. Todos los
           resultados son verificados y transparentes.
         </p>
       </div>
 
-      <Reveal className="mt-10 overflow-hidden rounded-xl border border-[#4C1D95]">
+      <Reveal className="mt-10 overflow-hidden rounded-xl border border-[#1E3A8A]">
         <table className="w-full font-body text-sm">
           <thead>
-            <tr className="bg-[#27273B]">
-              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#A78BFA]">
+            <tr className="bg-[#16223A]">
+              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#38BDF8]">
                 SORTEO
               </th>
-              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#A78BFA]">
+              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#38BDF8]">
                 FECHA
               </th>
-              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#A78BFA]">
+              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#38BDF8]">
                 GANADOR
               </th>
-              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#A78BFA]">
+              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#38BDF8]">
                 N°
               </th>
-              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#A78BFA]">
+              <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-[#38BDF8]">
                 PREMIO
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#4C1D95]/50">
+          <tbody className="divide-y divide-[#1E3A8A]/50">
             {pastResults.map((r) => (
               <tr
                 key={r.id}
-                className="bg-[#1A1A35] transition-colors hover:bg-[#252545]"
+                className="bg-[#111A2E] transition-colors hover:bg-[#1A2540]"
               >
                 <td className="px-4 py-3 font-heading text-white">
                   #{r.id}
@@ -103,11 +103,11 @@ export default function ResultadosPage() {
                   {r.winner}
                 </td>
                 <td className="px-4 py-3">
-                  <span className="rounded bg-[#7C3AED]/20 px-2 py-0.5 font-heading text-sm text-[#A78BFA]">
+                  <span className="rounded bg-[#2563EB]/20 px-2 py-0.5 font-heading text-sm text-[#38BDF8]">
                     {r.number}
                   </span>
                 </td>
-                <td className="px-4 py-3 font-medium text-[#F43F5E]">
+                <td className="px-4 py-3 font-medium text-[#22D3EE]">
                   {r.prize}
                 </td>
               </tr>
