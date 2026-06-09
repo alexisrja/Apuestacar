@@ -34,6 +34,14 @@ yarn-error.log*
 .env*
 !.env.example
 
+# dev server log
+/dev.log
+
+# agent skills (local tooling, not project code)
+/.agents
+/.claude
+/skills-lock.json
+
 # vercel
 .vercel
 
