@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
 
-const whatsappNumber = "5215539786961";
+const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
 interface FormData {
   nombre: string;
