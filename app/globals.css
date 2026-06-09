@@ -128,6 +128,65 @@
     transform: translateY(0);
   }
 
+  .btn-login {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-heading);
+    letter-spacing: 0.5px;
+    color: #E2E8F0;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(34, 211, 238, 0.12));
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 9999px;
+    padding: 0.5rem 1.1rem;
+    overflow: hidden;
+    transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  }
+
+  /* sliding gradient sheen that fills on hover */
+  .btn-login::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #2563EB, #22D3EE);
+    transform: translateX(-101%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 0;
+  }
+
+  .btn-login > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-login:hover {
+    color: #0A0F1E;
+    border-color: #22D3EE;
+    box-shadow: 0 0 22px rgba(34, 211, 238, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .btn-login:hover::before {
+    transform: translateX(0);
+  }
+
+  .btn-login:active {
+    transform: translateY(0);
+  }
+
+  .btn-login:focus-visible {
+    outline: 2px solid #22D3EE;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-login,
+    .btn-login::before {
+      transition: none;
+    }
+  }
+
   .btn-outline {
     background: transparent;
     color: var(--color-primary);

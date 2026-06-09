@@ -11,6 +11,34 @@ const navLinks = [
   { href: "/resultados", label: "Resultados" },
 ];
 
+function AccountIcon({ signedIn }: { signedIn: boolean }) {
+  return (
+    <svg
+      className="h-4 w-4 shrink-0"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {signedIn ? (
+        <>
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </>
+      ) : (
+        <>
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
@@ -70,11 +98,9 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href={accountHref}
-            className="font-body text-sm font-medium text-[#38BDF8] transition-colors hover:text-white"
-          >
-            {accountLabel}
+          <Link href={accountHref} className="btn-login text-sm">
+            <AccountIcon signedIn={signedIn} />
+            <span>{accountLabel}</span>
           </Link>
           <Link href="/boletos" className="btn-accent text-sm !py-2 !px-5">
             Comprar Boletos
@@ -96,10 +122,11 @@ export default function Navbar() {
           ))}
           <Link
             href={accountHref}
-            className="block py-2 font-body text-sm text-[#38BDF8] transition-colors hover:text-white"
+            className="btn-login mt-2 w-full justify-center text-sm"
             onClick={() => setOpen(false)}
           >
-            {accountLabel}
+            <AccountIcon signedIn={signedIn} />
+            <span>{accountLabel}</span>
           </Link>
           <Link
             href="/boletos"
