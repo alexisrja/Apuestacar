@@ -1,65 +1,225 @@
-import Image from "next/image";
+import Link from "next/link";
+import Countdown from "@/components/countdown";
+import PrizeCard from "@/components/prize-card";
+import TestimonialCard from "@/components/testimonial-card";
+import Reveal from "@/components/reveal";
+import SorteoSlider from "@/components/sorteo-slider";
+import AnimatedText from "@/components/animated-text";
+import { sorteos } from "@/app/data/sorteos";
+import macbook from "./assets/macbook.jpg";
+
+const prizes = [
+  {
+    title: "MacBook Neo 2026",
+    description: "Nuestro premio estrella: el nuevo MacBook Neo con tecnología de última generación",
+    value: "$14,999 MXN",
+    image: macbook,
+  },
+  {
+    title: "Viaje a Dubai",
+    description: "7 días todo incluido para 2 personas en el Burj Khalifa",
+    value: "$25,000 USD",
+    image: "✈️",
+  },
+  {
+    title: "Efectivo $50,000",
+    description: "Premio en efectivo sin condiciones",
+    value: "$50,000 USD",
+    image: "💰",
+  },
+];
+
+const testimonials = [
+  {
+    name: "Carlos M.",
+    text: "Nunca pensé que ganaría. Compré un boleto por diversión y terminé llevándome el auto. ¡Increíble!",
+    prize: "Auto Deportivo",
+    avatar: "CM",
+  },
+  {
+    name: "Ana G.",
+    text: "Participé en la rifa del viaje a Dubai y gané. Fue la mejor experiencia de mi vida. 100% recomendado.",
+    prize: "Viaje a Dubai",
+    avatar: "AG",
+  },
+  {
+    name: "Roberto L.",
+    text: "Ya he ganado dos veces con Apuestacar. Son legales, transparentes y los premios se entregan rápido.",
+    prize: "$50,000 USD",
+    avatar: "RL",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pb-28 sm:pt-24">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.15)_0%,transparent_60%)]" />
+        <div className="page-fade relative mx-auto max-w-5xl text-center">
+          <Link
+            href="/boletos/12"
+            className="mb-6 inline-block rounded-full border border-[#4C1D95] bg-[#27273B]/50 px-4 py-1.5 font-body text-xs text-[#A78BFA] transition-colors hover:border-[#7C3AED] hover:text-white"
+          >
+            🏆 Sorteo #12 — Gran Premio Final · Ver detalles →
+          </Link>
+          <h1 className="font-heading text-4xl leading-tight text-white sm:text-6xl sm:leading-tight">
+            <span className="text-gradient">¡GANA EN GRANDE!</span>
+            <br />
+            Con Apuestacar
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mx-auto mt-4 max-w-xl font-body text-base leading-relaxed text-[#A78BFA] sm:text-lg">
+            Compra tus boletos y participa en la rifa más emocionante. Premios
+            increíbles, resultados transparentes y diversión asegurada.
           </p>
+
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <Link href="/boletos" className="btn-accent text-base !py-3 !px-8">
+              Comprar Boletos Ahora
+            </Link>
+            <Link href="/premios" className="btn-outline text-base !py-3 !px-8">
+              Ver Premios
+            </Link>
+          </div>
+
+          <div className="mt-12 flex flex-col items-center">
+            <p className="mb-4 font-heading text-sm tracking-widest text-white">
+              PRÓXIMO SORTEO
+            </p>
+            <Countdown targetDate="2026-07-15T20:00:00" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </section>
+
+      <section className="overflow-hidden px-4 py-16 sm:py-20">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="section-title text-white">
+            <AnimatedText
+              segments={[
+                { text: "Sorteos " },
+                { text: "Activos", className: "text-gradient" },
+              ]}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </h2>
+          <div className="neon-line" />
+          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#A78BFA]">
+            Desliza para explorar los sorteos. Toca{" "}
+            <span className="font-heading text-[#7C3AED]">Ver Detalles</span>{" "}
+            para más información.
+          </p>
+          <div className="mt-10">
+            <SorteoSlider sorteos={sorteos} />
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="border-t border-[#4C1D95]/50 px-4 py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="section-title text-white">
+            ¿Cómo funciona?
+          </h2>
+          <div className="neon-line" />
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {[
+              {
+                step: "01",
+                title: "Elige tus números",
+                desc: "Selecciona los números de la suerte que más te gusten.",
+              },
+              {
+                step: "02",
+                title: "Compra tu boleto",
+                desc: "Paga de forma segura con tu método de pago favorito.",
+              },
+              {
+                step: "03",
+                title: "Gana premios",
+                desc: "Espera el sorteo y descubre si eres el ganador.",
+              },
+            ].map((item, i) => (
+              <Reveal key={item.step} delay={i * 90}>
+                <div className="card-neon p-6 text-center">
+                  <span className="font-heading text-3xl text-[#7C3AED] glow-text">
+                    {item.step}
+                  </span>
+                  <h3 className="mt-3 font-heading text-lg text-white">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 font-body text-sm text-[#A78BFA]">
+                    {item.desc}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="section-title text-white">
+            Premios del Sorteo
+          </h2>
+          <div className="neon-line" />
+          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#A78BFA]">
+            Estos son los increíbles premios que puedes ganar en nuestro
+            próximo sorteo.
+          </p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {prizes.map((prize, i) => (
+              <Reveal key={prize.title} delay={i * 90}>
+                <PrizeCard {...prize} />
+              </Reveal>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link href="/premios" className="btn-outline">
+              Ver Todos los Premios
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-[#4C1D95]/50 px-4 py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="section-title text-white">
+            Ganadores Recientes
+          </h2>
+          <div className="neon-line" />
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={i * 90}>
+                <TestimonialCard {...t} />
+              </Reveal>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link href="/resultados" className="btn-outline">
+              Ver Todos los Resultados
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-[#4C1D95]/50 px-4 py-16 sm:py-24">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <h2 className="section-title text-white">
+            ¿Listo para ganar?
+          </h2>
+          <div className="neon-line" />
+          <p className="mt-4 font-body text-base text-[#A78BFA]">
+            No dejes pasar la oportunidad de cambiar tu vida. Compra tus boletos
+            ahora y participa en el próximo sorteo.
+          </p>
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <Link
+              href="/boletos"
+              className="btn-accent text-base !py-3 !px-10 glow-accent"
+            >
+              Comprar Boletos
+            </Link>
+          </div>
+        </Reveal>
+      </section>
+    </>
   );
 }
