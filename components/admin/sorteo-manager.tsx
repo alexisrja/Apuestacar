@@ -15,8 +15,8 @@ function toLocalInput(iso: string): string {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-3 py-2 font-body text-sm text-white placeholder-[#38BDF8]/40 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]";
-const labelClass = "block font-heading text-xs text-[#38BDF8]";
+  "w-full rounded-lg border border-border bg-muted px-3 py-2 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary";
+const labelClass = "block font-heading text-xs text-secondary";
 
 function SorteoForm({
   sorteo,
@@ -50,7 +50,7 @@ function SorteoForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-[#2563EB]/40 bg-[#111A2E] p-5 sm:p-6"
+      className="rounded-2xl border border-primary/40 bg-surface p-5 sm:p-6"
     >
       <h3 className="font-heading text-lg text-white">
         {isEdit ? `Editar Sorteo #${sorteo!.numero}` : "Nuevo Sorteo"}
@@ -71,7 +71,7 @@ function SorteoForm({
             className={`${inputClass} ${isEdit ? "opacity-60" : ""}`}
           />
           {isEdit && (
-            <p className="mt-1 font-body text-[10px] text-[#38BDF8]/70">
+            <p className="mt-1 font-body text-[10px] text-secondary/70">
               El número (y la URL) no se puede cambiar.
             </p>
           )}
@@ -220,12 +220,12 @@ function SorteoForm({
             <option value="proximo">Próximo</option>
           </select>
         </div>
-        <label className="flex items-center gap-2 self-end font-body text-sm text-[#E2E8F0]">
+        <label className="flex items-center gap-2 self-end font-body text-sm text-foreground">
           <input
             name="destacado"
             type="checkbox"
             defaultChecked={sorteo?.destacado ?? false}
-            className="h-4 w-4 accent-[#2563EB]"
+            className="h-4 w-4 accent-primary"
           />
           Destacado
         </label>
@@ -304,14 +304,14 @@ export default function SorteoManager({ sorteos }: { sorteos: Sorteo[] }) {
 
       <ul className="space-y-3">
         {sorteos.length === 0 && (
-          <li className="rounded-xl border border-dashed border-[#1E3A8A] bg-[#111A2E]/60 p-6 text-center font-body text-sm text-[#38BDF8]">
+          <li className="rounded-xl border border-dashed border-border bg-surface/60 p-6 text-center font-body text-sm text-secondary">
             No hay sorteos. Crea el primero.
           </li>
         )}
         {sorteos.map((s) => (
           <li
             key={s.id}
-            className="flex flex-col gap-3 rounded-xl border border-[#1E3A8A] bg-[#111A2E] p-4 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl" aria-hidden="true">
@@ -323,7 +323,7 @@ export default function SorteoManager({ sorteos }: { sorteos: Sorteo[] }) {
                   <span
                     className={`ml-2 rounded-full border px-2 py-0.5 font-body text-[10px] ${
                       s.estado === "activo"
-                        ? "border-[#22D3EE]/40 bg-[#22D3EE]/10 text-[#22D3EE]"
+                        ? "border-accent/40 bg-accent/10 text-accent"
                         : "border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#FCD34D]"
                     }`}
                   >
@@ -335,7 +335,7 @@ export default function SorteoManager({ sorteos }: { sorteos: Sorteo[] }) {
                     </span>
                   )}
                 </p>
-                <p className="font-body text-xs text-[#38BDF8]">
+                <p className="font-body text-xs text-secondary">
                   {s.premio} · ${s.precioBoleto} MXN · {s.vendidos}/
                   {s.totalBoletos} vendidos · {s.fechaLabel}
                 </p>
@@ -348,7 +348,7 @@ export default function SorteoManager({ sorteos }: { sorteos: Sorteo[] }) {
                   setCreating(false);
                   setEditing(s);
                 }}
-                className="rounded-lg border border-[#1E3A8A] px-3 py-1.5 font-heading text-xs text-[#E2E8F0] transition-colors hover:border-[#2563EB] hover:text-white"
+                className="rounded-lg border border-border px-3 py-1.5 font-heading text-xs text-foreground transition-colors hover:border-primary hover:text-white"
               >
                 Editar
               </button>
@@ -356,7 +356,7 @@ export default function SorteoManager({ sorteos }: { sorteos: Sorteo[] }) {
                 type="button"
                 onClick={() => handleDelete(s)}
                 disabled={pending && deletingId === s.id}
-                className="rounded-lg border border-[#EF4444]/40 px-3 py-1.5 font-heading text-xs text-[#FCA5A5] transition-colors hover:bg-[#EF4444]/10 disabled:opacity-60"
+                className="rounded-lg border border-destructive/40 px-3 py-1.5 font-heading text-xs text-[#FCA5A5] transition-colors hover:bg-destructive/10 disabled:opacity-60"
               >
                 {pending && deletingId === s.id ? "Eliminando…" : "Eliminar"}
               </button>

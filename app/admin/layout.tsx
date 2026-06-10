@@ -23,9 +23,9 @@ export default async function AdminLayout({
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:py-12">
       <div className="page-fade">
-        <div className="flex flex-col gap-4 border-b border-[#1E3A8A] pb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-heading text-xs tracking-widest text-[#22D3EE]">
+            <p className="font-heading text-xs tracking-widest text-accent">
               PANEL DE ADMINISTRACIÓN
             </p>
             <h1 className="mt-1 font-heading text-2xl text-white sm:text-3xl">
@@ -37,7 +37,7 @@ export default async function AdminLayout({
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-lg border border-[#1E3A8A] bg-[#16223A]/60 px-4 py-2 font-heading text-sm text-[#E2E8F0] transition-colors hover:border-[#2563EB] hover:text-white"
+                className="rounded-lg border border-border bg-muted/60 px-4 py-2 font-heading text-sm text-foreground transition-colors hover:border-primary hover:text-white"
               >
                 {link.label}
               </Link>

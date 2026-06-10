@@ -24,7 +24,7 @@ function AccountIcon({
       <img
         src={avatarUrl}
         alt=""
-        className="-my-0.5 h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-[#22D3EE]/50"
+        className="-my-0.5 h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-accent/50"
       />
     );
   }
@@ -88,7 +88,7 @@ export default function Navbar() {
   const accountLabel = signedIn ? "Mi Perfil" : "Iniciar Sesión";
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#1E3A8A] bg-[#0A0F1E]/95 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link
           href="/"
@@ -119,7 +119,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="font-body text-sm font-medium text-[#E2E8F0] transition-colors hover:text-[#38BDF8]"
+              className="font-body text-sm font-medium text-foreground transition-colors hover:text-secondary"
             >
               {link.label}
             </Link>
@@ -135,12 +135,12 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-[#1E3A8A] bg-[#0A0F1E] px-4 pb-4 pt-2 sm:hidden">
+        <div className="border-t border-border bg-background px-4 pb-4 pt-2 sm:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="block py-2 font-body text-sm text-[#E2E8F0] transition-colors hover:text-[#38BDF8]"
+              className="block py-2 font-body text-sm text-foreground transition-colors hover:text-secondary"
               onClick={() => setOpen(false)}
             >
               {link.label}

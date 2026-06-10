@@ -16,7 +16,7 @@ export default function PrizeCard({
 }: PrizeCardProps) {
   return (
     <div className="card-neon group overflow-hidden">
-      <div className="aspect-video bg-gradient-to-br from-[#2563EB]/30 to-[#22D3EE]/30 flex items-center justify-center overflow-hidden">
+      <div className="aspect-video bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center overflow-hidden">
         {typeof image === "string" ? (
           image.startsWith("/") || /\.(png|jpe?g|webp|gif|svg)$/i.test(image) ? (
             <Image
@@ -35,12 +35,12 @@ export default function PrizeCard({
       </div>
       <div className="p-5">
         <h3 className="font-heading text-lg text-white">{title}</h3>
-        <p className="mt-1 font-body text-sm text-[#38BDF8]">{description}</p>
+        <p className="mt-1 font-body text-sm text-secondary">{description}</p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="font-heading text-sm text-[#22D3EE] glow-text">
+          <span className="font-heading text-sm text-accent glow-text">
             {value}
           </span>
-          <span className="font-body text-xs text-[#E2E8F0]">Ver detalle</span>
+          <span className="font-body text-xs text-foreground">Ver detalle</span>
         </div>
       </div>
     </div>

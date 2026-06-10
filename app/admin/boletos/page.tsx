@@ -20,8 +20,8 @@ interface CompraRow {
 
 const estadoStyles: Record<Estado, string> = {
   pendiente: "border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#FCD34D]",
-  confirmada: "border-[#22D3EE]/40 bg-[#22D3EE]/10 text-[#22D3EE]",
-  cancelada: "border-[#EF4444]/40 bg-[#EF4444]/10 text-[#FCA5A5]",
+  confirmada: "border-accent/40 bg-accent/10 text-accent",
+  cancelada: "border-destructive/40 bg-destructive/10 text-[#FCA5A5]",
 };
 
 const estadoLabel: Record<Estado, string> = {
@@ -63,7 +63,7 @@ export default async function AdminBoletosPage({
       <h2 className="font-heading text-xl text-white">
         Confirmación de <span className="text-gradient">Boletos</span>
       </h2>
-      <p className="mt-1 font-body text-sm text-[#38BDF8]">
+      <p className="mt-1 font-body text-sm text-secondary">
         Revisa las solicitudes de compra y confirma los boletos pagados.
       </p>
 
@@ -74,8 +74,8 @@ export default async function AdminBoletosPage({
             href={f.key === "todos" ? "/admin/boletos" : `/admin/boletos?estado=${f.key}`}
             className={`rounded-full border px-4 py-1.5 font-heading text-xs transition-colors ${
               active === f.key
-                ? "border-[#2563EB] bg-[#2563EB]/20 text-white"
-                : "border-[#1E3A8A] bg-[#16223A]/50 text-[#38BDF8] hover:text-white"
+                ? "border-primary bg-primary/20 text-white"
+                : "border-border bg-muted/50 text-secondary hover:text-white"
             }`}
           >
             {f.label}
@@ -85,18 +85,18 @@ export default async function AdminBoletosPage({
 
       <ul className="mt-6 space-y-3">
         {compras.length === 0 && (
-          <li className="rounded-xl border border-dashed border-[#1E3A8A] bg-[#111A2E]/60 p-8 text-center font-body text-sm text-[#38BDF8]">
+          <li className="rounded-xl border border-dashed border-border bg-surface/60 p-8 text-center font-body text-sm text-secondary">
             No hay boletos en esta categoría.
           </li>
         )}
         {compras.map((c) => (
           <li
             key={c.id}
-            className="rounded-xl border border-[#1E3A8A] bg-[#111A2E] p-4 sm:p-5"
+            className="rounded-xl border border-border bg-surface p-4 sm:p-5"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-heading text-xs text-[#38BDF8]">
+                <p className="font-heading text-xs text-secondary">
                   SORTEO #{c.sorteo_numero ?? c.sorteo_id}
                   {c.sorteo_titulo ? ` · ${c.sorteo_titulo}` : ""}
                 </p>
@@ -105,7 +105,7 @@ export default async function AdminBoletosPage({
                     {c.sorteo_premio}
                   </p>
                 )}
-                <p className="mt-0.5 font-body text-[10px] text-[#38BDF8]/70">
+                <p className="mt-0.5 font-body text-[10px] text-secondary/70">
                   Usuario: {c.user_id.slice(0, 8)}… ·{" "}
                   {new Date(c.created_at).toLocaleString("es-MX", {
                     day: "numeric",
@@ -127,17 +127,17 @@ export default async function AdminBoletosPage({
               {c.numeros.map((n) => (
                 <span
                   key={n}
-                  className="rounded-md border border-[#1E3A8A] bg-[#16223A] px-2 py-0.5 font-heading text-xs text-[#E2E8F0]"
+                  className="rounded-md border border-border bg-muted px-2 py-0.5 font-heading text-xs text-foreground"
                 >
                   {n}
                 </span>
               ))}
             </div>
 
-            <div className="mt-3 flex flex-col gap-3 border-t border-[#1E3A8A]/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
-              <span className="font-body text-xs text-[#E2E8F0]">
+            <div className="mt-3 flex flex-col gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
+              <span className="font-body text-xs text-foreground">
                 {c.cantidad} boleto{c.cantidad === 1 ? "" : "s"} ·{" "}
-                <span className="font-heading text-[#22D3EE]">
+                <span className="font-heading text-accent">
                   ${c.total} MXN
                 </span>
               </span>

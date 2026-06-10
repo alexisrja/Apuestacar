@@ -11,7 +11,7 @@ export default async function AdminSorteosPage() {
           Gestión de <span className="text-gradient">Sorteos</span>
         </h2>
       </div>
-      <p className="mt-1 font-body text-sm text-[#38BDF8]">
+      <p className="mt-1 font-body text-sm text-secondary">
         Crea, edita y elimina los sorteos visibles en el sitio.
       </p>
       <div className="mt-6">

@@ -20,8 +20,8 @@ interface Compra {
 
 const estadoStyles: Record<Compra["estado"], string> = {
   pendiente: "border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#FCD34D]",
-  confirmada: "border-[#22D3EE]/40 bg-[#22D3EE]/10 text-[#22D3EE]",
-  cancelada: "border-[#EF4444]/40 bg-[#EF4444]/10 text-[#FCA5A5]",
+  confirmada: "border-accent/40 bg-accent/10 text-accent",
+  cancelada: "border-destructive/40 bg-destructive/10 text-[#FCA5A5]",
 };
 
 const estadoLabel: Record<Compra["estado"], string> = {
@@ -72,7 +72,7 @@ export default async function PerfilPage() {
     <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
       <div className="page-fade">
         {/* ---------- Header ---------- */}
-        <div className="rounded-2xl border border-[#1E3A8A] bg-[#111A2E] p-6 sm:p-8">
+        <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
           <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-6">
             <AvatarUpload
               userId={user.id}
@@ -83,20 +83,20 @@ export default async function PerfilPage() {
               <h1 className="truncate font-heading text-2xl text-white sm:text-3xl">
                 {displayName || "Mi Perfil"}
               </h1>
-              <p className="mt-1 truncate font-body text-sm text-[#38BDF8]">
+              <p className="mt-1 truncate font-body text-sm text-secondary">
                 {user.email}
               </p>
               <div className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
-                <span className="rounded-full border border-[#1E3A8A] bg-[#16223A]/60 px-3 py-1 font-body text-xs text-[#38BDF8]">
+                <span className="rounded-full border border-border bg-muted/60 px-3 py-1 font-body text-xs text-secondary">
                   Miembro desde {memberSince}
                 </span>
-                <span className="rounded-full border border-[#22D3EE]/30 bg-[#22D3EE]/10 px-3 py-1 font-body text-xs text-[#22D3EE]">
+                <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 font-body text-xs text-accent">
                   {totalBoletos} boleto{totalBoletos === 1 ? "" : "s"}
                 </span>
                 {admin && (
                   <Link
                     href="/admin"
-                    className="rounded-full border border-[#2563EB] bg-[#2563EB]/20 px-3 py-1 font-heading text-xs text-white transition-colors hover:bg-[#2563EB]/40"
+                    className="rounded-full border border-primary bg-primary/20 px-3 py-1 font-heading text-xs text-white transition-colors hover:bg-primary/40"
                   >
                     ⚙ Panel admin
                   </Link>
@@ -114,7 +114,7 @@ export default async function PerfilPage() {
             </h2>
             <Link
               href="/boletos"
-              className="font-body text-sm text-[#38BDF8] transition-colors hover:text-white"
+              className="font-body text-sm text-secondary transition-colors hover:text-white"
             >
               Comprar más →
             </Link>
@@ -122,14 +122,14 @@ export default async function PerfilPage() {
           <div className="neon-line !mx-0 !my-4 !w-16" />
 
           {boletos.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-[#1E3A8A] bg-[#111A2E]/60 p-8 text-center">
+            <div className="rounded-xl border border-dashed border-border bg-surface/60 p-8 text-center">
               <div className="text-4xl" aria-hidden="true">
                 🎫
               </div>
               <p className="mt-3 font-heading text-sm text-white">
                 Aún no tienes boletos
               </p>
-              <p className="mt-1 font-body text-xs text-[#38BDF8]">
+              <p className="mt-1 font-body text-xs text-secondary">
                 Las compras que realices estando dentro de tu cuenta aparecerán
                 aquí.
               </p>
@@ -145,11 +145,11 @@ export default async function PerfilPage() {
               {boletos.map((c) => (
                 <li
                   key={c.id}
-                  className="rounded-xl border border-[#1E3A8A] bg-[#111A2E] p-4 transition-colors hover:border-[#2563EB] sm:p-5"
+                  className="rounded-xl border border-border bg-surface p-4 transition-colors hover:border-primary sm:p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-heading text-xs text-[#38BDF8]">
+                      <p className="font-heading text-xs text-secondary">
                         SORTEO #{c.sorteo_numero ?? c.sorteo_id}
                         {c.sorteo_titulo ? ` · ${c.sorteo_titulo}` : ""}
                       </p>
@@ -170,24 +170,24 @@ export default async function PerfilPage() {
                     {c.numeros.map((n) => (
                       <span
                         key={n}
-                        className="rounded-md border border-[#1E3A8A] bg-[#16223A] px-2 py-0.5 font-heading text-xs text-[#E2E8F0]"
+                        className="rounded-md border border-border bg-muted px-2 py-0.5 font-heading text-xs text-foreground"
                       >
                         {n}
                       </span>
                     ))}
                   </div>
 
-                  <div className="mt-3 flex items-center justify-between border-t border-[#1E3A8A]/60 pt-3 font-body text-xs">
-                    <span className="text-[#38BDF8]">
+                  <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-3 font-body text-xs">
+                    <span className="text-secondary">
                       {new Date(c.created_at).toLocaleDateString("es-MX", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
                       })}
                     </span>
-                    <span className="text-[#E2E8F0]">
+                    <span className="text-foreground">
                       {c.cantidad} boleto{c.cantidad === 1 ? "" : "s"} ·{" "}
-                      <span className="font-heading text-[#22D3EE]">
+                      <span className="font-heading text-accent">
                         ${c.total} MXN
                       </span>
                     </span>
@@ -199,7 +199,7 @@ export default async function PerfilPage() {
         </div>
 
         {/* ---------- Settings / actions ---------- */}
-        <div className="mt-8 rounded-2xl border border-[#1E3A8A] bg-[#111A2E] p-6 sm:p-8">
+        <div className="mt-8 rounded-2xl border border-border bg-surface p-6 sm:p-8">
           <h2 className="font-heading text-lg text-white">Ajustes de cuenta</h2>
           <ProfileActions initialName={displayName} />
         </div>

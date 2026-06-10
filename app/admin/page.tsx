@@ -21,12 +21,12 @@ function StatCard({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-[#1E3A8A] bg-[#111A2E] p-5">
-      <p className="font-heading text-xs tracking-wider text-[#38BDF8]">
+    <div className="rounded-2xl border border-border bg-surface p-5">
+      <p className="font-heading text-xs tracking-wider text-secondary">
         {label}
       </p>
       <p
-        className={`mt-2 font-heading text-3xl ${accent ? "text-[#22D3EE] glow-text" : "text-white"}`}
+        className={`mt-2 font-heading text-3xl ${accent ? "text-accent glow-text" : "text-white"}`}
       >
         {value}
       </p>
@@ -61,14 +61,14 @@ export default async function AdminDashboard() {
         <StatCard label="INGRESOS CONFIRMADOS" value={`$${ingresos} MXN`} accent />
       </div>
 
-      <div className="rounded-2xl border border-[#1E3A8A] bg-[#111A2E] p-6">
+      <div className="rounded-2xl border border-border bg-surface p-6">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-lg text-white">
             Boletos por <span className="text-gradient">confirmar</span>
           </h2>
           <Link
             href="/admin/boletos"
-            className="font-body text-sm text-[#38BDF8] transition-colors hover:text-white"
+            className="font-body text-sm text-secondary transition-colors hover:text-white"
           >
             Ver todos →
           </Link>
@@ -76,7 +76,7 @@ export default async function AdminDashboard() {
         <div className="neon-line !mx-0 !my-4 !w-16" />
 
         {pendientes.length === 0 ? (
-          <p className="font-body text-sm text-[#38BDF8]">
+          <p className="font-body text-sm text-secondary">
             No hay boletos pendientes. ¡Todo al día! 🎉
           </p>
         ) : (
@@ -84,14 +84,14 @@ export default async function AdminDashboard() {
             {pendientes.slice(0, 6).map((c) => (
               <li
                 key={c.id}
-                className="flex items-center justify-between rounded-lg border border-[#1E3A8A]/60 bg-[#16223A]/50 px-4 py-3"
+                className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/50 px-4 py-3"
               >
                 <div className="min-w-0">
                   <p className="truncate font-heading text-sm text-white">
                     Sorteo #{c.sorteo_numero ?? "—"}
                     {c.sorteo_premio ? ` · ${c.sorteo_premio}` : ""}
                   </p>
-                  <p className="font-body text-xs text-[#38BDF8]">
+                  <p className="font-body text-xs text-secondary">
                     {new Date(c.created_at).toLocaleDateString("es-MX", {
                       day: "numeric",
                       month: "short",
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
                     · {c.cantidad} boleto{c.cantidad === 1 ? "" : "s"}
                   </p>
                 </div>
-                <span className="shrink-0 font-heading text-sm text-[#22D3EE]">
+                <span className="shrink-0 font-heading text-sm text-accent">
                   ${c.total} MXN
                 </span>
               </li>

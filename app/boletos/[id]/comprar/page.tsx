@@ -16,7 +16,7 @@ export default async function ComprarPage({
     <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
       <Link
         href={`/boletos/${sorteo.id}`}
-        className="inline-flex items-center gap-1 font-body text-sm text-[#38BDF8] transition-colors hover:text-white"
+        className="inline-flex items-center gap-1 font-body text-sm text-secondary transition-colors hover:text-white"
       >
         ← Volver al sorteo
       </Link>

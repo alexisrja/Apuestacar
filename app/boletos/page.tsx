@@ -11,7 +11,7 @@ export default async function BoletosPage() {
           Sorteos <span className="text-gradient">Activos</span>
         </h1>
         <div className="neon-line" />
-        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#38BDF8]">
+        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-secondary">
           Elige el sorteo en el que quieres participar. Cada uno tiene su propio
           premio, precio y números disponibles.
         </p>

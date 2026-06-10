@@ -59,7 +59,7 @@ export default async function Home() {
         <div className="page-fade relative mx-auto max-w-5xl text-center">
           <Link
             href="/boletos/12"
-            className="mb-6 inline-block rounded-full border border-[#1E3A8A] bg-[#16223A]/50 px-4 py-1.5 font-body text-xs text-[#38BDF8] transition-colors hover:border-[#2563EB] hover:text-white"
+            className="mb-6 inline-block rounded-full border border-border bg-muted/50 px-4 py-1.5 font-body text-xs text-secondary transition-colors hover:border-primary hover:text-white"
           >
             🏆 Sorteo #12 — Gran Premio Final · Ver detalles →
           </Link>
@@ -68,7 +68,7 @@ export default async function Home() {
             <br />
             Con Apuestacar
           </h1>
-          <p className="mx-auto mt-4 max-w-xl font-body text-base leading-relaxed text-[#38BDF8] sm:text-lg">
+          <p className="mx-auto mt-4 max-w-xl font-body text-base leading-relaxed text-secondary sm:text-lg">
             Compra tus boletos y participa en la rifa más emocionante. Premios
             increíbles, resultados transparentes y diversión asegurada.
           </p>
@@ -102,9 +102,9 @@ export default async function Home() {
             />
           </h2>
           <div className="neon-line" />
-          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#38BDF8]">
+          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-secondary">
             Desliza para explorar los sorteos. Toca{" "}
-            <span className="font-heading text-[#2563EB]">Ver Detalles</span>{" "}
+            <span className="font-heading text-primary">Ver Detalles</span>{" "}
             para más información.
           </p>
           <div className="mt-10">
@@ -113,7 +113,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#1E3A8A]/50 px-4 py-16 sm:py-24">
+      <section className="border-t border-border/50 px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-5xl">
           <h2 className="section-title text-white">
             ¿Cómo funciona?
@@ -139,13 +139,13 @@ export default async function Home() {
             ].map((item, i) => (
               <Reveal key={item.step} delay={i * 90}>
                 <div className="card-neon p-6 text-center">
-                  <span className="font-heading text-3xl text-[#2563EB] glow-text">
+                  <span className="font-heading text-3xl text-primary glow-text">
                     {item.step}
                   </span>
                   <h3 className="mt-3 font-heading text-lg text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-2 font-body text-sm text-[#38BDF8]">
+                  <p className="mt-2 font-body text-sm text-secondary">
                     {item.desc}
                   </p>
                 </div>
@@ -161,7 +161,7 @@ export default async function Home() {
             Premios del Sorteo
           </h2>
           <div className="neon-line" />
-          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-[#38BDF8]">
+          <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-secondary">
             Estos son los increíbles premios que puedes ganar en nuestro
             próximo sorteo.
           </p>
@@ -180,7 +180,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#1E3A8A]/50 px-4 py-16 sm:py-24">
+      <section className="border-t border-border/50 px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-5xl">
           <h2 className="section-title text-white">
             Ganadores Recientes
@@ -201,13 +201,13 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#1E3A8A]/50 px-4 py-16 sm:py-24">
+      <section className="border-t border-border/50 px-4 py-16 sm:py-24">
         <Reveal className="mx-auto max-w-3xl text-center">
           <h2 className="section-title text-white">
             ¿Listo para ganar?
           </h2>
           <div className="neon-line" />
-          <p className="mt-4 font-body text-base text-[#38BDF8]">
+          <p className="mt-4 font-body text-base text-secondary">
             No dejes pasar la oportunidad de cambiar tu vida. Compra tus boletos
             ahora y participa en el próximo sorteo.
           </p>

@@ -54,7 +54,7 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
           type="button"
           onClick={onClose}
           aria-label="Cerrar"
-          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#1E3A8A] text-[#38BDF8] transition-colors hover:border-[#2563EB] hover:text-white"
+          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full border border-border text-secondary transition-colors hover:border-primary hover:text-white"
         >
           <svg
             className="h-4 w-4"
@@ -73,7 +73,7 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
         </button>
 
         <div className="text-center">
-          <span className="rounded-full border border-[#1E3A8A] bg-[#16223A]/50 px-3 py-1 font-heading text-xs text-[#38BDF8]">
+          <span className="rounded-full border border-border bg-muted/50 px-3 py-1 font-heading text-xs text-secondary">
             SORTEO #{sorteo.numero} · {sorteo.titulo}
           </span>
           <div className="mt-4 text-5xl" aria-hidden="true">
@@ -85,34 +85,34 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
           >
             <span className="text-gradient">{sorteo.premio}</span>
           </h2>
-          <p className="mt-1 font-heading text-xl text-[#22D3EE] glow-text">
+          <p className="mt-1 font-heading text-xl text-accent glow-text">
             {sorteo.valor}
           </p>
         </div>
 
-        <p className="mt-4 font-body text-sm leading-relaxed text-[#38BDF8]">
+        <p className="mt-4 font-body text-sm leading-relaxed text-secondary">
           {sorteo.descripcion}
         </p>
 
         <div className="mt-5">
-          <div className="flex justify-between font-body text-xs text-[#38BDF8]">
+          <div className="flex justify-between font-body text-xs text-secondary">
             <span>
               <span className="font-heading text-white">{pct}%</span> vendido
             </span>
             <span>
               Boleto:{" "}
-              <span className="font-heading text-[#22D3EE]">
+              <span className="font-heading text-accent">
                 ${sorteo.precioBoleto} MXN
               </span>
             </span>
           </div>
-          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#16223A]">
+          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[#2563EB] to-[#22D3EE]"
+              className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
               style={{ width: `${pct}%` }}
             />
           </div>
-          <p className="mt-1.5 font-body text-xs text-[#38BDF8]">
+          <p className="mt-1.5 font-body text-xs text-secondary">
             Sorteo el {sorteo.fechaLabel}
           </p>
         </div>

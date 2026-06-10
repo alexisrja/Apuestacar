@@ -38,7 +38,7 @@ export default function CompraActions({
           type="button"
           onClick={() => run("confirmada")}
           disabled={pending}
-          className="rounded-lg border border-[#22D3EE]/40 bg-[#22D3EE]/10 px-3 py-1.5 font-heading text-xs text-[#22D3EE] transition-colors hover:bg-[#22D3EE]/20 disabled:opacity-60"
+          className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-1.5 font-heading text-xs text-accent transition-colors hover:bg-accent/20 disabled:opacity-60"
         >
           {pending ? "…" : "Confirmar"}
         </button>
@@ -48,7 +48,7 @@ export default function CompraActions({
           type="button"
           onClick={() => run("cancelada")}
           disabled={pending}
-          className="rounded-lg border border-[#EF4444]/40 px-3 py-1.5 font-heading text-xs text-[#FCA5A5] transition-colors hover:bg-[#EF4444]/10 disabled:opacity-60"
+          className="rounded-lg border border-destructive/40 px-3 py-1.5 font-heading text-xs text-[#FCA5A5] transition-colors hover:bg-destructive/10 disabled:opacity-60"
         >
           {pending ? "…" : "Cancelar"}
         </button>
@@ -58,7 +58,7 @@ export default function CompraActions({
           type="button"
           onClick={() => run("pendiente")}
           disabled={pending}
-          className="rounded-lg border border-[#1E3A8A] px-3 py-1.5 font-heading text-xs text-[#E2E8F0] transition-colors hover:border-[#2563EB] disabled:opacity-60"
+          className="rounded-lg border border-border px-3 py-1.5 font-heading text-xs text-foreground transition-colors hover:border-primary disabled:opacity-60"
         >
           {pending ? "…" : "Marcar pendiente"}
         </button>

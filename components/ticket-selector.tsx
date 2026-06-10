@@ -100,23 +100,23 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
             {step === "sent" && "Enviada"}
           </span>
         </h1>
-        <p className="mt-2 font-heading text-sm tracking-wider text-[#38BDF8]">
+        <p className="mt-2 font-heading text-sm tracking-wider text-secondary">
           SORTEO #{sorteo.numero} · {sorteo.titulo}
         </p>
         <div className="neon-line" />
         {step === "select" && (
-          <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#38BDF8]">
+          <p className="mx-auto mt-4 max-w-lg font-body text-sm text-secondary">
             Selecciona tus números de la suerte. Cada boleto cuesta{" "}
-            <span className="font-heading text-[#22D3EE]">
+            <span className="font-heading text-accent">
               ${sorteo.precioBoleto} MXN
             </span>
             .
           </p>
         )}
         {step === "form" && (
-          <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#38BDF8]">
+          <p className="mx-auto mt-4 max-w-lg font-body text-sm text-secondary">
             Ingresa tus datos para confirmar la compra de{" "}
-            <span className="font-heading text-[#2563EB]">
+            <span className="font-heading text-primary">
               {selected.length} boletos
             </span>
             .
@@ -138,8 +138,8 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
                   aria-label={`Número ${num}${isSelected ? ", seleccionado" : ""}`}
                   className={`flex h-12 items-center justify-center rounded-lg border font-heading text-sm transition-all duration-200 active:scale-95 ${
                     isSelected
-                      ? "border-[#2563EB] bg-[#2563EB] text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                      : "border-[#1E3A8A] bg-[#16223A] text-[#E2E8F0] hover:border-[#2563EB] hover:bg-[#2563EB]/20"
+                      ? "border-primary bg-primary text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+                      : "border-border bg-muted text-foreground hover:border-primary hover:bg-primary/20"
                   }`}
                 >
                   {num}
@@ -148,17 +148,17 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
             })}
           </div>
 
-          <div className="sticky bottom-4 mt-8 rounded-xl border border-[#1E3A8A] bg-[#111A2E]/95 p-6 backdrop-blur-md">
+          <div className="sticky bottom-4 mt-8 rounded-xl border border-border bg-surface/95 p-6 backdrop-blur-md">
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
               <div>
-                <p className="font-heading text-sm text-[#38BDF8]">BOLETOS</p>
+                <p className="font-heading text-sm text-secondary">BOLETOS</p>
                 <p className="font-heading text-2xl text-white">
                   {selected.length}
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-heading text-sm text-[#38BDF8]">TOTAL</p>
-                <p className="font-heading text-3xl text-[#22D3EE] glow-text">
+                <p className="font-heading text-sm text-secondary">TOTAL</p>
+                <p className="font-heading text-3xl text-accent glow-text">
                   ${total}
                 </p>
               </div>
@@ -180,13 +180,13 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
       {step === "form" && (
         <form
           onSubmit={handleFormSubmit}
-          className="mx-auto mt-8 max-w-lg rounded-xl border border-[#1E3A8A] bg-[#111A2E] p-6 sm:p-8"
+          className="mx-auto mt-8 max-w-lg rounded-xl border border-border bg-surface p-6 sm:p-8"
         >
           <div className="space-y-5">
             <div>
               <label
                 htmlFor="nombre"
-                className="block font-heading text-sm text-[#38BDF8]"
+                className="block font-heading text-sm text-secondary"
               >
                 Nombre Completo
               </label>
@@ -198,13 +198,13 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
                 value={form.nombre}
                 onChange={(e) => updateForm("nombre", e.target.value)}
                 placeholder="Ej: Juan Pérez"
-                className="mt-1.5 w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 font-body text-sm text-white placeholder-[#38BDF8]/50 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/50 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
               />
             </div>
             <div>
               <label
                 htmlFor="telefono"
-                className="block font-heading text-sm text-[#38BDF8]"
+                className="block font-heading text-sm text-secondary"
               >
                 Teléfono
               </label>
@@ -216,13 +216,13 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
                 value={form.telefono}
                 onChange={(e) => updateForm("telefono", e.target.value)}
                 placeholder="Ej: 5512345678"
-                className="mt-1.5 w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 font-body text-sm text-white placeholder-[#38BDF8]/50 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/50 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
               />
             </div>
             <div>
               <label
                 htmlFor="email"
-                className="block font-heading text-sm text-[#38BDF8]"
+                className="block font-heading text-sm text-secondary"
               >
                 Correo Electrónico
               </label>
@@ -234,29 +234,29 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
                 value={form.email}
                 onChange={(e) => updateForm("email", e.target.value)}
                 placeholder="Ej: correo@ejemplo.com"
-                className="mt-1.5 w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 font-body text-sm text-white placeholder-[#38BDF8]/50 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/50 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
               />
             </div>
           </div>
 
-          <div className="mt-6 rounded-lg border border-[#1E3A8A]/50 bg-[#16223A]/50 p-4">
-            <p className="font-heading text-xs text-[#38BDF8]">RESUMEN</p>
+          <div className="mt-6 rounded-lg border border-border/50 bg-muted/50 p-4">
+            <p className="font-heading text-xs text-secondary">RESUMEN</p>
             <div className="mt-2 space-y-1 font-body text-sm">
-              <p className="flex justify-between text-[#E2E8F0]">
+              <p className="flex justify-between text-foreground">
                 <span>Sorteo</span>
                 <span>
                   #{sorteo.numero} {sorteo.titulo}
                 </span>
               </p>
-              <p className="flex justify-between text-[#E2E8F0]">
+              <p className="flex justify-between text-foreground">
                 <span>Boletos</span>
                 <span>{selected.join(", ")}</span>
               </p>
-              <p className="flex justify-between text-[#E2E8F0]">
+              <p className="flex justify-between text-foreground">
                 <span>Cantidad</span>
                 <span>{selected.length}</span>
               </p>
-              <p className="flex justify-between font-heading text-[#22D3EE]">
+              <p className="flex justify-between font-heading text-accent">
                 <span>Total</span>
                 <span>${total} MXN</span>
               </p>
@@ -280,10 +280,10 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
 
       {step === "sent" && (
         <div className="mx-auto mt-8 max-w-lg text-center">
-          <div className="rounded-xl border border-[#1E3A8A] bg-[#111A2E] p-8">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#2563EB]/20">
+          <div className="rounded-xl border border-border bg-surface p-8">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
               <svg
-                className="h-8 w-8 text-[#2563EB]"
+                className="h-8 w-8 text-primary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -300,7 +300,7 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
             <h2 className="mt-4 font-heading text-xl text-white">
               ¡Solicitud Enviada!
             </h2>
-            <p className="mt-2 font-body text-sm text-[#38BDF8]">
+            <p className="mt-2 font-body text-sm text-secondary">
               Te redirigimos a WhatsApp con los datos de tu compra. Un asesor te
               confirmará la disponibilidad de los números seleccionados.
             </p>

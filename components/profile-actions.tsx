@@ -44,7 +44,7 @@ export default function ProfileActions({
       <form onSubmit={handleSave}>
         <label
           htmlFor="display-name"
-          className="block font-heading text-sm text-[#38BDF8]"
+          className="block font-heading text-sm text-secondary"
         >
           Nombre para mostrar
         </label>
@@ -56,7 +56,7 @@ export default function ProfileActions({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tu nombre"
-            className="w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 font-body text-sm text-white placeholder-[#38BDF8]/40 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+            className="w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
           />
           <button
             type="submit"
@@ -72,7 +72,7 @@ export default function ProfileActions({
           <p
             role="status"
             aria-live="polite"
-            className="mt-2 font-body text-xs text-[#22D3EE]"
+            className="mt-2 font-body text-xs text-accent"
           >
             ✓ Cambios guardados
           </p>
@@ -83,7 +83,7 @@ export default function ProfileActions({
         type="button"
         onClick={handleLogout}
         disabled={loggingOut}
-        className="mt-8 w-full rounded-lg border border-[#EF4444]/40 px-4 py-3 font-heading text-sm text-[#FCA5A5] transition-colors hover:bg-[#EF4444]/10 disabled:opacity-60"
+        className="mt-8 w-full rounded-lg border border-destructive/40 px-4 py-3 font-heading text-sm text-[#FCA5A5] transition-colors hover:bg-destructive/10 disabled:opacity-60"
       >
         {loggingOut ? "Cerrando sesión…" : "Cerrar Sesión"}
       </button>

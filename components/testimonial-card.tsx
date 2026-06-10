@@ -14,15 +14,15 @@ export default function TestimonialCard({
   return (
     <div className="card-neon p-5">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#22D3EE] font-heading text-sm text-white">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent font-heading text-sm text-white">
           {avatar}
         </div>
         <div>
           <h4 className="font-heading text-sm text-white">{name}</h4>
-          <p className="font-body text-xs text-[#22D3EE]">Ganó: {prize}</p>
+          <p className="font-body text-xs text-accent">Ganó: {prize}</p>
         </div>
       </div>
-      <p className="mt-3 font-body text-sm leading-relaxed text-[#E2E8F0]">
+      <p className="mt-3 font-body text-sm leading-relaxed text-foreground">
         &ldquo;{text}&rdquo;
       </p>
     </div>

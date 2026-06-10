@@ -87,7 +87,7 @@ export default function LoginPage() {
             </span>
           </h1>
           <div className="neon-line" />
-          <p className="font-body text-sm text-[#38BDF8]">
+          <p className="font-body text-sm text-secondary">
             {mode === "signin"
               ? "Accede para ver tu perfil y tus boletos."
               : "Regístrate para participar y seguir tus sorteos."}
@@ -96,13 +96,13 @@ export default function LoginPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-8 rounded-xl border border-[#1E3A8A] bg-[#111A2E] p-6 sm:p-8"
+          className="mt-8 rounded-xl border border-border bg-surface p-6 sm:p-8"
         >
           <div className="space-y-5">
             <div>
               <label
                 htmlFor="email"
-                className="block font-heading text-sm text-[#38BDF8]"
+                className="block font-heading text-sm text-secondary"
               >
                 Correo Electrónico
               </label>
@@ -114,14 +114,14 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="correo@ejemplo.com"
-                className="mt-1.5 w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 font-body text-sm text-white placeholder-[#38BDF8]/40 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block font-heading text-sm text-[#38BDF8]"
+                className="block font-heading text-sm text-secondary"
               >
                 Contraseña
               </label>
@@ -137,12 +137,12 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 pr-20 font-body text-sm text-white placeholder-[#38BDF8]/40 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full rounded-lg border border-border bg-muted px-4 py-3 pr-20 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 font-body text-xs text-[#38BDF8] transition-colors hover:text-white"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 font-body text-xs text-secondary transition-colors hover:text-white"
                   aria-label={
                     showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
                   }
@@ -150,7 +150,7 @@ export default function LoginPage() {
                   {showPassword ? "Ocultar" : "Mostrar"}
                 </button>
               </div>
-              <p className="mt-1.5 font-body text-xs text-[#38BDF8]/70">
+              <p className="mt-1.5 font-body text-xs text-secondary/70">
                 Mínimo 6 caracteres.
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function LoginPage() {
             <p
               role="alert"
               aria-live="assertive"
-              className="mt-4 rounded-lg border border-[#EF4444]/40 bg-[#EF4444]/10 px-3 py-2 font-body text-sm text-[#FCA5A5]"
+              className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 font-body text-sm text-[#FCA5A5]"
             >
               {error}
             </p>
@@ -169,7 +169,7 @@ export default function LoginPage() {
             <p
               role="status"
               aria-live="polite"
-              className="mt-4 rounded-lg border border-[#22D3EE]/40 bg-[#22D3EE]/10 px-3 py-2 font-body text-sm text-[#22D3EE]"
+              className="mt-4 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 font-body text-sm text-accent"
             >
               {notice}
             </p>
@@ -190,15 +190,15 @@ export default function LoginPage() {
           </button>
 
           <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-[#1E3A8A]" />
-            <span className="font-body text-xs text-[#38BDF8]">o</span>
-            <span className="h-px flex-1 bg-[#1E3A8A]" />
+            <span className="h-px flex-1 bg-border" />
+            <span className="font-body text-xs text-secondary">o</span>
+            <span className="h-px flex-1 bg-border" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogle}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#1E3A8A] bg-[#16223A] px-4 py-3 font-heading text-sm text-white transition-colors hover:border-[#2563EB]"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-muted px-4 py-3 font-heading text-sm text-white transition-colors hover:border-primary"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -222,7 +222,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="mt-6 text-center font-body text-sm text-[#38BDF8]">
+        <p className="mt-6 text-center font-body text-sm text-secondary">
           {mode === "signin" ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
           <button
             type="button"
@@ -231,7 +231,7 @@ export default function LoginPage() {
               setError(null);
               setNotice(null);
             }}
-            className="font-heading text-[#22D3EE] underline-offset-4 hover:underline"
+            className="font-heading text-accent underline-offset-4 hover:underline"
           >
             {mode === "signin" ? "Regístrate" : "Inicia sesión"}
           </button>
@@ -240,7 +240,7 @@ export default function LoginPage() {
         <p className="mt-4 text-center">
           <Link
             href="/"
-            className="font-body text-xs text-[#38BDF8] transition-colors hover:text-white"
+            className="font-body text-xs text-secondary transition-colors hover:text-white"
           >
             ← Volver al inicio
           </Link>

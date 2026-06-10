@@ -86,7 +86,7 @@ export default function AvatarUpload({
         onClick={pick}
         disabled={uploading}
         aria-label="Cambiar foto de perfil"
-        className="group relative h-24 w-24 overflow-hidden rounded-full border-2 border-[#1E3A8A] transition-all hover:border-[#22D3EE] hover:shadow-[0_0_22px_rgba(34,211,238,0.45)] disabled:opacity-70"
+        className="group relative h-24 w-24 overflow-hidden rounded-full border-2 border-border transition-all hover:border-accent hover:shadow-[0_0_22px_rgba(34,211,238,0.45)] disabled:opacity-70"
       >
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -96,12 +96,12 @@ export default function AvatarUpload({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#2563EB] to-[#22D3EE] font-heading text-3xl text-[#0A0F1E]">
+          <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-accent font-heading text-3xl text-background">
             {initials}
           </span>
         )}
 
-        <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-[#0A0F1E]/75 py-1 font-body text-[10px] text-[#22D3EE] opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-background/75 py-1 font-body text-[10px] text-accent opacity-0 transition-opacity group-hover:opacity-100">
           {uploading ? (
             "Subiendo…"
           ) : (
