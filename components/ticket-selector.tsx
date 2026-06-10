@@ -57,7 +57,7 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
     e.preventDefault();
 
     const numbersList = selected.join(", ");
-    const message = `¡Hola! Quiero comprar boletos del *Sorteo #${sorteo.numero} — ${sorteo.titulo}* (premio: ${sorteo.premio}).%0A%0A📋 *Datos del comprador:*%0A👤 Nombre: ${encodeURIComponent(form.nombre)}%0A📞 Teléfono: ${encodeURIComponent(form.telefono)}%0A✉️ Email: ${encodeURIComponent(form.email)}%0A%0A🎫 *Números seleccionados:* ${encodeURIComponent(numbersList)}%0A💰 *Total: $${total} USD*%0A%0A¡Gracias!`;
+    const message = `¡Hola! Quiero comprar boletos del *Sorteo #${sorteo.numero} — ${sorteo.titulo}* (premio: ${sorteo.premio}).%0A%0A📋 *Datos del comprador:*%0A👤 Nombre: ${encodeURIComponent(form.nombre)}%0A📞 Teléfono: ${encodeURIComponent(form.telefono)}%0A✉️ Email: ${encodeURIComponent(form.email)}%0A%0A🎫 *Números seleccionados:* ${encodeURIComponent(numbersList)}%0A💰 *Total: $${total} MXN*%0A%0A¡Gracias!`;
 
     // Persist the purchase request for signed-in users so it shows in "Mis
     // Boletos". RLS guarantees the row is owned by this user. Fire-and-forget —
@@ -108,7 +108,7 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
           <p className="mx-auto mt-4 max-w-lg font-body text-sm text-[#38BDF8]">
             Selecciona tus números de la suerte. Cada boleto cuesta{" "}
             <span className="font-heading text-[#22D3EE]">
-              ${sorteo.precioBoleto} USD
+              ${sorteo.precioBoleto} MXN
             </span>
             .
           </p>
@@ -258,7 +258,7 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
               </p>
               <p className="flex justify-between font-heading text-[#22D3EE]">
                 <span>Total</span>
-                <span>${total} USD</span>
+                <span>${total} MXN</span>
               </p>
             </div>
           </div>

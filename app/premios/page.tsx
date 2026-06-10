@@ -6,37 +6,37 @@ const prizes = [
   {
     title: "Auto Deportivo 2025",
     description: "Último modelo con motor V8, completamente equipado",
-    value: "$85,000 USD",
+    value: "$85,000 MXN",
     image: "🏎️",
   },
   {
     title: "Viaje a Dubai",
     description: "7 días todo incluido para 2 personas en el Burj Khalifa",
-    value: "$25,000 USD",
+    value: "$25,000 MXN",
     image: "✈️",
   },
   {
     title: "Efectivo $50,000",
     description: "Premio en efectivo sin condiciones",
-    value: "$50,000 USD",
+    value: "$50,000 MXN",
     image: "💰",
   },
   {
     title: "Moto Deportiva",
     description: "Moto 1000cc última generación",
-    value: "$18,000 USD",
+    value: "$18,000 MXN",
     image: "🏍️",
   },
   {
     title: "TV 80 8K",
     description: "Televisor Samsung Neo QLED 8K",
-    value: "$5,000 USD",
+    value: "$5,000 MXN",
     image: "📺",
   },
   {
     title: "Paquete de Gift Cards",
     description: "$2,000 en tarjetas de regalo Amazon",
-    value: "$2,000 USD",
+    value: "$2,000 MXN",
     image: "🎁",
   },
 ];

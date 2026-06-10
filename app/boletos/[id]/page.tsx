@@ -2,11 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Countdown from "@/components/countdown";
 import Reveal from "@/components/reveal";
-import { sorteos, getSorteo } from "@/app/data/sorteos";
-
-export function generateStaticParams() {
-  return sorteos.map((s) => ({ id: s.id }));
-}
+import { getSorteo } from "@/lib/sorteos";
 
 export default async function SorteoDetailPage({
   params,
@@ -14,7 +10,7 @@ export default async function SorteoDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const sorteo = getSorteo(id);
+  const sorteo = await getSorteo(id);
   if (!sorteo) notFound();
 
   const pct = Math.round((sorteo.vendidos / sorteo.totalBoletos) * 100);
@@ -64,7 +60,7 @@ export default async function SorteoDetailPage({
           <span>
             Boleto:{" "}
             <span className="font-heading text-[#22D3EE]">
-              ${sorteo.precioBoleto} USD
+              ${sorteo.precioBoleto} MXN
             </span>
           </span>
         </div>

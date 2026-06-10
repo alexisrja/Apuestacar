@@ -1,8 +1,9 @@
 import Reveal from "@/components/reveal";
 import SorteoCard from "@/components/sorteo-card";
-import { sorteos } from "@/app/data/sorteos";
+import { getSorteos } from "@/lib/sorteos";
 
-export default function BoletosPage() {
+export default async function BoletosPage() {
+  const sorteos = await getSorteos();
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
       <div className="page-fade text-center">

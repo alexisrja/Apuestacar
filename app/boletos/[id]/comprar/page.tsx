@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import TicketSelector from "@/components/ticket-selector";
-import { sorteos, getSorteo } from "@/app/data/sorteos";
-
-export function generateStaticParams() {
-  return sorteos.map((s) => ({ id: s.id }));
-}
+import { getSorteo } from "@/lib/sorteos";
 
 export default async function ComprarPage({
   params,
@@ -13,7 +9,7 @@ export default async function ComprarPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const sorteo = getSorteo(id);
+  const sorteo = await getSorteo(id);
   if (!sorteo) notFound();
 
   return (

@@ -21,7 +21,7 @@ const pastResults = [
     date: "15 Mayo, 2026",
     winner: "Ana Gabriela R.",
     number: "015",
-    prize: "$50,000 USD",
+    prize: "$50,000 MXN",
   },
   {
     id: 8,

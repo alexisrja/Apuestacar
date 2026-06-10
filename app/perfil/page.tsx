@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { isAdminEmail } from "@/lib/admin";
 import ProfileActions from "@/components/profile-actions";
 import AvatarUpload from "@/components/avatar-upload";
 
@@ -36,6 +37,8 @@ export default async function PerfilPage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  const admin = isAdminEmail(user.email);
 
   const displayName =
     (user.user_metadata?.full_name as string | undefined) ?? "";
@@ -90,6 +93,14 @@ export default async function PerfilPage() {
                 <span className="rounded-full border border-[#22D3EE]/30 bg-[#22D3EE]/10 px-3 py-1 font-body text-xs text-[#22D3EE]">
                   {totalBoletos} boleto{totalBoletos === 1 ? "" : "s"}
                 </span>
+                {admin && (
+                  <Link
+                    href="/admin"
+                    className="rounded-full border border-[#2563EB] bg-[#2563EB]/20 px-3 py-1 font-heading text-xs text-white transition-colors hover:bg-[#2563EB]/40"
+                  >
+                    ⚙ Panel admin
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -177,7 +188,7 @@ export default async function PerfilPage() {
                     <span className="text-[#E2E8F0]">
                       {c.cantidad} boleto{c.cantidad === 1 ? "" : "s"} ·{" "}
                       <span className="font-heading text-[#22D3EE]">
-                        ${c.total} USD
+                        ${c.total} MXN
                       </span>
                     </span>
                   </div>

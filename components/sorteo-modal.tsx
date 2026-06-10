@@ -102,7 +102,7 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
             <span>
               Boleto:{" "}
               <span className="font-heading text-[#22D3EE]">
-                ${sorteo.precioBoleto} USD
+                ${sorteo.precioBoleto} MXN
               </span>
             </span>
           </div>

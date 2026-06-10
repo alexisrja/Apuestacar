@@ -34,12 +34,35 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { pathname } = request.nextUrl;
+
   // Protect /perfil — redirect to /login when not authenticated.
-  if (!user && request.nextUrl.pathname.startsWith("/perfil")) {
+  if (!user && pathname.startsWith("/perfil")) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
-    redirectUrl.searchParams.set("next", request.nextUrl.pathname);
+    redirectUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(redirectUrl);
+  }
+
+  // Protect /admin — require auth AND an allow-listed admin email. The page
+  // layout and every Server Action re-check this; the middleware just avoids
+  // rendering the admin shell for non-admins.
+  if (pathname.startsWith("/admin")) {
+    if (!user) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+    const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    if (!adminEmails.includes((user.email ?? "").toLowerCase())) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/";
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return response;

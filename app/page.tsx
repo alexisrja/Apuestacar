@@ -5,7 +5,7 @@ import TestimonialCard from "@/components/testimonial-card";
 import Reveal from "@/components/reveal";
 import SorteoSlider from "@/components/sorteo-slider";
 import AnimatedText from "@/components/animated-text";
-import { sorteos } from "@/app/data/sorteos";
+import { getSorteos } from "@/lib/sorteos";
 import macbook from "./assets/macbook.jpg";
 
 const prizes = [
@@ -18,13 +18,13 @@ const prizes = [
   {
     title: "Viaje a Dubai",
     description: "7 días todo incluido para 2 personas en el Burj Khalifa",
-    value: "$25,000 USD",
+    value: "$25,000 MXN",
     image: "✈️",
   },
   {
     title: "Efectivo $50,000",
     description: "Premio en efectivo sin condiciones",
-    value: "$50,000 USD",
+    value: "$50,000 MXN",
     image: "💰",
   },
 ];
@@ -45,12 +45,13 @@ const testimonials = [
   {
     name: "Roberto L.",
     text: "Ya he ganado dos veces con Apuestacar. Son legales, transparentes y los premios se entregan rápido.",
-    prize: "$50,000 USD",
+    prize: "$50,000 MXN",
     avatar: "RL",
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const sorteos = await getSorteos();
   return (
     <>
       <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pb-28 sm:pt-24">
