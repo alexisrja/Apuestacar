@@ -42,7 +42,7 @@ export default function LoginPage() {
         setError("Correo o contraseña incorrectos. Inténtalo de nuevo.");
         return;
       }
-      router.push("/perfil");
+      router.push("/");
       router.refresh();
     } else {
       const { data, error } = await supabase.auth.signUp({ email, password });
@@ -52,7 +52,7 @@ export default function LoginPage() {
         return;
       }
       if (data.session) {
-        router.push("/perfil");
+        router.push("/");
         router.refresh();
       } else {
         setNotice(
