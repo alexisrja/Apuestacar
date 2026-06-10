@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
+import { createClient, supabaseConfigured } from "@/lib/supabase/client";
 
 const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
@@ -23,6 +24,25 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
     telefono: "",
     email: "",
   });
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Identify the signed-in user (if any) to link the purchase and prefill data.
+  useEffect(() => {
+    if (!supabaseConfigured) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      const user = data.user;
+      if (!user) return;
+      setUserId(user.id);
+      setForm((prev) => ({
+        ...prev,
+        nombre:
+          prev.nombre ||
+          ((user.user_metadata?.full_name as string | undefined) ?? ""),
+        email: prev.email || (user.email ?? ""),
+      }));
+    });
+  }, []);
 
   const toggleNumber = (num: string) => {
     if (step !== "select") return;
@@ -38,6 +58,23 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
 
     const numbersList = selected.join(", ");
     const message = `¡Hola! Quiero comprar boletos del *Sorteo #${sorteo.numero} — ${sorteo.titulo}* (premio: ${sorteo.premio}).%0A%0A📋 *Datos del comprador:*%0A👤 Nombre: ${encodeURIComponent(form.nombre)}%0A📞 Teléfono: ${encodeURIComponent(form.telefono)}%0A✉️ Email: ${encodeURIComponent(form.email)}%0A%0A🎫 *Números seleccionados:* ${encodeURIComponent(numbersList)}%0A💰 *Total: $${total} USD*%0A%0A¡Gracias!`;
+
+    // Persist the purchase request for signed-in users so it shows in "Mis
+    // Boletos". RLS guarantees the row is owned by this user. Fire-and-forget —
+    // never block the WhatsApp hand-off on the DB write.
+    if (userId && supabaseConfigured) {
+      const supabase = createClient();
+      void supabase.from("compras").insert({
+        user_id: userId,
+        sorteo_id: sorteo.id,
+        sorteo_numero: sorteo.numero,
+        sorteo_titulo: sorteo.titulo,
+        sorteo_premio: sorteo.premio,
+        numeros: selected,
+        cantidad: selected.length,
+        total,
+      });
+    }
 
     window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
 

@@ -40,7 +40,7 @@ export default function ProfileActions({
   };
 
   return (
-    <div className="mt-6 border-t border-[#1E3A8A]/60 pt-6">
+    <div className="mt-5">
       <form onSubmit={handleSave}>
         <label
           htmlFor="display-name"
