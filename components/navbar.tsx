@@ -11,7 +11,23 @@ const navLinks = [
   { href: "/resultados", label: "Resultados" },
 ];
 
-function AccountIcon({ signedIn }: { signedIn: boolean }) {
+function AccountIcon({
+  signedIn,
+  avatarUrl,
+}: {
+  signedIn: boolean;
+  avatarUrl: string | null;
+}) {
+  if (signedIn && avatarUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={avatarUrl}
+        alt=""
+        className="-my-0.5 h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-[#22D3EE]/50"
+      />
+    );
+  }
   return (
     <svg
       className="h-4 w-4 shrink-0"
@@ -42,17 +58,27 @@ function AccountIcon({ signedIn }: { signedIn: boolean }) {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabaseConfigured) return;
     const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data }) => setSignedIn(!!data.user));
+    supabase.auth.getUser().then(({ data }) => {
+      setSignedIn(!!data.user);
+      setAvatarUrl(
+        (data.user?.user_metadata?.avatar_url as string | undefined) ?? null,
+      );
+    });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSignedIn(!!session?.user);
+      setAvatarUrl(
+        (session?.user?.user_metadata?.avatar_url as string | undefined) ??
+          null,
+      );
     });
 
     return () => subscription.unsubscribe();
@@ -99,7 +125,7 @@ export default function Navbar() {
             </Link>
           ))}
           <Link href={accountHref} className="btn-login text-sm">
-            <AccountIcon signedIn={signedIn} />
+            <AccountIcon signedIn={signedIn} avatarUrl={avatarUrl} />
             <span>{accountLabel}</span>
           </Link>
           <Link href="/boletos" className="btn-accent text-sm !py-2 !px-5">
@@ -125,7 +151,7 @@ export default function Navbar() {
             className="btn-login mt-2 w-full justify-center text-sm"
             onClick={() => setOpen(false)}
           >
-            <AccountIcon signedIn={signedIn} />
+            <AccountIcon signedIn={signedIn} avatarUrl={avatarUrl} />
             <span>{accountLabel}</span>
           </Link>
           <Link
