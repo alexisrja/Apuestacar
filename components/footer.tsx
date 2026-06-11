@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <h3 className="font-heading text-lg tracking-wider text-white">
-              APUESTACAR
+              RIFAS JAPS
             </h3>
             <p className="mt-2 font-body text-sm text-secondary">
               La rifa más emocionante con los mejores premios. Compra tus
@@ -53,7 +53,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-border/50 pt-6 text-center font-body text-xs text-secondary">
-          © {new Date().getFullYear()} Apuestacar. Todos los derechos
+          © {new Date().getFullYear()} RIFAS JAPS. Todos los derechos
           reservados.
         </div>
       </div>

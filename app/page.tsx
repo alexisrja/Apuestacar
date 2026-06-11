@@ -44,7 +44,7 @@ const testimonials = [
   },
   {
     name: "Roberto L.",
-    text: "Ya he ganado dos veces con Apuestacar. Son legales, transparentes y los premios se entregan rápido.",
+    text: "Ya he ganado dos veces con RIFAS JAPS. Son legales, transparentes y los premios se entregan rápido.",
     prize: "$50,000 MXN",
     avatar: "RL",
   },
@@ -66,7 +66,7 @@ export default async function Home() {
           <h1 className="font-heading text-4xl leading-tight text-white sm:text-6xl sm:leading-tight">
             <span className="text-gradient">¡GANA EN GRANDE!</span>
             <br />
-            Con Apuestacar
+            Con RIFAS JAPS
           </h1>
           <p className="mx-auto mt-4 max-w-xl font-body text-base leading-relaxed text-secondary sm:text-lg">
             Compra tus boletos y participa en la rifa más emocionante. Premios
@@ -74,10 +74,10 @@ export default async function Home() {
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-4">
-            <Link href="/boletos" className="btn-accent text-base !py-3 !px-8">
+            <Link href="/boletos" className="btn-accent text-base py-3! px-8!">
               Comprar Boletos Ahora
             </Link>
-            <Link href="/premios" className="btn-outline text-base !py-3 !px-8">
+            <Link href="/premios" className="btn-outline text-base py-3! px-8!">
               Ver Premios
             </Link>
           </div>
@@ -214,7 +214,7 @@ export default async function Home() {
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link
               href="/boletos"
-              className="btn-accent text-base !py-3 !px-10 glow-accent"
+              className="btn-accent text-base py-3! px-10! glow-accent"
             >
               Comprar Boletos
             </Link>

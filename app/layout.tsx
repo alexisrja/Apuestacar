@@ -17,7 +17,7 @@ const chakraPetch = Chakra_Petch({
 });
 
 export const metadata: Metadata = {
-  title: "Apuestacar - La Rifa Más Emocionante",
+  title: "RIFAS JAPS - La Rifa Más Emocionante",
   description:
     "Participa en las mejores rifas con premios increíbles. Compra tus boletos y gana grandes premios.",
 };

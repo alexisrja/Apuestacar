@@ -29,7 +29,7 @@ export default async function AdminLayout({
               PANEL DE ADMINISTRACIÓN
             </p>
             <h1 className="mt-1 font-heading text-2xl text-white sm:text-3xl">
-              Apuesta<span className="text-gradient">car</span> Admin
+              RIFAS JAPS Admin
             </h1>
           </div>
           <nav className="flex flex-wrap gap-2">

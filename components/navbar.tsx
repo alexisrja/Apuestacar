@@ -94,7 +94,7 @@ export default function Navbar() {
           href="/"
           className="font-heading text-xl tracking-wider text-white glow-text"
         >
-          APUESTACAR
+          RIFAS JAPS
         </Link>
 
         <button
@@ -128,7 +128,7 @@ export default function Navbar() {
             <AccountIcon signedIn={signedIn} avatarUrl={avatarUrl} />
             <span>{accountLabel}</span>
           </Link>
-          <Link href="/boletos" className="btn-accent text-sm !py-2 !px-5">
+          <Link href="/boletos" className="btn-accent text-sm py-2! px-5!">
             Comprar Boletos
           </Link>
         </div>

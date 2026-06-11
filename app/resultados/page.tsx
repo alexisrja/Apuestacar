@@ -42,7 +42,7 @@ const pastResults = [
 const testimonials = [
   {
     name: "María Fernanda L.",
-    text: "Compré solo un boleto y gané el auto. ¡No podía creerlo! Apuestacar cambió mi vida.",
+    text: "Compré solo un boleto y gané el auto. ¡No podía creerlo! RIFAS JAPS cambió mi vida.",
     prize: "Auto Deportivo",
     avatar: "MF",
   },
