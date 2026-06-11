@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
-import { createClient, supabaseConfigured } from "@/lib/supabase/client";
+import {
+  createClient,
+  isInvalidRefreshTokenError,
+  supabaseConfigured,
+} from "@/lib/supabase/client";
 
 const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
@@ -30,18 +34,25 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
   useEffect(() => {
     if (!supabaseConfigured) return;
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      const user = data.user;
-      if (!user) return;
-      setUserId(user.id);
-      setForm((prev) => ({
-        ...prev,
-        nombre:
-          prev.nombre ||
-          ((user.user_metadata?.full_name as string | undefined) ?? ""),
-        email: prev.email || (user.email ?? ""),
-      }));
-    });
+    void supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        const user = data.user;
+        if (!user) return;
+        setUserId(user.id);
+        setForm((prev) => ({
+          ...prev,
+          nombre:
+            prev.nombre ||
+            ((user.user_metadata?.full_name as string | undefined) ?? ""),
+          email: prev.email || (user.email ?? ""),
+        }));
+      })
+      .catch(async (error) => {
+        if (!isInvalidRefreshTokenError(error)) return;
+
+        await supabase.auth.signOut({ scope: "local" });
+      });
   }, []);
 
   const toggleNumber = (num: string) => {

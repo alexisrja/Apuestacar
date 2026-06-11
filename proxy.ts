@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isInvalidRefreshTokenError } from "@/lib/supabase/client";
 
 export async function proxy(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -29,10 +30,26 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Refresh the session and read the user.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+
+  try {
+    // Refresh the session and read the user.
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch (error) {
+    if (!isInvalidRefreshTokenError(error)) {
+      throw error;
+    }
+
+    // A stale refresh token should behave like a signed-out session.
+    const cleanupResponse = NextResponse.next({ request });
+    request.cookies.getAll().forEach(({ name }) => {
+      if (name.startsWith("sb-") || name.includes("auth-token")) {
+        cleanupResponse.cookies.delete(name);
+      }
+    });
+    return cleanupResponse;
+  }
 
   const { pathname } = request.nextUrl;
 

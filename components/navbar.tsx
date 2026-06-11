@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createClient, supabaseConfigured } from "@/lib/supabase/client";
+import {
+  createClient,
+  isInvalidRefreshTokenError,
+  supabaseConfigured,
+} from "@/lib/supabase/client";
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -64,12 +68,22 @@ export default function Navbar() {
     if (!supabaseConfigured) return;
     const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data }) => {
-      setSignedIn(!!data.user);
-      setAvatarUrl(
-        (data.user?.user_metadata?.avatar_url as string | undefined) ?? null,
-      );
-    });
+    void supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        setSignedIn(!!data.user);
+        setAvatarUrl(
+          (data.user?.user_metadata?.avatar_url as string | undefined) ??
+            null,
+        );
+      })
+      .catch(async (error) => {
+        if (!isInvalidRefreshTokenError(error)) return;
+
+        await supabase.auth.signOut({ scope: "local" });
+        setSignedIn(false);
+        setAvatarUrl(null);
+      });
 
     const {
       data: { subscription },

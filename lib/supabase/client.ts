@@ -15,3 +15,18 @@ export const supabaseConfigured = !!supabaseUrl && !!supabaseKey;
 export function createClient() {
   return createBrowserClient(supabaseUrl, supabaseKey);
 }
+
+export function isInvalidRefreshTokenError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+
+  const candidate = error as {
+    code?: string;
+    message?: string;
+  };
+
+  return (
+    candidate.code === "refresh_token_not_found" ||
+    candidate.message?.includes("Invalid Refresh Token") === true ||
+    candidate.message?.includes("Refresh Token Not Found") === true
+  );
+}
