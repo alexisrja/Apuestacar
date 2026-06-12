@@ -75,7 +75,7 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
     // never block the WhatsApp hand-off on the DB write.
     if (userId && supabaseConfigured) {
       const supabase = createClient();
-      void supabase.from("compras").insert({
+      supabase.from("compras").insert({
         user_id: userId,
         sorteo_id: sorteo.id,
         sorteo_numero: sorteo.numero,
@@ -84,6 +84,8 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
         numeros: selected,
         cantidad: selected.length,
         total,
+      }).then(({ error }) => {
+        if (error) console.error("Error al guardar compra:", error);
       });
     }
 
