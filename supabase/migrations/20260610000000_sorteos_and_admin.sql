@@ -36,7 +36,7 @@ as $$
   select exists (
     select 1
     from public.admin_emails ae
-    where lower(ae.email) = lower(nullif(current_setting('request.jwt.claims', true)::json ->> 'email', ''))
+    where lower(ae.email) = lower(nullif(auth.email(), ''))
   );
 $$;
 

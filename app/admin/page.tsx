@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminClient } from "@/lib/supabase/admin";
 
 interface CompraRow {
   id: string;
@@ -35,7 +35,7 @@ function StatCard({
 }
 
 export default async function AdminDashboard() {
-  const supabase = await createClient();
+  const supabase = getAdminClient();
 
   const [{ count: sorteosCount }, { data: comprasData }] = await Promise.all([
     supabase.from("sorteos").select("id", { count: "exact", head: true }),

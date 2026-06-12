@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getAdminClient } from "@/lib/supabase/admin";
 import { isAdminEmail } from "@/lib/admin";
 
 export interface ActionResult {
@@ -11,8 +12,9 @@ export interface ActionResult {
 
 /**
  * Guard every Server Action: Server Functions are reachable via direct POST,
- * not just through our UI, so we re-verify auth + admin here (RLS is the final
- * backstop). Returns the authenticated admin's Supabase client.
+ * not just through our UI, so we re-verify auth + admin here. Returns an admin
+ * Supabase client (service_role key) that bypasses RLS — safe because we gate
+ * on getUser() + isAdminEmail() first.
  */
 async function requireAdmin() {
   const supabase = await createClient();
@@ -22,7 +24,7 @@ async function requireAdmin() {
   if (!user || !isAdminEmail(user.email)) {
     throw new Error("No autorizado");
   }
-  return supabase;
+  return getAdminClient();
 }
 
 // ---------------------------------------------------------------------------

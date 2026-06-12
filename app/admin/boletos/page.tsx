@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getAdminClient } from "@/lib/supabase/admin";
 import CompraActions from "@/components/admin/compra-actions";
 
 type Estado = "pendiente" | "confirmada" | "cancelada";
@@ -45,7 +46,7 @@ export default async function AdminBoletosPage({
   const { estado } = await searchParams;
   const active = filters.some((f) => f.key === estado) ? estado! : "todos";
 
-  const supabase = await createClient();
+  const supabase = getAdminClient();
   let query = supabase
     .from("compras")
     .select(
