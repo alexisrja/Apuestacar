@@ -8,6 +8,8 @@ type Estado = "pendiente" | "confirmada" | "cancelada";
 interface CompraRow {
   id: string;
   user_id: string;
+  user_email: string | null;
+  user_name: string | null;
   sorteo_id: string;
   sorteo_numero: number | null;
   sorteo_titulo: string | null;
@@ -50,7 +52,7 @@ export default async function AdminBoletosPage({
   let query = supabase
     .from("compras")
     .select(
-      "id, user_id, sorteo_id, sorteo_numero, sorteo_titulo, sorteo_premio, numeros, cantidad, total, estado, created_at",
+      "id, user_id, user_email, user_name, sorteo_id, sorteo_numero, sorteo_titulo, sorteo_premio, numeros, cantidad, total, estado, created_at",
     )
     .order("created_at", { ascending: false });
 
@@ -107,7 +109,7 @@ export default async function AdminBoletosPage({
                   </p>
                 )}
                 <p className="mt-0.5 font-body text-[10px] text-secondary/70">
-                  Usuario: {c.user_id.slice(0, 8)}… ·{" "}
+                  {c.user_name ?? "Sin nombre"} · {c.user_email ?? c.user_id.slice(0, 8) + "…"} ·{" "}
                   {new Date(c.created_at).toLocaleString("es-MX", {
                     day: "numeric",
                     month: "short",

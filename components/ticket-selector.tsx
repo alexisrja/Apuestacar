@@ -35,6 +35,8 @@ export default function TicketSelector({
     email: "",
   });
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   // Identify the signed-in user (if any) to link the purchase and prefill data.
   useEffect(() => {
@@ -46,6 +48,10 @@ export default function TicketSelector({
         const user = data.user;
         if (!user) return;
         setUserId(user.id);
+        setUserEmail(user.email ?? null);
+        setUserName(
+          (user.user_metadata?.full_name as string | undefined) ?? null,
+        );
         setForm((prev) => ({
           ...prev,
           nombre:
@@ -84,6 +90,8 @@ export default function TicketSelector({
       const supabase = createClient();
       supabase.from("compras").insert({
         user_id: userId,
+        user_email: userEmail,
+        user_name: userName,
         sorteo_id: sorteo.id,
         sorteo_numero: sorteo.numero,
         sorteo_titulo: sorteo.titulo,
