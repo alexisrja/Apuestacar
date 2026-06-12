@@ -1,15 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getAdminContext } from "@/lib/admin";
-
-const adminLinks = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/sorteos", label: "Sorteos" },
-  { href: "/admin/premios", label: "Premios" },
-  { href: "/admin/boletos", label: "Boletos" },
-  { href: "/admin/resultados", label: "Resultados" },
-  { href: "/admin/testimonios", label: "Testimonios" },
-];
+import AdminNav from "@/components/admin/admin-nav";
 
 export default async function AdminLayout({
   children,
@@ -18,8 +9,6 @@ export default async function AdminLayout({
 }) {
   const { user, isAdmin } = await getAdminContext();
 
-  // Defense in depth: proxy.ts already gates this, but Server Components must
-  // never trust the middleware alone.
   if (!user) redirect("/login?next=/admin");
   if (!isAdmin) redirect("/");
 
@@ -35,18 +24,9 @@ export default async function AdminLayout({
               RIFAS JAPS Admin
             </h1>
           </div>
-          <nav className="flex flex-wrap gap-2">
-            {adminLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-lg border border-border bg-muted/60 px-4 py-2 font-heading text-sm text-foreground transition-colors hover:border-primary hover:text-white"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
         </div>
+
+        <AdminNav />
 
         <div className="mt-8">{children}</div>
       </div>

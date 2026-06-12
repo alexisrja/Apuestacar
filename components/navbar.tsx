@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   createClient,
@@ -59,7 +60,38 @@ function AccountIcon({
   );
 }
 
+function NavLink({
+  href,
+  label,
+  active,
+  onClick,
+  mobile,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+  onClick?: () => void;
+  mobile?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`transition-colors ${
+        mobile ? "block py-2" : ""
+      } font-body text-sm font-medium ${
+        active
+          ? "text-accent"
+          : "text-foreground hover:text-secondary"
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -98,8 +130,14 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   const accountHref = signedIn ? "/perfil" : "/login";
   const accountLabel = signedIn ? "Mi Perfil" : "Iniciar Sesión";
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
@@ -130,13 +168,12 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-8 sm:flex">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.href}
               href={link.href}
-              className="font-body text-sm font-medium text-foreground transition-colors hover:text-secondary"
-            >
-              {link.label}
-            </Link>
+              label={link.label}
+              active={isActive(link.href)}
+            />
           ))}
           <Link href={accountHref} className="btn-login text-sm">
             <AccountIcon signedIn={signedIn} avatarUrl={avatarUrl} />
@@ -151,14 +188,14 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-border bg-background px-4 pb-4 pt-2 sm:hidden">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.href}
               href={link.href}
-              className="block py-2 font-body text-sm text-foreground transition-colors hover:text-secondary"
+              label={link.label}
+              active={isActive(link.href)}
+              mobile
               onClick={() => setOpen(false)}
-            >
-              {link.label}
-            </Link>
+            />
           ))}
           <Link
             href={accountHref}
