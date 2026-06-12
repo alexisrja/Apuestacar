@@ -202,6 +202,20 @@ export default async function PerfilPage() {
         <div className="mt-8 rounded-2xl border border-border bg-surface p-6 sm:p-8">
           <h2 className="font-heading text-lg text-white">Ajustes de cuenta</h2>
           <ProfileActions initialName={displayName} />
+          {admin && (
+            <div className="mt-6 rounded-xl border border-primary/30 bg-primary/10 p-4">
+              <p className="font-heading text-sm text-white">Panel de control</p>
+              <p className="mt-1 font-body text-xs text-secondary">
+                Tienes acceso administrativo al panel del sitio.
+              </p>
+              <Link
+                href="/admin"
+                className="btn-outline mt-4 inline-flex text-sm"
+              >
+                Ir al panel de control
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
