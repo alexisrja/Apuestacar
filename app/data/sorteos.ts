@@ -14,6 +14,7 @@ export interface Sorteo {
   totalBoletos: number;
   vendidos: number;
   emoji: string;
+  imagen?: string;
   destacado?: boolean;
   estado: "activo" | "proximo";
 }

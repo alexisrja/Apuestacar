@@ -64,6 +64,7 @@ function parseSorteoForm(formData: FormData) {
     total_boletos: Number(formData.get("total_boletos") ?? 100),
     vendidos: Number(formData.get("vendidos") ?? 0),
     emoji: String(formData.get("emoji") ?? "🎟️").trim() || "🎟️",
+    imagen: String(formData.get("imagen") ?? "").trim() || null,
     destacado: formData.get("destacado") === "on",
     estado,
   };
@@ -73,8 +74,10 @@ function parseSorteoForm(formData: FormData) {
 
 function revalidateSorteoPages(id?: string) {
   revalidatePath("/admin/sorteos");
+  revalidatePath("/admin/premios");
   revalidatePath("/admin");
   revalidatePath("/");
+  revalidatePath("/premios");
   revalidatePath("/boletos");
   if (id) {
     revalidatePath(`/boletos/${id}`);
@@ -116,6 +119,24 @@ export async function updateSorteo(
   const { error } = await supabase
     .from("sorteos")
     .update({ ...row, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidateSorteoPages(id);
+  return { ok: true };
+}
+
+export async function updatePremio(
+  id: string,
+  formData: FormData,
+): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+  const imagen = String(formData.get("imagen") ?? "").trim() || null;
+  const descripcion = String(formData.get("descripcion") ?? "").trim();
+
+  const { error } = await supabase
+    .from("sorteos")
+    .update({ imagen, descripcion, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) return { ok: false, error: error.message };
 

@@ -1,47 +1,14 @@
 import Link from "next/link";
-import PrizeCard from "@/components/prize-card";
+import Image from "next/image";
+import { getSorteos } from "@/lib/sorteos";
 import Reveal from "@/components/reveal";
 
-const prizes = [
-  {
-    title: "Auto Deportivo 2025",
-    description: "Último modelo con motor V8, completamente equipado",
-    value: "$85,000 MXN",
-    image: "🏎️",
-  },
-  {
-    title: "Viaje a Dubai",
-    description: "7 días todo incluido para 2 personas en el Burj Khalifa",
-    value: "$25,000 MXN",
-    image: "✈️",
-  },
-  {
-    title: "Efectivo $50,000",
-    description: "Premio en efectivo sin condiciones",
-    value: "$50,000 MXN",
-    image: "💰",
-  },
-  {
-    title: "Moto Deportiva",
-    description: "Moto 1000cc última generación",
-    value: "$18,000 MXN",
-    image: "🏍️",
-  },
-  {
-    title: "TV 80 8K",
-    description: "Televisor Samsung Neo QLED 8K",
-    value: "$5,000 MXN",
-    image: "📺",
-  },
-  {
-    title: "Paquete de Gift Cards",
-    description: "$2,000 en tarjetas de regalo Amazon",
-    value: "$2,000 MXN",
-    image: "🎁",
-  },
-];
+export default async function PremiosPage() {
+  const sorteos = await getSorteos();
+  const activeSorteos = sorteos.filter(
+    (s) => s.estado === "activo" || s.estado === "proximo",
+  );
 
-export default function PremiosPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
       <div className="page-fade text-center">
@@ -50,18 +17,68 @@ export default function PremiosPage() {
         </h1>
         <div className="neon-line" />
         <p className="mx-auto mt-4 max-w-lg font-body text-sm text-secondary">
-          Estos son los increíbles premios que puedes ganar en nuestro próximo
-          sorteo. ¡Compra tus boletos y participa!
+          Estos son los increíbles premios que puedes ganar en nuestros sorteos
+          activos y próximos. ¡Compra tus boletos y participa!
         </p>
       </div>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {prizes.map((prize, i) => (
-          <Reveal key={prize.title} delay={i * 80}>
-            <PrizeCard {...prize} />
-          </Reveal>
-        ))}
-      </div>
+      {activeSorteos.length === 0 ? (
+        <div className="mt-10 rounded-2xl border border-dashed border-border bg-surface/60 p-10 text-center">
+          <p className="font-body text-sm text-secondary">
+            Próximamente estaremos anunciando nuevos premios. Vuelve pronto.
+          </p>
+        </div>
+      ) : (
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {activeSorteos.map((s, i) => (
+            <Reveal key={s.id} delay={i * 80}>
+              <div className="card-neon group overflow-hidden">
+                <div className="flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30">
+                  {s.imagen ? (
+                    s.imagen.startsWith("/") ||
+                    /\.(png|jpe?g|webp|gif|svg)$/i.test(s.imagen) ? (
+                      <Image
+                        src={s.imagen}
+                        alt={s.premio}
+                        width={800}
+                        height={450}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={s.imagen}
+                        alt={s.premio}
+                        className="h-full w-full object-cover"
+                      />
+                    )
+                  ) : (
+                    <span className="text-5xl">{s.emoji}</span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="font-heading text-lg text-white">
+                    {s.premio}
+                  </h3>
+                  <p className="mt-1 font-body text-sm text-secondary">
+                    {s.descripcion || `Sorteo #${s.numero} — ${s.titulo}`}
+                  </p>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="glow-text font-heading text-sm text-accent">
+                      {s.valor}
+                    </span>
+                    <Link
+                      href={`/boletos/${s.id}`}
+                      className="font-body text-xs text-foreground transition-colors hover:text-white"
+                    >
+                      Comprar boleto →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      )}
 
       <div className="mt-12 text-center">
         <p className="font-body text-sm text-secondary">

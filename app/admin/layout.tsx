@@ -5,6 +5,7 @@ import { getAdminContext } from "@/lib/admin";
 const adminLinks = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/sorteos", label: "Sorteos" },
+  { href: "/admin/premios", label: "Premios" },
   { href: "/admin/boletos", label: "Boletos" },
 ];
 

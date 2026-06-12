@@ -6,28 +6,16 @@ import Reveal from "@/components/reveal";
 import SorteoSlider from "@/components/sorteo-slider";
 import AnimatedText from "@/components/animated-text";
 import { getSorteos } from "@/lib/sorteos";
-import macbook from "./assets/macbook.jpg";
+import type { Sorteo } from "@/app/data/sorteos";
 
-const prizes = [
-  {
-    title: "MacBook Neo 2026",
-    description: "Nuestro premio estrella: el nuevo MacBook Neo con tecnología de última generación",
-    value: "$14,999 MXN",
-    image: macbook,
-  },
-  {
-    title: "Viaje a Dubai",
-    description: "7 días todo incluido para 2 personas en el Burj Khalifa",
-    value: "$25,000 MXN",
-    image: "✈️",
-  },
-  {
-    title: "Efectivo $50,000",
-    description: "Premio en efectivo sin condiciones",
-    value: "$50,000 MXN",
-    image: "💰",
-  },
-];
+function toPrize(s: Sorteo) {
+  return {
+    title: s.premio,
+    description: s.descripcion || `Sorteo #${s.numero} — ${s.titulo}`,
+    value: s.valor,
+    image: s.imagen || s.emoji,
+  };
+}
 
 const testimonials = [
   {
@@ -166,9 +154,9 @@ export default async function Home() {
             próximo sorteo.
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
-            {prizes.map((prize, i) => (
-              <Reveal key={prize.title} delay={i * 90}>
-                <PrizeCard {...prize} />
+            {sorteos.filter(s => s.estado === "activo" || s.estado === "proximo").slice(0, 3).map((s, i) => (
+              <Reveal key={s.id} delay={i * 90}>
+                <PrizeCard {...toPrize(s)} />
               </Reveal>
             ))}
           </div>

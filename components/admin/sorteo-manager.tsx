@@ -217,9 +217,22 @@ function SorteoForm({
             className={inputClass}
           >
             <option value="activo">Activo</option>
-            <option value="proximo">Próximo</option>
-          </select>
-        </div>
+          <option value="proximo">Próximo</option>
+        </select>
+      </div>
+      <div className="sm:col-span-2">
+        <label className={labelClass} htmlFor="imagen">
+          Imagen referencial (URL)
+        </label>
+        <input
+          id="imagen"
+          name="imagen"
+          type="url"
+          placeholder="https://ejemplo.com/imagen.jpg"
+          defaultValue={sorteo?.imagen ?? ""}
+          className={inputClass}
+        />
+      </div>
         <label className="flex items-center gap-2 self-end font-body text-sm text-foreground">
           <input
             name="destacado"

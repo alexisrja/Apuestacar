@@ -16,12 +16,13 @@ interface SorteoRow {
   total_boletos: number;
   vendidos: number;
   emoji: string;
+  imagen: string | null;
   destacado: boolean;
   estado: "activo" | "proximo";
 }
 
 const COLUMNS =
-  "id, numero, titulo, premio, valor, descripcion, fecha, fecha_label, precio_boleto, total_boletos, vendidos, emoji, destacado, estado";
+  "id, numero, titulo, premio, valor, descripcion, fecha, fecha_label, precio_boleto, total_boletos, vendidos, emoji, imagen, destacado, estado";
 
 function toSorteo(row: SorteoRow): Sorteo {
   return {
@@ -37,6 +38,7 @@ function toSorteo(row: SorteoRow): Sorteo {
     totalBoletos: row.total_boletos,
     vendidos: row.vendidos,
     emoji: row.emoji,
+    imagen: row.imagen ?? undefined,
     destacado: row.destacado,
     estado: row.estado,
   };
