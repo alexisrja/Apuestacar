@@ -65,6 +65,32 @@ export async function getTakenNumbers(sorteoId: string): Promise<string[]> {
   return (data ?? []).flatMap((r) => (r.numeros ?? []) as string[]);
 }
 
+/** The date of the nearest upcoming sorteo, or null. */
+export async function getProximaFecha(): Promise<string | null> {
+  const supabase = await createClient();
+  const now = new Date().toISOString();
+  const { data } = await supabase
+    .from("sorteos")
+    .select("fecha")
+    .eq("estado", "proximo")
+    .gte("fecha", now)
+    .order("fecha", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (!data?.fecha) {
+    // fallback: any sorteo with a future date
+    const { data: fallback } = await supabase
+      .from("sorteos")
+      .select("fecha")
+      .gte("fecha", now)
+      .order("fecha", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    return fallback?.fecha ?? null;
+  }
+  return data.fecha;
+}
+
 /** A single sorteo by its public id (slug), or null if not found. */
 export async function getSorteo(id: string): Promise<Sorteo | null> {
   const supabase = await createClient();

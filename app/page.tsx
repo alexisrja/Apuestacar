@@ -5,7 +5,7 @@ import TestimonialCard from "@/components/testimonial-card";
 import Reveal from "@/components/reveal";
 import SorteoSlider from "@/components/sorteo-slider";
 import AnimatedText from "@/components/animated-text";
-import { getSorteos } from "@/lib/sorteos";
+import { getSorteos, getProximaFecha } from "@/lib/sorteos";
 import { getTestimonios } from "@/lib/testimonios";
 import type { Sorteo } from "@/app/data/sorteos";
 
@@ -21,9 +21,10 @@ function toPrize(s: Sorteo) {
 
 
 export default async function Home() {
-  const [sorteos, testimonios] = await Promise.all([
+  const [sorteos, testimonios, proximaFecha] = await Promise.all([
     getSorteos(),
     getTestimonios(),
+    getProximaFecha(),
   ]);
   return (
     <>
@@ -53,7 +54,13 @@ export default async function Home() {
             <p className="mb-4 font-heading text-sm tracking-widest text-white">
               PRÓXIMO SORTEO
             </p>
-            <Countdown targetDate="2026-07-15T20:00:00" />
+            {proximaFecha ? (
+              <Countdown targetDate={proximaFecha} />
+            ) : (
+              <p className="font-body text-sm text-secondary/60">
+                Próximamente anunciaremos la fecha del próximo sorteo.
+              </p>
+            )}
           </div>
         </div>
       </section>
