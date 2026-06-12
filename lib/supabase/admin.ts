@@ -1,14 +1,24 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
 import { supabaseUrl } from "@/lib/supabase/client";
 
-let _adminClient: ReturnType<typeof createClient> | null = null;
+let _adminClient: ReturnType<typeof createAdminClient> | null = null;
+
+function createAdminClient() {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) throw new Error("SUPABASE_SERVICE_ROLE_KEY is not configured");
+  return createServerClient(supabaseUrl, key, {
+    cookies: {
+      getAll() {
+        return [];
+      },
+      setAll() {},
+    },
+    auth: { persistSession: false },
+  });
+}
 
 export function getAdminClient() {
   if (_adminClient) return _adminClient;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key) throw new Error("SUPABASE_SERVICE_ROLE_KEY is not configured");
-  _adminClient = createClient(supabaseUrl, key, {
-    auth: { persistSession: false },
-  });
+  _adminClient = createAdminClient();
   return _adminClient;
 }
