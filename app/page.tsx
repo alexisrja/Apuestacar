@@ -30,12 +30,6 @@ export default async function Home() {
       <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pb-28 sm:pt-24">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(37,99,235,0.15)_0%,transparent_60%)]" />
         <div className="page-fade relative mx-auto max-w-5xl text-center">
-          <Link
-            href="/boletos/12"
-            className="mb-6 inline-block rounded-full border border-border bg-muted/50 px-4 py-1.5 font-body text-xs text-secondary transition-colors hover:border-primary hover:text-white"
-          >
-            🏆 Sorteo #12 — Gran Premio Final · Ver detalles →
-          </Link>
           <h1 className="font-heading text-4xl leading-tight text-white sm:text-6xl sm:leading-tight">
             <span className="text-gradient">¡GANA EN GRANDE!</span>
             <br />
