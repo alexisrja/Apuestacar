@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAdminClient } from "@/lib/supabase/admin";
 import type { Sorteo } from "@/app/data/sorteos";
 
 /** Row shape as stored in Supabase (snake_case). */
@@ -49,6 +50,17 @@ export async function getSorteos(): Promise<Sorteo[]> {
     .select(COLUMNS)
     .order("numero", { ascending: false });
   return ((data as SorteoRow[] | null) ?? []).map(toSorteo);
+}
+
+/** Numbers already taken (confirmed compras) for a given sorteo. */
+export async function getTakenNumbers(sorteoId: string): Promise<string[]> {
+  const supabase = getAdminClient();
+  const { data } = await supabase
+    .from("compras")
+    .select("numeros")
+    .eq("sorteo_id", sorteoId)
+    .eq("estado", "confirmada");
+  return (data ?? []).flatMap((r) => (r.numeros ?? []) as string[]);
 }
 
 /** A single sorteo by its public id (slug), or null if not found. */

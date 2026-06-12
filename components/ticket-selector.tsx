@@ -16,7 +16,13 @@ interface FormData {
   email: string;
 }
 
-export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
+export default function TicketSelector({
+  sorteo,
+  takenNumbers = [],
+}: {
+  sorteo: Sorteo;
+  takenNumbers?: string[];
+}) {
   const allNumbers = Array.from({ length: sorteo.totalBoletos }, (_, i) =>
     String(i + 1).padStart(3, "0"),
   );
@@ -57,6 +63,7 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
 
   const toggleNumber = (num: string) => {
     if (step !== "select") return;
+    if (takenNumbers.includes(num)) return;
     setSelected((prev) =>
       prev.includes(num) ? prev.filter((n) => n !== num) : [...prev, num],
     );
@@ -142,20 +149,24 @@ export default function TicketSelector({ sorteo }: { sorteo: Sorteo }) {
           <div className="mt-8 grid grid-cols-5 gap-2 sm:grid-cols-10">
             {allNumbers.map((num) => {
               const isSelected = selected.includes(num);
+              const isTaken = takenNumbers.includes(num);
               return (
                 <button
                   key={num}
                   type="button"
+                  disabled={isTaken}
                   onClick={() => toggleNumber(num)}
                   aria-pressed={isSelected}
-                  aria-label={`Número ${num}${isSelected ? ", seleccionado" : ""}`}
-                  className={`flex h-12 items-center justify-center rounded-lg border font-heading text-sm transition-all duration-200 active:scale-95 ${
-                    isSelected
-                      ? "border-primary bg-primary text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                      : "border-border bg-muted text-foreground hover:border-primary hover:bg-primary/20"
+                  aria-label={`Número ${num}${isSelected ? ", seleccionado" : ""}${isTaken ? ", no disponible" : ""}`}
+                  className={`flex h-12 items-center justify-center rounded-lg border font-heading text-sm transition-all duration-200 ${
+                    isTaken
+                      ? "cursor-not-allowed border-destructive/40 bg-destructive/10 text-[#FCA5A5] line-through"
+                      : isSelected
+                        ? "active:scale-95 border-primary bg-primary text-white shadow-[0_0_15px rgba(37,99,235,0.4)]"
+                        : "active:scale-95 border-border bg-muted text-foreground hover:border-primary hover:bg-primary/20"
                   }`}
                 >
-                  {num}
+                  {isTaken ? "✗" : num}
                 </button>
               );
             })}
