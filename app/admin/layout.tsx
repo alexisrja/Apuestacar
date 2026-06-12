@@ -7,6 +7,8 @@ const adminLinks = [
   { href: "/admin/sorteos", label: "Sorteos" },
   { href: "/admin/premios", label: "Premios" },
   { href: "/admin/boletos", label: "Boletos" },
+  { href: "/admin/resultados", label: "Resultados" },
+  { href: "/admin/testimonios", label: "Testimonios" },
 ];
 
 export default async function AdminLayout({

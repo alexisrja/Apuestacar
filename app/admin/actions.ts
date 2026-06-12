@@ -263,6 +263,75 @@ export async function setCompraEstado(
   return { ok: true };
 }
 
+// ---------------------------------------------------------------------------
+// Resultados CRUD
+// ---------------------------------------------------------------------------
+
+export async function createResultado(
+  formData: FormData,
+): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+  const row = {
+    sorteo_numero: Number(formData.get("sorteo_numero")),
+    fecha: String(formData.get("fecha") ?? "").trim(),
+    ganador: String(formData.get("ganador") ?? "").trim(),
+    numero: String(formData.get("numero") ?? "").trim(),
+    premio: String(formData.get("premio") ?? "").trim(),
+  };
+  if (!row.ganador || !row.numero || !row.premio) {
+    return { ok: false, error: "Completa todos los campos" };
+  }
+  const { error } = await supabase.from("resultados").insert(row);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin/resultados");
+  revalidatePath("/resultados");
+  return { ok: true };
+}
+
+export async function deleteResultado(id: number): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("resultados").delete().eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin/resultados");
+  revalidatePath("/resultados");
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Testimonios CRUD
+// ---------------------------------------------------------------------------
+
+export async function createTestimonio(
+  formData: FormData,
+): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+  const row = {
+    name: String(formData.get("name") ?? "").trim(),
+    text: String(formData.get("text") ?? "").trim(),
+    prize: String(formData.get("prize") ?? "").trim(),
+    avatar: String(formData.get("avatar") ?? "").trim(),
+  };
+  if (!row.name || !row.text || !row.prize || !row.avatar) {
+    return { ok: false, error: "Completa todos los campos" };
+  }
+  const { error } = await supabase.from("testimonios").insert(row);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin/testimonios");
+  revalidatePath("/");
+  revalidatePath("/resultados");
+  return { ok: true };
+}
+
+export async function deleteTestimonio(id: number): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("testimonios").delete().eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin/testimonios");
+  revalidatePath("/");
+  revalidatePath("/resultados");
+  return { ok: true };
+}
+
 export async function deleteCompra(id: string): Promise<ActionResult> {
   const supabase = await requireAdmin();
 

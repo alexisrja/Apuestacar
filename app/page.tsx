@@ -6,6 +6,7 @@ import Reveal from "@/components/reveal";
 import SorteoSlider from "@/components/sorteo-slider";
 import AnimatedText from "@/components/animated-text";
 import { getSorteos } from "@/lib/sorteos";
+import { getTestimonios } from "@/lib/testimonios";
 import type { Sorteo } from "@/app/data/sorteos";
 
 function toPrize(s: Sorteo) {
@@ -17,29 +18,13 @@ function toPrize(s: Sorteo) {
   };
 }
 
-const testimonials = [
-  {
-    name: "Carlos M.",
-    text: "Nunca pensé que ganaría. Compré un boleto por diversión y terminé llevándome el auto. ¡Increíble!",
-    prize: "Auto Deportivo",
-    avatar: "CM",
-  },
-  {
-    name: "Ana G.",
-    text: "Participé en la rifa del viaje a Dubai y gané. Fue la mejor experiencia de mi vida. 100% recomendado.",
-    prize: "Viaje a Dubai",
-    avatar: "AG",
-  },
-  {
-    name: "Roberto L.",
-    text: "Ya he ganado dos veces con RIFAS JAPS. Son legales, transparentes y los premios se entregan rápido.",
-    prize: "$50,000 MXN",
-    avatar: "RL",
-  },
-];
+
 
 export default async function Home() {
-  const sorteos = await getSorteos();
+  const [sorteos, testimonios] = await Promise.all([
+    getSorteos(),
+    getTestimonios(),
+  ]);
   return (
     <>
       <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pb-28 sm:pt-24">
@@ -175,8 +160,8 @@ export default async function Home() {
           </h2>
           <div className="neon-line" />
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
-            {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 90}>
+            {testimonios.slice(0, 3).map((t, i) => (
+              <Reveal key={t.id} delay={i * 90}>
                 <TestimonialCard {...t} />
               </Reveal>
             ))}
