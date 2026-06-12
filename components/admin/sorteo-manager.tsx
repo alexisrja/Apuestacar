@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import type { Sorteo } from "@/app/data/sorteos";
-import { createSorteo, updateSorteo, deleteSorteo } from "@/app/admin/actions";
+import { createSorteo, updateSorteo, deleteSorteo, uploadPremioImage } from "@/app/admin/actions";
 
 /** ISO string -> value accepted by <input type="datetime-local">. */
 function toLocalInput(iso: string): string {
@@ -28,6 +29,8 @@ function SorteoForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const isEdit = !!sorteo;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -221,17 +224,66 @@ function SorteoForm({
         </select>
       </div>
       <div className="sm:col-span-2">
-        <label className={labelClass} htmlFor="imagen">
-          Imagen referencial (URL)
-        </label>
-        <input
-          id="imagen"
-          name="imagen"
-          type="url"
-          placeholder="https://ejemplo.com/imagen.jpg"
-          defaultValue={sorteo?.imagen ?? ""}
-          className={inputClass}
-        />
+        <label className={labelClass}>Imagen referencial</label>
+        <div className="mt-1 flex flex-col gap-3">
+          {sorteo?.imagen && (
+            <div className="relative aspect-video w-full max-w-64 overflow-hidden rounded-lg border border-border bg-muted">
+              <Image
+                src={sorteo.imagen}
+                alt="Preview"
+                width={400}
+                height={225}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          )}
+          <label className="btn-outline inline-flex w-fit cursor-pointer items-center gap-2 px-3 py-1.5 text-xs">
+            {uploading ? "Subiendo…" : "Subir archivo"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setUploading(true);
+                setUploadError(null);
+                const fd = new FormData();
+                fd.set("file", file);
+                try {
+                  const result = await uploadPremioImage(null, fd);
+                  if (result.ok && result.url) {
+                    const input = document.getElementById(
+                      `imagen-url-${sorteo?.id ?? "new"}`,
+                    ) as HTMLInputElement;
+                    if (input) input.value = result.url;
+                  } else {
+                    setUploadError(result.error ?? "Error");
+                  }
+                } catch {
+                  setUploadError("Error al subir");
+                }
+                setUploading(false);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <div className="flex items-center gap-2">
+            <span className="font-body text-[11px] text-secondary/60">o</span>
+            <input
+              id={`imagen-url-${sorteo?.id ?? "new"}`}
+              name="imagen"
+              type="url"
+              placeholder="https://ejemplo.com/imagen.jpg"
+              defaultValue={sorteo?.imagen ?? ""}
+              className={inputClass}
+            />
+          </div>
+          {uploadError && (
+            <p className="font-body text-xs text-[#FCA5A5]">{uploadError}</p>
+          )}
+        </div>
       </div>
         <label className="flex items-center gap-2 self-end font-body text-sm text-foreground">
           <input

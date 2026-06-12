@@ -154,6 +154,60 @@ export async function deleteSorteo(id: string): Promise<ActionResult> {
 }
 
 // ---------------------------------------------------------------------------
+// Image upload to Supabase Storage
+// ---------------------------------------------------------------------------
+
+const BUCKET = "premios";
+
+async function ensureBucket() {
+  const supabase = getAdminClient();
+  const { data: buckets } = await supabase.storage.listBuckets();
+  if (!buckets?.find((b) => b.name === BUCKET)) {
+    await supabase.storage.createBucket(BUCKET, {
+      public: true,
+    });
+  }
+}
+
+export async function uploadPremioImage(
+  _prev: unknown,
+  formData: FormData,
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  const supabase = await requireAdmin();
+  const file = formData.get("file") as File | null;
+  if (!file || file.size === 0) {
+    return { ok: false, error: "No se seleccionó ningún archivo" };
+  }
+
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const filePath = `${crypto.randomUUID()}.${ext}`;
+
+  await ensureBucket();
+
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(filePath, file, { contentType: file.type });
+
+  if (error) return { ok: false, error: error.message };
+
+  const { data: urlData } = supabase.storage
+    .from(BUCKET)
+    .getPublicUrl(filePath);
+
+  return { ok: true, url: urlData.publicUrl };
+}
+
+export async function deletePremioImage(
+  url: string,
+): Promise<void> {
+  const supabase = await requireAdmin();
+  const path = url.split("/").pop();
+  if (path) {
+    await supabase.storage.from(BUCKET).remove([path]);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Compras — confirm / cancel paid tickets
 // ---------------------------------------------------------------------------
 

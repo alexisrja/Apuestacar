@@ -1,3 +1,7 @@
+<!-- Pending SQL to run in Supabase Dashboard > SQL Editor: -->
+<!--
+alter table public.sorteos add column if not exists imagen text not null default '';
+-->
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
