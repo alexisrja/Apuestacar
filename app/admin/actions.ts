@@ -211,6 +211,24 @@ export async function deletePremioImage(
 // Compras — confirm / cancel paid tickets
 // ---------------------------------------------------------------------------
 
+async function adjustVendidos(
+  supabase: ReturnType<typeof getAdminClient>,
+  sorteoId: string,
+  delta: number,
+) {
+  const { data: sorteo } = await supabase
+    .from("sorteos")
+    .select("vendidos")
+    .eq("id", sorteoId)
+    .single();
+  if (!sorteo) return;
+  const nuevo = Math.max(0, Number(sorteo.vendidos) + delta);
+  await supabase
+    .from("sorteos")
+    .update({ vendidos: nuevo })
+    .eq("id", sorteoId);
+}
+
 export async function setCompraEstado(
   id: string,
   estado: "pendiente" | "confirmada" | "cancelada",
@@ -219,13 +237,51 @@ export async function setCompraEstado(
     return { ok: false, error: "Estado inválido" };
   }
   const supabase = await requireAdmin();
+
+  const { data: compra } = await supabase
+    .from("compras")
+    .select("estado, cantidad, sorteo_id")
+    .eq("id", id)
+    .single();
+  if (!compra) return { ok: false, error: "Compra no encontrada" };
+
   const { error } = await supabase
     .from("compras")
     .update({ estado })
     .eq("id", id);
   if (error) return { ok: false, error: error.message };
 
+  // Auto‑update sorteo.vendidos when confirming or un‑confirming
+  if (estado === "confirmada" && compra.estado !== "confirmada") {
+    await adjustVendidos(supabase, compra.sorteo_id, Number(compra.cantidad));
+  } else if (compra.estado === "confirmada" && estado !== "confirmada") {
+    await adjustVendidos(supabase, compra.sorteo_id, -Number(compra.cantidad));
+  }
+
+  revalidateSorteoPages(compra.sorteo_id);
   revalidatePath("/admin/boletos");
-  revalidatePath("/admin");
+  return { ok: true };
+}
+
+export async function deleteCompra(id: string): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+
+  const { data: compra } = await supabase
+    .from("compras")
+    .select("estado, cantidad, sorteo_id")
+    .eq("id", id)
+    .single();
+  if (!compra) return { ok: false, error: "Compra no encontrada" };
+
+  // Decrement vendidos if the compra was confirmed
+  if (compra.estado === "confirmada") {
+    await adjustVendidos(supabase, compra.sorteo_id, -Number(compra.cantidad));
+  }
+
+  const { error } = await supabase.from("compras").delete().eq("id", id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidateSorteoPages(compra.sorteo_id);
+  revalidatePath("/admin/boletos");
   return { ok: true };
 }

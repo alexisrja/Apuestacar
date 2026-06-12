@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { setCompraEstado } from "@/app/admin/actions";
+import { setCompraEstado, deleteCompra } from "@/app/admin/actions";
 
 type Estado = "pendiente" | "confirmada" | "cancelada";
 
@@ -21,6 +21,16 @@ export default function CompraActions({
     setError(null);
     startTransition(async () => {
       const result = await setCompraEstado(id, next);
+      if (result.ok) router.refresh();
+      else setError(result.error ?? "Error");
+    });
+  };
+
+  const handleDelete = () => {
+    if (!window.confirm("¿Eliminar esta compra? Esta acción no se puede deshacer.")) return;
+    setError(null);
+    startTransition(async () => {
+      const result = await deleteCompra(id);
       if (result.ok) router.refresh();
       else setError(result.error ?? "Error");
     });
@@ -63,6 +73,14 @@ export default function CompraActions({
           {pending ? "…" : "Marcar pendiente"}
         </button>
       )}
+      <button
+        type="button"
+        onClick={handleDelete}
+        disabled={pending}
+        className="rounded-lg border border-destructive/40 px-3 py-1.5 font-heading text-xs text-[#FCA5A5] transition-colors hover:bg-destructive/20 disabled:opacity-60"
+      >
+        {pending ? "…" : "Eliminar"}
+      </button>
     </div>
   );
 }
