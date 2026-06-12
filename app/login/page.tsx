@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +46,13 @@ export default function LoginPage() {
       router.push("/");
       router.refresh();
     } else {
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: name.trim() || email.split("@")[0] },
+        },
+      });
       setLoading(false);
       if (error) {
         setError(error.message);
@@ -154,6 +161,26 @@ export default function LoginPage() {
                 Mínimo 6 caracteres.
               </p>
             </div>
+
+            {mode === "signup" && (
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block font-heading text-sm text-secondary"
+                >
+                  Nombre Completo
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ej: Juan Pérez"
+                  className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            )}
           </div>
 
           {error && (
@@ -230,6 +257,7 @@ export default function LoginPage() {
               setMode((m) => (m === "signin" ? "signup" : "signin"));
               setError(null);
               setNotice(null);
+              setName("");
             }}
             className="font-heading text-accent underline-offset-4 hover:underline"
           >

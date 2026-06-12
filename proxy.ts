@@ -53,8 +53,11 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Protect /perfil — redirect to /login when not authenticated.
-  if (!user && pathname.startsWith("/perfil")) {
+  // Protect /perfil and /boletos/*/comprar — redirect to /login when not authenticated.
+  if (
+    !user &&
+    (pathname.startsWith("/perfil") || pathname.match(/^\/boletos\/[^/]+\/comprar/))
+  ) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("next", pathname);
