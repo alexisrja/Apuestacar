@@ -35,22 +35,11 @@ export default async function PremiosPage() {
               <div className="card-neon group overflow-hidden">
                 <div className="flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30">
                   {s.imagen ? (
-                    s.imagen.startsWith("/") ||
-                    /\.(png|jpe?g|webp|gif|svg)$/i.test(s.imagen) ? (
-                      <Image
-                        src={s.imagen}
-                        alt={s.premio}
-                        width={800}
-                        height={450}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={s.imagen}
-                        alt={s.premio}
-                        className="h-full w-full object-cover"
-                      />
-                    )
+                    <img
+                      src={s.imagen}
+                      alt={s.premio}
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <span className="text-5xl">{s.emoji}</span>
                   )}

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { StaticImageData } from "next/image";
 
 interface PrizeCardProps {
@@ -16,28 +15,32 @@ export default function PrizeCard({
 }: PrizeCardProps) {
   return (
     <div className="card-neon group overflow-hidden">
-      <div className="aspect-video bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center overflow-hidden">
+      <div className="flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30">
         {typeof image === "string" ? (
-          image.startsWith("/") || /\.(png|jpe?g|webp|gif|svg)$/i.test(image) ? (
-            <Image
+          image.startsWith("/") ||
+          /^https?:\/\//i.test(image) ||
+          /\.(png|jpe?g|webp|gif|svg)$/i.test(image) ? (
+            <img
               src={image}
               alt={title}
-              width={800}
-              height={450}
-              className="object-cover w-full h-full"
+              className="h-full w-full object-cover"
             />
           ) : (
             <span className="text-5xl">{image}</span>
           )
         ) : (
-          <Image src={image} alt={title} width={800} height={450} className="object-cover w-full h-full" />
+          <img
+            src={image.src}
+            alt={title}
+            className="h-full w-full object-cover"
+          />
         )}
       </div>
       <div className="p-5">
         <h3 className="font-heading text-lg text-white">{title}</h3>
         <p className="mt-1 font-body text-sm text-secondary">{description}</p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="font-heading text-sm text-accent glow-text">
+          <span className="glow-text font-heading text-sm text-accent">
             {value}
           </span>
           <span className="font-body text-xs text-foreground">Ver detalle</span>

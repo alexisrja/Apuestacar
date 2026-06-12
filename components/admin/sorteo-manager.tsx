@@ -228,11 +228,9 @@ function SorteoForm({
         <div className="mt-1 flex flex-col gap-3">
           {sorteo?.imagen && (
             <div className="relative aspect-video w-full max-w-64 overflow-hidden rounded-lg border border-border bg-muted">
-              <Image
+              <img
                 src={sorteo.imagen}
                 alt="Preview"
-                width={400}
-                height={225}
                 className="h-full w-full object-cover"
               />
             </div>

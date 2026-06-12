@@ -87,22 +87,11 @@ export default function PremioManager({
             >
               <div className="group relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                 {s.imagen ? (
-                  s.imagen.startsWith("/") ||
-                  /\.(png|jpe?g|webp|gif|svg)$/i.test(s.imagen) ? (
-                    <Image
-                      src={s.imagen}
-                      alt={s.premio}
-                      width={800}
-                      height={450}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={s.imagen}
-                      alt={s.premio}
-                      className="h-full w-full object-cover"
-                    />
-                  )
+                  <img
+                    src={s.imagen}
+                    alt={s.premio}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <span className="text-5xl">{s.emoji}</span>
                 )}
