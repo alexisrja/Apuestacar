@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getSorteos } from "@/lib/sorteos";
 import Reveal from "@/components/reveal";
+
+export const metadata: Metadata = {
+  title: "Premios y Rifas Activas",
+  description:
+    "Descubre todos los premios y rifas activas de RIFAS JAPS: autos, motos y dinero en efectivo. Compra tus boletos y participa.",
+  alternates: { canonical: "/premios" },
+};
 
 export default async function PremiosPage() {
   const sorteos = await getSorteos();
@@ -33,11 +41,12 @@ export default async function PremiosPage() {
           {activeSorteos.map((s, i) => (
             <Reveal key={s.id} delay={i * 80}>
               <div className="card-neon group overflow-hidden">
-                <div className="flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30">
+                <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30">
                   {s.imagen ? (
                     <img
                       src={s.imagen}
                       alt={s.premio}
+                      loading="lazy"
                       className="h-full w-full object-cover"
                     />
                   ) : (

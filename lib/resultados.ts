@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 export interface Resultado {
@@ -10,11 +11,12 @@ export interface Resultado {
   created_at: string;
 }
 
-export async function getResultados(): Promise<Resultado[]> {
+/** All resultados, ordered by sorteo_numero desc. Cached per render. */
+export const getResultados = cache(async (): Promise<Resultado[]> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("resultados")
     .select("*")
     .order("sorteo_numero", { ascending: false });
   return (data ?? []) as Resultado[];
-}
+});

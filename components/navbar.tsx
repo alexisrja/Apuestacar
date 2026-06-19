@@ -29,6 +29,7 @@ function AccountIcon({
       <img
         src={avatarUrl}
         alt=""
+        loading="lazy"
         className="-my-0.5 h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-accent/50"
       />
     );

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getAdminClient } from "@/lib/supabase/admin";
 import type { Sorteo } from "@/app/data/sorteos";
@@ -44,18 +45,18 @@ function toSorteo(row: SorteoRow): Sorteo {
   };
 }
 
-/** All sorteos, ordered by numero (desc). Reads at request time. */
-export async function getSorteos(): Promise<Sorteo[]> {
+/** All sorteos, ordered by numero (desc). Cached per render. */
+export const getSorteos = cache(async (): Promise<Sorteo[]> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("sorteos")
     .select(COLUMNS)
     .order("numero", { ascending: false });
   return ((data as SorteoRow[] | null) ?? []).map(toSorteo);
-}
+});
 
-/** Numbers already taken (confirmed compras) for a given sorteo. */
-export async function getTakenNumbers(sorteoId: string): Promise<string[]> {
+/** Numbers already taken (confirmed compras) for a given sorteo. Cached per render. */
+export const getTakenNumbers = cache(async (sorteoId: string): Promise<string[]> => {
   const supabase = getAdminClient();
   const { data } = await supabase
     .from("compras")
@@ -63,36 +64,24 @@ export async function getTakenNumbers(sorteoId: string): Promise<string[]> {
     .eq("sorteo_id", sorteoId)
     .eq("estado", "confirmada");
   return (data ?? []).flatMap((r) => (r.numeros ?? []) as string[]);
-}
+});
 
-/** The date of the nearest upcoming sorteo, or null. */
-export async function getProximaFecha(): Promise<string | null> {
+/** The date of the nearest upcoming sorteo, or null. Cached per render. */
+export const getProximaFecha = cache(async (): Promise<string | null> => {
   const supabase = await createClient();
   const now = new Date().toISOString();
   const { data } = await supabase
     .from("sorteos")
     .select("fecha")
-    .eq("estado", "proximo")
     .gte("fecha", now)
     .order("fecha", { ascending: true })
     .limit(1)
     .maybeSingle();
-  if (!data?.fecha) {
-    // fallback: any sorteo with a future date
-    const { data: fallback } = await supabase
-      .from("sorteos")
-      .select("fecha")
-      .gte("fecha", now)
-      .order("fecha", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    return fallback?.fecha ?? null;
-  }
-  return data.fecha;
-}
+  return data?.fecha ?? null;
+});
 
-/** A single sorteo by its public id (slug), or null if not found. */
-export async function getSorteo(id: string): Promise<Sorteo | null> {
+/** A single sorteo by its public id (slug), or null if not found. Cached per render. */
+export const getSorteo = cache(async (id: string): Promise<Sorteo | null> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("sorteos")
@@ -100,4 +89,4 @@ export async function getSorteo(id: string): Promise<Sorteo | null> {
     .eq("id", id)
     .maybeSingle();
   return data ? toSorteo(data as SorteoRow) : null;
-}
+});

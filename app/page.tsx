@@ -18,8 +18,6 @@ function toPrize(s: Sorteo) {
   };
 }
 
-
-
 export default async function Home() {
   const [sorteos, testimonios, proximaFecha] = await Promise.all([
     getSorteos(),

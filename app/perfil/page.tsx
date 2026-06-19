@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isAdminEmail } from "@/lib/admin";
 import ProfileActions from "@/components/profile-actions";
 import AvatarUpload from "@/components/avatar-upload";
+
+export const metadata: Metadata = {
+  title: "Mi Perfil",
+  robots: { index: false, follow: false },
+};
 
 interface Compra {
   id: string;

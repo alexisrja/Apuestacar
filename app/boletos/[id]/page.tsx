@@ -1,8 +1,43 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Countdown from "@/components/countdown";
 import Reveal from "@/components/reveal";
 import { getSorteo } from "@/lib/sorteos";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const sorteo = await getSorteo(id);
+  if (!sorteo) {
+    return { title: "Sorteo no encontrado" };
+  }
+
+  const title = `${sorteo.premio} (${sorteo.valor}) - Sorteo #${sorteo.numero}`;
+  const description = `${sorteo.descripcion} Compra tus boletos para el sorteo #${sorteo.numero} de RIFAS JAPS por ${sorteo.precioBoleto} cada uno. Sorteo: ${sorteo.fechaLabel}.`;
+  const image = sorteo.imagen ?? "/icon.png";
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/boletos/${sorteo.id}` },
+    openGraph: {
+      title,
+      description,
+      url: `/boletos/${sorteo.id}`,
+      images: [{ url: image, alt: sorteo.premio }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
 
 export default async function SorteoDetailPage({
   params,

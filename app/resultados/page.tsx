@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import TestimonialCard from "@/components/testimonial-card";
 import Reveal from "@/components/reveal";
 import { getResultados } from "@/lib/resultados";
 import { getTestimonios } from "@/lib/testimonios";
+
+export const metadata: Metadata = {
+  title: "Resultados de Sorteos",
+  description:
+    "Consulta los resultados de los sorteos de RIFAS JAPS y descubre a los ganadores de cada rifa. Transparencia en cada sorteo.",
+  alternates: { canonical: "/resultados" },
+};
 
 export default async function ResultadosPage() {
   const [resultados, testimonios] = await Promise.all([
