@@ -7,6 +7,7 @@ import SorteoSlider from "@/components/sorteo-slider";
 import AnimatedText from "@/components/animated-text";
 import { getSorteos, getProximaFecha } from "@/lib/sorteos";
 import { getTestimonios } from "@/lib/testimonios";
+import { PROMOS } from "@/lib/promos";
 import type { Sorteo } from "@/app/data/sorteos";
 
 function toPrize(s: Sorteo) {
@@ -24,6 +25,13 @@ export default async function Home() {
     getTestimonios(),
     getProximaFecha(),
   ]);
+  // Las promos son globales: las dirigimos al sorteo destacado activo (o al
+  // primer sorteo activo disponible) para que el comprador caiga directo en el
+  // selector con la promo aplicada.
+  const promoSorteo =
+    sorteos.find((s) => s.destacado && s.estado === "activo") ??
+    sorteos.find((s) => s.estado === "activo") ??
+    sorteos[0];
   return (
     <>
       <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pb-28 sm:pt-24">
@@ -62,6 +70,70 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {promoSorteo && (
+        <section className="px-4 py-12 sm:py-16">
+          <div className="mx-auto max-w-5xl">
+            <h2 className="section-title text-white">
+              <AnimatedText
+                segments={[
+                  { text: "Promociones " },
+                  { text: "Especiales", className: "text-gradient" },
+                ]}
+              />
+            </h2>
+            <div className="neon-line" />
+            <p className="mx-auto mt-4 max-w-xl text-center font-body text-sm text-secondary">
+              Más boletos, más oportunidades de ganar. Aprovecha estos paquetes
+              por tiempo limitado.
+            </p>
+            <div className="mx-auto mt-10 grid max-w-3xl gap-6 sm:grid-cols-2">
+              {PROMOS.map((promo, i) => {
+                const precioNormal = promo.cantidad * promoSorteo.precioBoleto;
+                const ahorro = precioNormal - promo.precio;
+                const popular = i === PROMOS.length - 1;
+                return (
+                  <Reveal key={promo.cantidad} delay={i * 90}>
+                    <Link
+                      href={`/boletos/${promoSorteo.id}/comprar?promo=${promo.cantidad}`}
+                      className={`group relative block overflow-hidden rounded-2xl border p-7 text-center transition-all duration-300 hover:-translate-y-1 ${
+                        popular
+                          ? "border-accent bg-gradient-to-br from-accent/15 to-primary/10 shadow-[0_0_30px_rgba(245,158,11,0.25)]"
+                          : "border-primary/50 bg-gradient-to-br from-primary/15 to-surface"
+                      }`}
+                    >
+                      {popular && (
+                        <span className="absolute right-3 top-3 rounded-full bg-accent px-3 py-1 font-heading text-[10px] tracking-wider text-black">
+                          MÁS POPULAR
+                        </span>
+                      )}
+                      <div className="text-4xl">🎁</div>
+                      <p className="mt-3 font-heading text-2xl text-white">
+                        {promo.cantidad} BOLETOS
+                      </p>
+                      <p className="mt-1 font-heading text-5xl text-accent glow-text">
+                        ${promo.precio}
+                        <span className="ml-1 text-base text-secondary">MXN</span>
+                      </p>
+                      {ahorro > 0 && (
+                        <p className="mt-2 font-body text-sm text-secondary">
+                          <span className="line-through">${precioNormal}</span>{" "}
+                          <span className="font-heading text-primary">
+                            ¡Ahorras ${ahorro}!
+                          </span>
+                        </p>
+                      )}
+                      <span className="btn-accent mt-5 inline-block w-full text-sm">
+                        ¡Lo quiero!
+                      </span>
+                    </Link>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="overflow-hidden px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl">

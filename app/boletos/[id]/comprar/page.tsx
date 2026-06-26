@@ -5,10 +5,15 @@ import { getSorteo, getTakenNumbers } from "@/lib/sorteos";
 
 export default async function ComprarPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ promo?: string | string[] }>;
 }) {
   const { id } = await params;
+  const { promo } = await searchParams;
+  const promoRaw = Array.isArray(promo) ? promo[0] : promo;
+  const promoCantidad = promoRaw ? Number(promoRaw) : undefined;
   const [sorteo, takenNumbers] = await Promise.all([
     getSorteo(id),
     getTakenNumbers(id),
@@ -24,7 +29,11 @@ export default async function ComprarPage({
         ← Volver al sorteo
       </Link>
       <div className="mt-6">
-        <TicketSelector sorteo={sorteo} takenNumbers={takenNumbers} />
+        <TicketSelector
+          sorteo={sorteo}
+          takenNumbers={takenNumbers}
+          promoCantidad={promoCantidad}
+        />
       </div>
     </div>
   );
