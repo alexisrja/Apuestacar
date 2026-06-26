@@ -105,7 +105,10 @@ export default function TicketSelector({
     e.preventDefault();
 
     const numbersList = selected.join(", ");
-    const message = `¡Hola! Quiero comprar boletos del *Sorteo #${sorteo.numero} — ${sorteo.titulo}* (premio: ${sorteo.premio}).%0A%0A📋 *Datos del comprador:*%0A👤 Nombre: ${encodeURIComponent(form.nombre)}%0A📞 Teléfono: ${encodeURIComponent(form.telefono)}%0A✉️ Email: ${encodeURIComponent(form.email)}%0A%0A🎫 *Números seleccionados:* ${encodeURIComponent(numbersList)}%0A💰 *Total: $${total} MXN*%0A%0A¡Gracias!`;
+    // Mensaje en texto plano con saltos de línea reales; se codifica entero al
+    // final. Codificar por partes deja sin escapar caracteres como "#", que
+    // WhatsApp/URL interpreta como fragmento y trunca el mensaje.
+    const message = `¡Hola! Quiero comprar boletos del *Sorteo #${sorteo.numero} — ${sorteo.titulo}* (premio: ${sorteo.premio}).\n\n📋 *Datos del comprador:*\n👤 Nombre: ${form.nombre}\n📞 Teléfono: ${form.telefono}\n✉️ Email: ${form.email}\n\n🎫 *Números seleccionados:* ${numbersList}\n💰 *Total: $${total} MXN*\n\n¡Gracias!`;
 
     // Persist the purchase request for signed-in users so it shows in "Mis
     // Boletos". RLS guarantees the row is owned by this user. Fire-and-forget —
@@ -128,7 +131,10 @@ export default function TicketSelector({
       });
     }
 
-    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
+    window.open(
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+      "_blank",
+    );
 
     setStep("sent");
   };
