@@ -70,7 +70,7 @@ function SorteoForm({
             min="1"
             required
             defaultValue={sorteo?.numero ?? ""}
-            disabled={isEdit}
+            readOnly={isEdit}
             className={`${inputClass} ${isEdit ? "opacity-60" : ""}`}
           />
           {isEdit && (
