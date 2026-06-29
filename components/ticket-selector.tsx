@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
 import {
   createClient,
@@ -8,6 +8,7 @@ import {
   supabaseConfigured,
 } from "@/lib/supabase/client";
 import { PROMOS, calcularTotal, getPromo } from "@/lib/promos";
+import { liberarReserva, reservarBoletos } from "@/app/boletos/actions";
 
 const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
@@ -35,10 +36,19 @@ export default function TicketSelector({
   const limite = promo?.cantidad ?? null;
 
   const [selected, setSelected] = useState<string[]>([]);
+  // Numbers discovered as taken locally (a reservation collided with a fresh
+  // hold). Merged with the server-provided list below.
+  const [extraTaken, setExtraTaken] = useState<string[]>([]);
+  const taken = [...new Set([...takenNumbers, ...extraTaken])];
   const [cantidadAleatoria, setCantidadAleatoria] = useState("5");
   const [step, setStep] = useState<
     "promo" | "select" | "form" | "sent"
   >(promo ? "promo" : "select");
+  // Active hold for the current selection: id (to release) + expiry (countdown).
+  const [reservaId, setReservaId] = useState<string | null>(null);
+  const [expiresAt, setExpiresAt] = useState<number | null>(null);
+  const [reservaError, setReservaError] = useState<string | null>(null);
+  const [isReserving, startReserving] = useTransition();
   const [form, setForm] = useState<FormData>({
     nombre: "",
     telefono: "",
@@ -77,9 +87,21 @@ export default function TicketSelector({
       });
   }, []);
 
+  // Live countdown of the hold (mm:ss). Recomputed every second while in the
+  // form/sent steps so the user knows how long their boletos stay apartados.
+  const [restante, setRestante] = useState<number>(0);
+  useEffect(() => {
+    if (!expiresAt) return;
+    const tick = () => setRestante(Math.max(0, expiresAt - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [expiresAt]);
+
   const toggleNumber = (num: string) => {
     if (step !== "select") return;
-    if (takenNumbers.includes(num)) return;
+    if (taken.includes(num)) return;
+    setReservaError(null);
     setSelected((prev) => {
       if (prev.includes(num)) return prev.filter((n) => n !== num);
       // En modo promo no se permite exceder la cantidad del paquete.
@@ -88,11 +110,47 @@ export default function TicketSelector({
     });
   };
 
-  // Elige `n` números aleatorios entre los disponibles (no vendidos).
-  const pickRandom = (n: number) => {
-    const disponibles = allNumbers.filter((x) => !takenNumbers.includes(x));
+  // Elige `n` números aleatorios entre los disponibles (no apartados). Devuelve
+  // los elegidos para poder apartarlos sin esperar al re-render del estado.
+  const pickRandom = (n: number): string[] => {
+    const disponibles = allNumbers.filter((x) => !taken.includes(x));
     const barajados = [...disponibles].sort(() => Math.random() - 0.5);
-    setSelected(barajados.slice(0, n));
+    const elegidos = barajados.slice(0, n);
+    setSelected(elegidos);
+    return elegidos;
+  };
+
+  // Aparta los números elegidos por 1 hora y avanza al formulario. Si alguno ya
+  // fue tomado entre la carga y el clic, los marca como ocupados y regresa a la
+  // selección para que el usuario elija de nuevo.
+  const apartarYAvanzar = (nums: string[]) => {
+    if (nums.length === 0) return;
+    setReservaError(null);
+    startReserving(async () => {
+      const res = await reservarBoletos(sorteo.id, nums);
+      if (!res.ok) {
+        if (res.ocupados?.length) {
+          setExtraTaken((prev) => [...new Set([...prev, ...res.ocupados!])]);
+          setSelected((prev) => prev.filter((n) => !res.ocupados!.includes(n)));
+        }
+        setReservaError(
+          res.error ?? "No se pudieron apartar los boletos. Intenta de nuevo.",
+        );
+        setStep("select");
+        return;
+      }
+      setReservaId(res.reservaId ?? null);
+      setExpiresAt(res.expiresAt ? new Date(res.expiresAt).getTime() : null);
+      setStep("form");
+    });
+  };
+
+  // Libera la reserva activa (al volver atrás o reiniciar) para no dejar boletos
+  // apartados de más. Fire-and-forget.
+  const soltarReserva = () => {
+    if (reservaId) void liberarReserva(reservaId, sorteo.id);
+    setReservaId(null);
+    setExpiresAt(null);
   };
 
   const promoActiva = getPromo(selected.length);
@@ -244,11 +302,9 @@ export default function TicketSelector({
           </button>
           <button
             type="button"
-            onClick={() => {
-              pickRandom(promo.cantidad);
-              setStep("form");
-            }}
-            className="group rounded-2xl border border-accent/60 bg-gradient-to-br from-accent/15 to-surface p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent"
+            onClick={() => apartarYAvanzar(pickRandom(promo.cantidad))}
+            disabled={isReserving}
+            className="group rounded-2xl border border-accent/60 bg-gradient-to-br from-accent/15 to-surface p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
             <div className="text-4xl">🎲</div>
             <p className="mt-3 font-heading text-lg text-white">
@@ -282,7 +338,7 @@ export default function TicketSelector({
                   type="button"
                   onClick={() => {
                     const disponibles = allNumbers.filter(
-                      (x) => !takenNumbers.includes(x),
+                      (x) => !taken.includes(x),
                     ).length;
                     const n = Math.min(
                       Math.max(1, Math.floor(Number(cantidadAleatoria) || 0)),
@@ -298,10 +354,16 @@ export default function TicketSelector({
             </div>
           )}
 
+          {reservaError && (
+            <p className="mx-auto mt-6 max-w-lg rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-center font-body text-sm text-[#FCA5A5]">
+              {reservaError}
+            </p>
+          )}
+
           <div className="mt-8 grid grid-cols-5 gap-2 sm:grid-cols-10">
             {allNumbers.map((num) => {
               const isSelected = selected.includes(num);
-              const isTaken = takenNumbers.includes(num);
+              const isTaken = taken.includes(num);
               return (
                 <button
                   key={num}
@@ -355,13 +417,15 @@ export default function TicketSelector({
                 )}
                 <button
                   type="button"
-                  disabled={!puedeAvanzar}
-                  onClick={() => setStep("form")}
+                  disabled={!puedeAvanzar || isReserving}
+                  onClick={() => apartarYAvanzar(selected)}
                   className={`btn-accent w-full sm:w-auto ${
-                    !puedeAvanzar ? "cursor-not-allowed opacity-50" : ""
+                    !puedeAvanzar || isReserving
+                      ? "cursor-not-allowed opacity-50"
+                      : ""
                   }`}
                 >
-                  Continuar
+                  {isReserving ? "Apartando…" : "Continuar"}
                 </button>
               </div>
             </div>
@@ -370,9 +434,24 @@ export default function TicketSelector({
       )}
 
       {step === "form" && (
+        <>
+        {expiresAt && (
+          <div className="mx-auto mt-8 flex max-w-lg items-center justify-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3 text-center">
+            <span className="text-lg">⏳</span>
+            <p className="font-body text-sm text-secondary">
+              Apartamos tus boletos por{" "}
+              <span className="font-heading text-accent">
+                {String(Math.floor(restante / 60000)).padStart(2, "0")}:
+                {String(Math.floor((restante % 60000) / 1000)).padStart(2, "0")}
+              </span>
+              . Confirma tu pago antes de que termine o volverán a estar
+              disponibles.
+            </p>
+          </div>
+        )}
         <form
           onSubmit={handleFormSubmit}
-          className="mx-auto mt-8 max-w-lg rounded-xl border border-border bg-surface p-6 sm:p-8"
+          className="mx-auto mt-6 max-w-lg rounded-xl border border-border bg-surface p-6 sm:p-8"
         >
           <div className="space-y-5">
             <div>
@@ -458,7 +537,10 @@ export default function TicketSelector({
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={() => setStep(promo ? "promo" : "select")}
+              onClick={() => {
+                soltarReserva();
+                setStep(promo ? "promo" : "select");
+              }}
               className="btn-outline flex-1 text-center text-sm"
             >
               Atrás
@@ -468,6 +550,7 @@ export default function TicketSelector({
             </button>
           </div>
         </form>
+        </>
       )}
 
       {step === "sent" && (
@@ -499,8 +582,12 @@ export default function TicketSelector({
             <button
               type="button"
               onClick={() => {
+                // Keep the existing hold in place (the request is in flight with
+                // an advisor); just reset the form to pick another batch.
                 setSelected([]);
                 setForm({ nombre: "", telefono: "", email: "" });
+                setReservaId(null);
+                setExpiresAt(null);
                 setStep("select");
               }}
               className="btn-primary mt-6"

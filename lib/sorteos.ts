@@ -55,15 +55,36 @@ export const getSorteos = cache(async (): Promise<Sorteo[]> => {
   return ((data as SorteoRow[] | null) ?? []).map(toSorteo);
 });
 
-/** Numbers already taken (confirmed compras) for a given sorteo. Cached per render. */
+/**
+ * Numbers unavailable for a given sorteo: confirmed compras (permanent) plus
+ * active reservas (temporary 1h holds whose `expires_at` is still in the
+ * future). Expired holds are ignored, so they free up automatically. Cached per
+ * render.
+ */
 export const getTakenNumbers = cache(async (sorteoId: string): Promise<string[]> => {
   const supabase = getAdminClient();
-  const { data } = await supabase
-    .from("compras")
-    .select("numeros")
-    .eq("sorteo_id", sorteoId)
-    .eq("estado", "confirmada");
-  return (data ?? []).flatMap((r) => (r.numeros ?? []) as string[]);
+  const nowIso = new Date().toISOString();
+
+  const [{ data: compras }, { data: reservas }] = await Promise.all([
+    supabase
+      .from("compras")
+      .select("numeros")
+      .eq("sorteo_id", sorteoId)
+      .eq("estado", "confirmada"),
+    supabase
+      .from("reservas")
+      .select("numeros")
+      .eq("sorteo_id", sorteoId)
+      .gt("expires_at", nowIso),
+  ]);
+
+  const numeros = [
+    ...(compras ?? []),
+    ...(reservas ?? []),
+  ].flatMap((r) => (r.numeros ?? []) as string[]);
+
+  // De-duplicate in case a number is held and confirmed at the same time.
+  return [...new Set(numeros)];
 });
 
 /** The date of the nearest upcoming sorteo, or null. Cached per render. */
