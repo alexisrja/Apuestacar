@@ -1,14 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient, supabaseConfigured } from "@/lib/supabase/client";
 
 type Mode = "signin" | "signup";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +26,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  // Destino tras autenticar. Llega como ?next=... cuando el usuario intentó
+  // comprar sin sesión; sólo aceptamos rutas internas para evitar open redirect.
+  const getNext = () => {
+    const n = searchParams.get("next");
+    return n && n.startsWith("/") ? n : "/";
+  };
+  const requiereCompra = getNext().includes("/comprar");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +60,7 @@ export default function LoginPage() {
         setError("Correo o contraseña incorrectos. Inténtalo de nuevo.");
         return;
       }
-      router.push("/");
+      router.push(getNext());
       router.refresh();
     } else {
       const { data, error } = await supabase.auth.signUp({
@@ -59,7 +76,7 @@ export default function LoginPage() {
         return;
       }
       if (data.session) {
-        router.push("/");
+        router.push(getNext());
         router.refresh();
       } else {
         setNotice(
@@ -79,7 +96,9 @@ export default function LoginPage() {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(getNext())}`,
+      },
     });
   };
 
@@ -99,6 +118,12 @@ export default function LoginPage() {
               ? "Accede para ver tu perfil y tus boletos."
               : "Regístrate para participar y seguir tus sorteos."}
           </p>
+          {requiereCompra && (
+            <p className="mx-auto mt-4 max-w-sm rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 font-body text-sm text-accent">
+              Necesitas una cuenta para comprar boletos. Inicia sesión o
+              regístrate y te regresamos a tu compra.
+            </p>
+          )}
         </div>
 
         <form
