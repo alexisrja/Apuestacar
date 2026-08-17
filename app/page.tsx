@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Countdown from "@/components/countdown";
 import Meter from "@/components/meter";
+import PremioPlaca from "@/components/premio-placa";
 import PrizeCard from "@/components/prize-card";
 import TestimonialCard from "@/components/testimonial-card";
 import Reveal from "@/components/reveal";
@@ -13,9 +14,11 @@ import type { Sorteo } from "@/app/data/sorteos";
 function toPrize(s: Sorteo) {
   return {
     title: s.premio,
+    titulo: s.titulo,
     description: s.descripcion || `Sorteo ${s.numero} — ${s.titulo}`,
     value: s.valor,
-    image: s.imagen || s.emoji,
+    // Sin foto no se sustituye por un emoji: la tarjeta compone su placa.
+    image: s.imagen ?? null,
   };
 }
 
@@ -143,12 +146,7 @@ export default async function Home() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <span
-                    className="flex h-full w-full items-center justify-center text-7xl"
-                    aria-hidden="true"
-                  >
-                    {principal.emoji}
-                  </span>
+<PremioPlaca titulo={principal.titulo} valor={principal.valor} />
                 )}
               </div>
               {principal.descripcion && (

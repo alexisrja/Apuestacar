@@ -4,6 +4,7 @@ import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import Countdown from "@/components/countdown";
 import Meter from "@/components/meter";
+import PremioPlaca from "@/components/premio-placa";
 import Reveal from "@/components/reveal";
 import { getSorteo } from "@/lib/sorteos";
 
@@ -73,12 +74,7 @@ export default async function SorteoDetailPage({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span
-                  className="flex h-full w-full items-center justify-center text-7xl"
-                  aria-hidden="true"
-                >
-                  {sorteo.emoji}
-                </span>
+<PremioPlaca titulo={sorteo.titulo} valor={sorteo.valor} />
               )}
             </div>
           </div>

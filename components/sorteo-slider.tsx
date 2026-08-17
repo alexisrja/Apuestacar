@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
 import Meter from "@/components/meter";
+import PremioPlaca from "@/components/premio-placa";
 import SorteoModal from "@/components/sorteo-modal";
 
 function Arrow({
@@ -75,12 +76,7 @@ export default function SorteoSlider({ sorteos }: { sorteos: Sorteo[] }) {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span
-                  className="flex h-full w-full items-center justify-center text-5xl"
-                  aria-hidden="true"
-                >
-                  {sorteo.emoji}
-                </span>
+<PremioPlaca titulo={sorteo.titulo} valor={sorteo.valor} />
               )}
               {sorteo.destacado && (
                 <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium text-white">

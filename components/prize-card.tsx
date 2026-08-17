@@ -1,34 +1,29 @@
 import type { StaticImageData } from "next/image";
+import PremioPlaca from "@/components/premio-placa";
 
 interface PrizeCardProps {
   title: string;
+  /** Categoría del premio, p. ej. "Premio en efectivo". */
+  titulo: string;
   description: string;
   value: string;
-  image: string | StaticImageData;
-}
-
-/** ¿La cadena es una ruta/URL de imagen, o un emoji de respaldo? */
-function esImagen(v: string) {
-  return (
-    v.startsWith("/") ||
-    /^https?:\/\//i.test(v) ||
-    /\.(png|jpe?g|webp|gif|svg)$/i.test(v)
-  );
+  /** Foto del premio; null cuando el sorteo no tiene una. */
+  image: string | StaticImageData | null;
 }
 
 export default function PrizeCard({
   title,
+  titulo,
   description,
   value,
   image,
 }: PrizeCardProps) {
-  const src = typeof image === "string" ? image : image.src;
-  const mostrarImagen = typeof image !== "string" || esImagen(image);
+  const src = typeof image === "string" ? image : image?.src;
 
   return (
     <article className="card card-hover h-full overflow-hidden">
       <div className="zoom-marco aspect-[16/10] bg-muted">
-        {mostrarImagen ? (
+        {src ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={src}
@@ -37,12 +32,7 @@ export default function PrizeCard({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span
-            className="flex h-full w-full items-center justify-center text-5xl"
-            aria-hidden="true"
-          >
-            {image as string}
-          </span>
+          <PremioPlaca titulo={titulo} valor={value} />
         )}
       </div>
       <div className="p-5">

@@ -25,6 +25,41 @@ interface SorteoRow {
 const COLUMNS =
   "id, numero, titulo, premio, valor, descripcion, fecha, fecha_label, precio_boleto, total_boletos, vendidos, emoji, imagen, destacado, estado";
 
+/**
+ * Etiqueta legible de la fecha del sorteo.
+ *
+ * `fecha_label` se captura a mano en el panel y suele quedar vacío, pero la
+ * fecha real siempre está en `fecha`. Cuando falta la etiqueta se deriva de
+ * ahí en vez de dejar huecos en la interfaz ("Sorteo 1 ·", "Cierra el ").
+ * La zona horaria se fija para que el servidor y el navegador coincidan.
+ */
+function etiquetaFecha(row: SorteoRow): string {
+  const manual = row.fecha_label?.trim();
+  if (manual) return manual;
+  if (!row.fecha) return "";
+
+  const d = new Date(row.fecha);
+  if (Number.isNaN(d.getTime())) return "";
+
+  const zona = "America/Mexico_City";
+  const anioSorteo = Number(
+    new Intl.DateTimeFormat("es-MX", { year: "numeric", timeZone: zona }).format(d),
+  );
+  const anioActual = Number(
+    new Intl.DateTimeFormat("es-MX", { year: "numeric", timeZone: zona }).format(
+      new Date(),
+    ),
+  );
+
+  return new Intl.DateTimeFormat("es-MX", {
+    day: "numeric",
+    month: "long",
+    // El año sólo aparece cuando no es obvio.
+    ...(anioSorteo === anioActual ? {} : { year: "numeric" }),
+    timeZone: zona,
+  }).format(d);
+}
+
 function toSorteo(row: SorteoRow): Sorteo {
   return {
     id: row.id,
@@ -34,12 +69,14 @@ function toSorteo(row: SorteoRow): Sorteo {
     valor: row.valor,
     descripcion: row.descripcion,
     fecha: row.fecha,
-    fechaLabel: row.fecha_label,
+    fechaLabel: etiquetaFecha(row),
     precioBoleto: Number(row.precio_boleto),
     totalBoletos: row.total_boletos,
     vendidos: row.vendidos,
     emoji: row.emoji,
-    imagen: row.imagen ?? undefined,
+    // La columna es `not null`, así que "sin foto" llega como cadena vacía.
+    // Se normaliza para que el resto del código sólo pregunte si existe.
+    imagen: row.imagen?.trim() ? row.imagen : undefined,
     destacado: row.destacado,
     estado: row.estado,
   };

@@ -4,6 +4,7 @@ import { ViewTransition } from "react";
 import { getSorteos } from "@/lib/sorteos";
 import Reveal from "@/components/reveal";
 import Meter from "@/components/meter";
+import PremioPlaca from "@/components/premio-placa";
 
 export const metadata: Metadata = {
   title: "Premios y Rifas Activas",
@@ -55,12 +56,7 @@ export default async function PremiosPage() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span
-                        className="flex h-full w-full items-center justify-center text-5xl"
-                        aria-hidden="true"
-                      >
-                        {s.emoji}
-                      </span>
+<PremioPlaca titulo={s.titulo} valor={s.valor} />
                     )}
                     {s.estado === "proximo" && (
                       <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium text-white">

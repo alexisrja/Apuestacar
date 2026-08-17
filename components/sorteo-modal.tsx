@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
 import Meter from "@/components/meter";
+import PremioPlaca from "@/components/premio-placa";
 
 interface Props {
   sorteo: Sorteo | null;
@@ -59,12 +60,7 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <span
-              className="flex h-full w-full items-center justify-center text-6xl"
-              aria-hidden="true"
-            >
-              {sorteo.emoji}
-            </span>
+<PremioPlaca titulo={sorteo.titulo} valor={sorteo.valor} />
           )}
           <button
             ref={closeRef}

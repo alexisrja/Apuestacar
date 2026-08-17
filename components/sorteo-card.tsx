@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
+import PremioPlaca from "@/components/premio-placa";
 import Meter from "@/components/meter";
 import type { Sorteo } from "@/app/data/sorteos";
 
@@ -19,12 +20,7 @@ export default function SorteoCard({ sorteo }: { sorteo: Sorteo }) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <span
-              className="flex h-full w-full items-center justify-center text-5xl"
-              aria-hidden="true"
-            >
-              {sorteo.emoji}
-            </span>
+<PremioPlaca titulo={sorteo.titulo} valor={sorteo.valor} />
           )}
           {sorteo.destacado && (
             <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium text-white">
