@@ -18,88 +18,92 @@ export default async function ResultadosPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-      <div className="page-fade text-center">
-        <h1 className="font-heading text-3xl text-white sm:text-4xl">
-          Resultados <span className="text-gradient">Anteriores</span>
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <header className="page-fade">
+        <p className="eyebrow">Resultados</p>
+        <h1 className="display mt-3 text-3xl text-white sm:text-5xl">
+          Sorteos ya cerrados
         </h1>
-        <div className="neon-line" />
-        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-secondary">
-          Conoce a los ganadores de nuestros sorteos anteriores. Todos los
-          resultados son verificados y transparentes.
+        <p className="measure mt-3 text-sm text-secondary">
+          El número ganador y el ganador de cada sorteo, tal como se publicaron
+          el día del evento.
         </p>
-      </div>
+      </header>
 
       {resultados.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-border bg-surface/60 p-10 text-center">
-          <p className="font-body text-sm text-secondary">
-            Próximamente publicaremos los resultados de nuestros sorteos.
+        <div className="card mt-10 p-10 text-center">
+          <p className="h-section text-lg text-white">
+            Aún no hay resultados
+          </p>
+          <p className="measure mx-auto mt-2 text-sm text-secondary">
+            Publicaremos aquí el número ganador en cuanto se cierre el primer
+            sorteo.
           </p>
         </div>
       ) : (
-        <Reveal className="mt-10 overflow-hidden rounded-xl border border-border">
-          <table className="w-full font-body text-sm">
-            <thead>
-              <tr className="bg-muted">
-                <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-secondary">
-                  SORTEO
-                </th>
-                <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-secondary">
-                  FECHA
-                </th>
-                <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-secondary">
-                  GANADOR
-                </th>
-                <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-secondary">
-                  N°
-                </th>
-                <th className="px-4 py-3 text-left font-heading text-xs tracking-wider text-secondary">
-                  PREMIO
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/50">
-              {resultados.map((r) => (
-                <tr
-                  key={r.id}
-                  className="bg-surface transition-colors hover:bg-surface-hover"
-                >
-                  <td className="px-4 py-3 font-heading text-white">
-                    #{r.sorteo_numero}
-                  </td>
-                  <td className="px-4 py-3 text-foreground">{r.fecha}</td>
-                  <td className="px-4 py-3 font-medium text-white">
-                    {r.ganador}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="rounded bg-primary/20 px-2 py-0.5 font-heading text-sm text-secondary">
-                      {r.numero}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 font-medium text-accent">
-                    {r.premio}
-                  </td>
+        <Reveal className="card mt-10 overflow-hidden">
+          {/* La tabla desborda en pantallas chicas dentro de su propio
+              contenedor; la página nunca hace scroll horizontal. */}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[38rem] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  {["Sorteo", "Fecha", "Ganador", "Número", "Premio"].map(
+                    (h) => (
+                      <th
+                        key={h}
+                        scope="col"
+                        className="eyebrow px-4 py-3 font-medium"
+                      >
+                        {h}
+                      </th>
+                    ),
+                  )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {resultados.map((r) => (
+                  <tr
+                    key={r.id}
+                    className="transition-colors hover:bg-surface-hover"
+                  >
+                    <td className="num whitespace-nowrap px-4 py-3.5 text-secondary">
+                      {r.sorteo_numero}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3.5 text-secondary">
+                      {r.fecha}
+                    </td>
+                    <td className="px-4 py-3.5 font-medium text-white">
+                      {r.ganador}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className="num inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-sm text-white">
+                        {r.numero}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-foreground">{r.premio}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Reveal>
       )}
 
       {testimonios.length > 0 && (
-        <div className="mt-16">
-          <h2 className="section-title text-white">
-            Historias de Ganadores
+        <section className="mt-16">
+          <p className="eyebrow">Ganadores</p>
+          <h2 className="h-section mt-3 text-2xl text-white sm:text-3xl">
+            Lo que cuentan
           </h2>
-          <div className="neon-line" />
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {testimonios.map((t, i) => (
-              <Reveal key={t.id} delay={i * 90}>
+              <Reveal key={t.id} delay={i * 80}>
                 <TestimonialCard {...t} />
               </Reveal>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

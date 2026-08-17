@@ -1,22 +1,62 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+ * RIFAS JAPS — sistema visual
+ *
+ * Superficie oscura + materiales translúcidos. Un solo color interactivo
+ * (azul) que marca lo que se puede tocar; el dinero y los números se
+ * jerarquizan con peso y cifras tabulares, no con color. Sin neón, sin glow:
+ * la profundidad la dan el material y la sombra.
+ * ------------------------------------------------------------------------- */
+
 @theme inline {
-  --color-primary: #2563EB;
+  /* Un único acento interactivo. Si algo es azul, se toca.
+   * `primary` es para texto y trazos sobre el fondo oscuro (5.45:1).
+   * `primary-fill` es el relleno del botón: más oscuro, porque encima lleva
+   * texto blanco y ahí el que tiene que pasar el 4.5:1 es la etiqueta. */
+  --color-primary: #0A84FF;
+  --color-primary-fill: #0B72E0;
   --color-on-primary: #FFFFFF;
-  --color-secondary: #38BDF8;
-  --color-accent: #22D3EE;
-  --color-background: #0A0F1E;
-  --color-foreground: #E2E8F0;
-  --color-muted: #16223A;
-  --color-border: #1E3A8A;
-  --color-destructive: #EF4444;
-  --color-ring: #2563EB;
+  --color-accent: #0A84FF;
+  --color-ring: #0A84FF;
 
-  --font-heading: "Russo One", sans-serif;
-  --font-body: "Chakra Petch", sans-serif;
+  --color-background: #09090B;
+  --color-foreground: #F5F5F7;
+  /* Texto de apoyo: sólido para que los modificadores de opacidad funcionen. */
+  --color-secondary: #9A9AA2;
 
-  --color-surface: #111A2E;
-  --color-surface-hover: #1A2540;
+  /* Materiales: alfa blanco sobre el fondo, no colores planos. */
+  --color-surface: rgba(255, 255, 255, 0.045);
+  --color-surface-hover: rgba(255, 255, 255, 0.075);
+  --color-muted: rgba(255, 255, 255, 0.06);
+  --color-border: rgba(255, 255, 255, 0.11);
+  --color-border-strong: rgba(255, 255, 255, 0.2);
+
+  --color-destructive: #FF453A;
+  --color-success: #30D158;
+  --color-warning: #FF9F0A;
+
+  /* Las caras cargadas se inyectan desde next/font con su propio nombre de
+   * variable, para no chocar con estos alias semánticos. */
+  --font-heading: var(--font-bricolage), system-ui, sans-serif;
+  --font-body: var(--font-system);
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+:root {
+  /* La cara del sistema ya trae tamaño óptico y ajuste de legibilidad. */
+  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-press: 80ms;
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 340ms;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 12px 28px -18px rgba(0, 0, 0, 0.9);
+  --shadow-float: 0 18px 44px -20px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 @layer base {
@@ -24,343 +64,313 @@
     border-color: var(--color-border);
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Foco visible y uniforme en todo lo que se puede accionar. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    color: #fff;
   }
 }
 
 @layer utilities {
-  .text-gradient {
-    background: linear-gradient(135deg, #2563EB, #22D3EE);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* -----------------------------------------------------------------------
+   * Tipografía
+   * El tracking depende del tamaño: los títulos grandes se cierran, las
+   * etiquetas pequeñas se abren. Un solo valor global sería incorrecto en
+   * algún tamaño.
+   * --------------------------------------------------------------------- */
+
+  .display {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
   }
 
-  .glow-primary {
-    box-shadow: 0 0 20px rgba(37, 99, 235, 0.4), 0 0 40px rgba(37, 99, 235, 0.2);
+  .h-section {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
   }
 
-  .glow-accent {
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4), 0 0 40px rgba(34, 211, 238, 0.2);
+  /* Etiqueta de sección: dice qué es esto, no decora. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
   }
 
-  .glow-text {
-    text-shadow: 0 0 20px rgba(37, 99, 235, 0.6), 0 0 40px rgba(37, 99, 235, 0.3);
+  /* Cifras tabulares: precios, números de boleto, cronómetros y capacidad.
+   * Sin esto el layout salta cada segundo. */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: -0.01em;
   }
 
-  .scanline::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.1) 2px,
-      rgba(0, 0, 0, 0.1) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
+  .measure {
+    max-width: 62ch;
   }
 
-  .card-neon {
+  /* -----------------------------------------------------------------------
+   * Materiales
+   * --------------------------------------------------------------------- */
+
+  /* Superficie base. No lleva blur: no flota sobre nada, y un backdrop-filter
+   * por tarjeta cuesta caro en móvil. */
+  .card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
-    transition: all 0.3s ease;
-  }
-
-  .card-neon:hover {
-    box-shadow: 0 0 25px rgba(37, 99, 235, 0.3);
-    border-color: #2563EB;
-    transform: translateY(-2px);
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, #2563EB, #1D4ED8);
-    color: white;
-    font-family: var(--font-heading);
-    border-radius: 8px;
-    padding: 12px 24px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border: none;
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 0 25px rgba(37, 99, 235, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-
-  .btn-accent {
-    background: linear-gradient(135deg, #22D3EE, #06B6D4);
-    color: #0A0F1E;
-    font-weight: 700;
-    font-family: var(--font-heading);
-    border-radius: 8px;
-    padding: 12px 24px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border: none;
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-accent:hover {
-    box-shadow: 0 0 25px rgba(34, 211, 238, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .btn-accent:active {
-    transform: translateY(0);
-  }
-
-  .btn-login {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-family: var(--font-heading);
-    letter-spacing: 0.5px;
-    color: #E2E8F0;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(34, 211, 238, 0.12));
-    border: 1px solid rgba(56, 189, 248, 0.45);
-    border-radius: 9999px;
-    padding: 0.5rem 1.1rem;
-    overflow: hidden;
-    transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s ease;
-  }
-
-  /* sliding gradient sheen that fills on hover */
-  .btn-login::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #2563EB, #22D3EE);
-    transform: translateX(-101%);
-    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    z-index: 0;
-  }
-
-  .btn-login > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  .btn-login:hover {
-    color: #0A0F1E;
-    border-color: #22D3EE;
-    box-shadow: 0 0 22px rgba(34, 211, 238, 0.45);
-    transform: translateY(-1px);
-  }
-
-  .btn-login:hover::before {
-    transform: translateX(0);
-  }
-
-  .btn-login:active {
-    transform: translateY(0);
-  }
-
-  .btn-login:focus-visible {
-    outline: 2px solid #22D3EE;
-    outline-offset: 2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .btn-login,
-    .btn-login::before {
-      transition: none;
-    }
-  }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-    font-family: var(--font-heading);
-    border-radius: 8px;
-    padding: 10px 22px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-outline:hover {
-    background: rgba(37, 99, 235, 0.1);
-    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
-  }
-
-  .section-title {
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    line-height: 1.2;
-    text-align: center;
-  }
-
-  @media (min-width: 768px) {
-    .section-title {
-      font-size: 2.5rem;
-    }
-  }
-
-  .neon-line {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #2563EB, #22D3EE, transparent);
-    width: 100px;
-    margin: 16px auto;
-  }
-
-  @keyframes digit-roll {
-    0% {
-      transform: translateY(-55%);
-      opacity: 0;
-      filter: blur(4px);
-    }
-    60% {
-      filter: blur(0);
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-      filter: blur(0);
-    }
-  }
-
-  .digit-roll {
-    animation: digit-roll 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  @keyframes countdown-in {
-    0% {
-      transform: translateY(16px) scale(0.92);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-  }
-
-  .countdown-cell {
-    animation: countdown-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  /* Scroll reveal — used by <Reveal> */
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition:
-      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  .reveal-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* One-time page entrance for route content */
-  @keyframes page-fade {
-    0% {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .page-fade {
-    animation: page-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  /* Progress bar fill */
-  @keyframes bar-fill {
-    from {
-      transform: scaleX(0);
-    }
-  }
-
-  .bar-fill {
-    transform-origin: left;
-    animation: bar-fill 1s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  /* Horizontal slider — hide native scrollbar, keep scroll */
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Modal */
-  @keyframes scrim-fade {
-    from {
-      opacity: 0;
-    }
-  }
-  .scrim-fade {
-    animation: scrim-fade 0.2s ease-out both;
-  }
-
-  @keyframes modal-pop {
-    0% {
-      opacity: 0;
-      transform: translateY(16px) scale(0.94);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  .modal-pop {
-    animation: modal-pop 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  /* ---------------------------------------------------------------------
-   * Compra (taquilla) — boleto grid, floating counter, hold timer.
-   * ------------------------------------------------------------------- */
-
-  /* Floating box-office counter: a translucent layer the grid scrolls under. */
-  .taquilla {
-    background: color-mix(in srgb, var(--color-surface) 84%, transparent);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border: 1px solid rgba(56, 189, 248, 0.28);
     border-radius: 16px;
-    box-shadow:
-      0 18px 44px -20px rgba(0, 0, 0, 0.95),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    box-shadow: var(--shadow-card);
+    transition:
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease;
+  }
+
+  .card-hover:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-strong);
+  }
+
+  /* Capa flotante: el contenido pasa por debajo. Aquí el blur sí se gana su
+   * costo porque hay algo detrás que se mueve. */
+  .glass {
+    background: color-mix(in srgb, var(--color-background) 72%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-float);
+  }
+
+  /* Superficie grande = material más grueso. */
+  .glass-thick {
+    background: color-mix(in srgb, var(--color-background) 82%, transparent);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-float);
   }
 
   @media (prefers-reduced-transparency: reduce) {
+    .glass,
+    .glass-thick,
     .taquilla {
-      background: var(--color-surface);
+      background: #101014;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
   }
 
-  /* A surface that arrives as material: blur + scale together, not a flat fade */
+  .hairline {
+    height: 1px;
+    background: var(--color-border);
+    border: 0;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Medidor de ocupación — el objeto que se repite en todo el sitio.
+   * Una regla de un pelo con un segmento lleno. Dice cuántos boletos quedan
+   * sin adornar el dato.
+   * --------------------------------------------------------------------- */
+
+  .meter {
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+
+  .meter > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-primary);
+    transform-origin: left;
+    animation: meter-fill 0.9s var(--ease-out) both;
+  }
+
+  @keyframes meter-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  /* Casi lleno: la escasez es un hecho, se marca con color semántico. */
+  .meter-alto > span {
+    background: var(--color-warning);
+  }
+
+  /* -----------------------------------------------------------------------
+   * Botones — la jerarquía vive en la clase, no en el color de la etiqueta.
+   * --------------------------------------------------------------------- */
+
+  .btn-accent,
+  .btn-primary,
+  .btn-outline,
+  .btn-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease,
+      color var(--dur-fast) ease,
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  /* La respuesta ocurre al presionar, no al soltar. */
+  .btn-accent:active:not(:disabled),
+  .btn-primary:active:not(:disabled),
+  .btn-outline:active:not(:disabled),
+  .btn-login:active:not(:disabled) {
+    transform: scale(0.97);
+    transition-duration: var(--dur-press);
+  }
+
+  /* Acción principal. Una por pantalla. */
+  .btn-accent {
+    background: var(--color-primary-fill);
+    color: var(--color-on-primary);
+    border: 1px solid transparent;
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+
+  /* El hover no aclara el relleno: cualquier azul más claro dejaría la
+   * etiqueta blanca por debajo de 4.5:1. La respuesta se da con un filo
+   * de luz, y el peso real llega al presionar. */
+  .btn-accent:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+  }
+
+  .btn-accent:active:not(:disabled) {
+    background: color-mix(in srgb, var(--color-primary-fill) 86%, #000);
+  }
+
+  /* Acción secundaria: material, no color. */
+  .btn-primary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: var(--color-border-strong);
+  }
+
+  /* Acción terciaria. */
+  .btn-outline {
+    background: transparent;
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border-strong);
+  }
+
+  .btn-outline:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .btn-login {
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-login:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: var(--color-border-strong);
+  }
+
+  /* -----------------------------------------------------------------------
+   * Compra (taquilla) — rejilla de boletos, barra flotante, cronómetro.
+   * --------------------------------------------------------------------- */
+
+  .taquilla {
+    background: color-mix(in srgb, var(--color-background) 78%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-float);
+  }
+
+  .boleto {
+    touch-action: manipulation;
+    font-variant-numeric: tabular-nums;
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease;
+  }
+
+  .boleto:active:not(:disabled) {
+    transform: scale(0.92);
+    transition-duration: var(--dur-press);
+  }
+
+  .boleto-on {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  }
+
+  /* El apartado por vencer respira; nunca parpadea. */
+  @keyframes timer-breath {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  .timer-urgent {
+    animation: timer-breath 1.8s ease-in-out infinite;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Movimiento
+   * --------------------------------------------------------------------- */
+
+  /* Una superficie de vidrio llega como material: desenfoque y escala juntos,
+   * no un fundido plano. */
   @keyframes materialize {
     from {
       opacity: 0;
@@ -370,90 +380,335 @@
   }
 
   .materialize {
-    animation: materialize 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: materialize var(--dur-slow) var(--ease-out) both;
   }
 
-  /* Boleto tile — feedback lands on press, not on release */
-  .boleto {
-    touch-action: manipulation;
-    font-variant-numeric: tabular-nums;
+  @keyframes page-fade {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  .page-fade {
+    animation: page-fade var(--dur-base) var(--ease-out) both;
+  }
+
+  @keyframes digit-roll {
+    from {
+      opacity: 0;
+      transform: translateY(-45%);
+    }
+  }
+
+  .digit-roll {
+    animation: digit-roll var(--dur-base) var(--ease-out);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
     transition:
-      transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
-      background-color 0.16s ease,
-      border-color 0.16s ease,
-      box-shadow 0.2s ease;
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
   }
 
-  .boleto:active:not(:disabled) {
-    transform: scale(0.92);
-    transition-duration: 80ms;
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
   }
 
-  .boleto:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  .boleto-on {
-    box-shadow:
-      0 0 18px rgba(37, 99, 235, 0.45),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-  }
-
-  /* Hold timer running low — a slow breath, never a flash */
-  @keyframes timer-breath {
-    0%,
-    100% {
-      opacity: 1;
+  @keyframes scrim-fade {
+    from {
+      opacity: 0;
     }
+  }
+
+  .scrim-fade {
+    animation: scrim-fade var(--dur-fast) ease-out both;
+  }
+
+  /* El modal nace de su origen, no del centro de la nada. */
+  @keyframes modal-pop {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.96);
+      filter: blur(4px);
+    }
+  }
+
+  .modal-pop {
+    animation: modal-pop var(--dur-slow) var(--ease-out) both;
+  }
+
+  /* Entrada escalonada de la portada: cada pieza llega detrás de la anterior
+   * para que el ojo las lea en orden, no todas de golpe. */
+  .entra {
+    animation: page-fade var(--dur-base) var(--ease-out) both;
+  }
+
+  .entra-1 { animation-delay: 40ms; }
+  .entra-2 { animation-delay: 100ms; }
+  .entra-3 { animation-delay: 160ms; }
+  .entra-4 { animation-delay: 220ms; }
+  .entra-5 { animation-delay: 280ms; }
+
+  /* El medidor espera a estar a la vista: si se llena fuera de pantalla,
+   * el usuario nunca ve el dato moverse. <Reveal> es quien da el aviso. */
+  .reveal .meter > span {
+    animation-play-state: paused;
+  }
+
+  .reveal-visible .meter > span {
+    animation-play-state: running;
+  }
+
+  /* La foto del premio respira dentro de su marco al pasar el cursor. El
+   * recorte no cambia, así que nada de alrededor se mueve. */
+  .zoom-marco {
+    overflow: hidden;
+  }
+
+  .zoom-marco img {
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  .zoom-marco:hover img {
+    transform: scale(1.04);
+  }
+
+  /* Confirmación de que el boleto quedó tomado: un golpe corto, sólo al
+   * seleccionar. No se repite mientras siga seleccionado. */
+  @keyframes boleto-pop {
     50% {
-      opacity: 0.62;
+      transform: scale(1.08);
     }
   }
 
-  .timer-urgent {
-    animation: timer-breath 1.8s ease-in-out infinite;
+  .boleto-pop {
+    animation: boleto-pop 0.22s var(--ease-out);
   }
 
-  /* Infinite side-to-side letter sway (wave) */
-  @keyframes letter-sway {
-    0%,
-    100% {
-      transform: translateX(-7px);
-    }
-    50% {
-      transform: translateX(7px);
+  /* El total cambió porque tocaste un número: la cifra se renueva en lugar
+   * de sustituirse en silencio. */
+  @keyframes cifra-in {
+    from {
+      opacity: 0;
+      transform: translateY(-30%);
+      filter: blur(3px);
     }
   }
-  .anim-letters span {
-    display: inline-block;
-    animation: letter-sway 2.2s ease-in-out infinite;
+
+  .cifra-in {
+    animation: cifra-in var(--dur-fast) var(--ease-out);
+  }
+
+  /* Panel del menú móvil: entra y sale por el mismo sitio. */
+  @keyframes panel-abre {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  .panel-abre {
+    animation: panel-abre var(--dur-base) var(--ease-out) both;
+  }
+
+  .panel-cierra {
+    animation: panel-abre var(--dur-fast) var(--ease-out) reverse both;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Compatibilidad: clases del diseño anterior que siguen referenciadas en
+   * el panel de administración. Se neutralizan para que nada quede con neón
+   * suelto en vez de romperse.
+   * --------------------------------------------------------------------- */
+
+  .text-gradient {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: inherit;
+  }
+
+  .glow-text {
+    text-shadow: none;
+  }
+
+  .glow-primary,
+  .glow-accent {
+    box-shadow: none;
+  }
+
+  .card-neon {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .neon-line {
+    height: 1px;
+    width: 2.5rem;
+    background: var(--color-border);
+    margin: 1rem 0;
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.75rem;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .digit-roll,
-    .countdown-cell,
+    .materialize,
     .page-fade,
-    .bar-fill,
+    .digit-roll,
     .scrim-fade,
     .modal-pop,
-    .materialize,
-    .timer-urgent {
+    .timer-urgent,
+    .entra,
+    .boleto-pop,
+    .cifra-in,
+    .panel-abre,
+    .panel-cierra,
+    .meter > span {
       animation: none !important;
     }
-    .boleto {
-      transition: background-color 0.16s ease, border-color 0.16s ease;
+
+    .zoom-marco img {
+      transition: none;
     }
-    .boleto:active:not(:disabled) {
+
+    .zoom-marco:hover img {
       transform: none;
     }
+
     .reveal {
       opacity: 1;
       transform: none;
       transition: none;
     }
-    .anim-letters span {
-      animation: none !important;
+
+    .boleto,
+    .btn-accent,
+    .btn-primary,
+    .btn-outline,
+    .btn-login {
+      transition: background-color var(--dur-fast) ease,
+        border-color var(--dur-fast) ease;
     }
+
+    .boleto:active:not(:disabled),
+    .btn-accent:active:not(:disabled),
+    .btn-primary:active:not(:disabled),
+    .btn-outline:active:not(:disabled),
+    .btn-login:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Transiciones de vista (React <ViewTransition>)
+ *
+ * Fuera de @layer: los pseudo-elementos ::view-transition-* viven en la raíz
+ * del documento, no en el árbol de la página.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --vt-salida: 150ms;
+  --vt-entrada: 210ms;
+}
+
+/* Morfismo del premio: la foto de la tarjeta es la misma foto de la portada
+ * del sorteo. Un desenfoque corto a mitad de vuelo tapa el estirado de píxeles
+ * mientras cambia de proporción. */
+::view-transition-group(.morph) {
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-image-pair(.morph) {
+  animation-name: vt-desenfoca;
+}
+
+@keyframes vt-desenfoca {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* Dirección de la navegación: adelante entra por la derecha, atrás por la
+ * izquierda. Lo viejo se va rápido para no competir; lo nuevo llega después y
+ * más suave. */
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes vt-desliza {
+  from {
+    translate: var(--vt-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+::view-transition-old(.nav-forward) {
+  --vt-offset: -48px;
+  animation:
+    var(--vt-salida) ease-in both vt-fade reverse,
+    360ms cubic-bezier(0.22, 1, 0.36, 1) both vt-desliza reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --vt-offset: 48px;
+  animation:
+    var(--vt-entrada) ease-out var(--vt-salida) both vt-fade,
+    360ms cubic-bezier(0.22, 1, 0.36, 1) both vt-desliza;
+}
+
+::view-transition-old(.nav-back) {
+  --vt-offset: 48px;
+  animation:
+    var(--vt-salida) ease-in both vt-fade reverse,
+    360ms cubic-bezier(0.22, 1, 0.36, 1) both vt-desliza reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --vt-offset: -48px;
+  animation:
+    var(--vt-entrada) ease-out var(--vt-salida) both vt-fade,
+    360ms cubic-bezier(0.22, 1, 0.36, 1) both vt-desliza;
+}
+
+/* Con movimiento reducido el cambio de página sigue existiendo, pero como
+ * fundido corto: sin desplazamiento vestibular. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
   }
 }

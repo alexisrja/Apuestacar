@@ -28,14 +28,15 @@ export default async function ComprarPage({
   if (!sorteo) notFound();
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
       <Link
         href={`/boletos/${sorteo.id}`}
-        className="inline-flex items-center gap-1 font-body text-sm text-secondary transition-colors hover:text-white"
+        transitionTypes={["nav-back"]}
+        className="inline-flex min-h-11 items-center gap-1.5 text-sm text-secondary transition-colors hover:text-white"
       >
-        ← Volver al sorteo
+        <span aria-hidden="true">←</span> Volver al sorteo
       </Link>
-      <div className="mt-6">
+      <div className="mt-4">
         <TicketSelector
           sorteo={sorteo}
           takenNumbers={takenNumbers}

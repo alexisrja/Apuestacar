@@ -1,61 +1,70 @@
 import Link from "next/link";
 
+const enlaces = [
+  { href: "/", label: "Inicio" },
+  { href: "/boletos", label: "Boletos" },
+  { href: "/premios", label: "Premios" },
+  { href: "/resultados", label: "Resultados" },
+];
+
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-3">
-          <div>
-            <h3 className="font-heading text-lg tracking-wider text-white">
+    <footer className="mt-24 border-t border-border">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-3">
+          <div className="sm:col-span-1">
+            <p className="font-heading text-lg font-bold tracking-[-0.02em] text-white">
               RIFAS JAPS
-            </h3>
-            <p className="mt-2 font-body text-sm text-secondary">
-              La rifa más emocionante con los mejores premios. Compra tus
-              boletos y participa hoy.
+            </p>
+            <p className="measure mt-2 text-sm text-secondary">
+              Sorteos con números publicados y resultados verificables. Compra
+              tus boletos y sigue el sorteo hasta el final.
             </p>
           </div>
+
+          <nav aria-label="Secciones">
+            <p className="eyebrow">Secciones</p>
+            <ul className="mt-4 flex flex-col gap-1">
+              {enlaces.map((e) => (
+                <li key={e.href}>
+                  <Link
+                    href={e.href}
+                    className="flex min-h-11 items-center text-sm text-secondary transition-colors hover:text-white"
+                  >
+                    {e.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
           <div>
-            <h4 className="mb-3 font-heading text-sm tracking-wider text-white">
-              ENLACES
-            </h4>
-            <div className="flex flex-col gap-2 font-body text-sm text-foreground">
-              <Link href="/" className="hover:text-secondary transition-colors">
-                Inicio
-              </Link>
-              <Link
-                href="/boletos"
-                className="hover:text-secondary transition-colors"
-              >
-                Boletos
-              </Link>
-              <Link
-                href="/premios"
-                className="hover:text-secondary transition-colors"
-              >
-                Premios
-              </Link>
-              <Link
-                href="/resultados"
-                className="hover:text-secondary transition-colors"
-              >
-                Resultados
-              </Link>
-            </div>
-          </div>
-          <div>
-            <h4 className="mb-3 font-heading text-sm tracking-wider text-white">
-              CONTACTO
-            </h4>
-            <div className="flex flex-col gap-2 font-body text-sm text-foreground">
-              <span>contacto@apuestacar.com</span>
-              <span>+1 553-978-6961</span>
-            </div>
+            <p className="eyebrow">Contacto</p>
+            <ul className="mt-4 flex flex-col gap-1">
+              <li>
+                <a
+                  href="mailto:contacto@apuestacar.com"
+                  className="flex min-h-11 items-center text-sm text-secondary transition-colors hover:text-white"
+                >
+                  contacto@apuestacar.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:+15539786961"
+                  className="num flex min-h-11 items-center text-sm text-secondary transition-colors hover:text-white"
+                >
+                  +1 553-978-6961
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-border/50 pt-6 text-center font-body text-xs text-secondary">
+
+        <p className="mt-12 border-t border-border pt-6 text-xs text-secondary">
           © {new Date().getFullYear()} RIFAS JAPS. Todos los derechos
           reservados.
-        </div>
+        </p>
       </div>
     </footer>
   );

@@ -9,6 +9,13 @@ interface TimeLeft {
   seconds: number;
 }
 
+const UNIDADES = [
+  { key: "days", label: "días" },
+  { key: "hours", label: "horas" },
+  { key: "minutes", label: "min" },
+  { key: "seconds", label: "seg" },
+] as const;
+
 export default function Countdown({ targetDate }: { targetDate: string }) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
@@ -31,36 +38,27 @@ export default function Countdown({ targetDate }: { targetDate: string }) {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const units = [
-    { label: "DÍAS", value: timeLeft?.days },
-    { label: "HORAS", value: timeLeft?.hours },
-    { label: "MINUTOS", value: timeLeft?.minutes },
-    { label: "SEGUNDOS", value: timeLeft?.seconds },
-  ];
-
   return (
-    <div className="flex gap-3 sm:gap-6">
-      {units.map((unit, i) => {
+    // Una sola pieza de material dividida por pelos, en vez de cuatro cajas
+    // sueltas: el tiempo es un dato, no cuatro.
+    <div
+      className="card inline-grid grid-cols-4 divide-x divide-border overflow-hidden"
+      aria-label="Tiempo restante para el sorteo"
+    >
+      {UNIDADES.map(({ key, label }) => {
+        const valor = timeLeft?.[key];
         const display =
-          unit.value === undefined
-            ? "--"
-            : String(unit.value).padStart(2, "0");
+          valor === undefined ? "--" : String(valor).padStart(2, "0");
         return (
-          <div
-            key={unit.label}
-            className="countdown-cell flex flex-col items-center"
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <div className="card-neon flex h-16 w-16 items-center justify-center overflow-hidden sm:h-20 sm:w-20">
-              <span
-                key={display}
-                className="digit-roll font-heading text-xl text-white glow-text sm:text-2xl"
-              >
-                {display}
-              </span>
-            </div>
-            <span className="mt-1 font-body text-xs text-secondary">
-              {unit.label}
+          <div key={key} className="px-4 py-3 text-center sm:px-6 sm:py-4">
+            <span
+              key={display}
+              className="num digit-roll block text-2xl font-medium text-white sm:text-3xl"
+            >
+              {display}
+            </span>
+            <span className="mt-1 block text-[0.6875rem] text-secondary">
+              {label}
             </span>
           </div>
         );

@@ -44,7 +44,7 @@ export default function ProfileActions({
       <form onSubmit={handleSave}>
         <label
           htmlFor="display-name"
-          className="block font-heading text-sm text-secondary"
+          className="block text-sm font-medium text-foreground"
         >
           Nombre para mostrar
         </label>
@@ -56,13 +56,13 @@ export default function ProfileActions({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tu nombre"
-            className="w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="h-12 w-full rounded-xl border border-border bg-muted px-4 text-base text-white placeholder-secondary/60 outline-none transition-colors focus:border-primary"
           />
           <button
             type="submit"
             disabled={saving}
             className={`btn-accent shrink-0 text-sm ${
-              saving ? "cursor-not-allowed opacity-60" : ""
+              saving ? "cursor-not-allowed opacity-50" : ""
             }`}
           >
             {saving ? "Guardando…" : "Guardar"}
@@ -72,7 +72,7 @@ export default function ProfileActions({
           <p
             role="status"
             aria-live="polite"
-            className="mt-2 font-body text-xs text-accent"
+            className="mt-2 text-xs text-success"
           >
             ✓ Cambios guardados
           </p>
@@ -83,9 +83,11 @@ export default function ProfileActions({
         type="button"
         onClick={handleLogout}
         disabled={loggingOut}
-        className="mt-8 w-full rounded-lg border border-destructive/40 px-4 py-3 font-heading text-sm text-[#FCA5A5] transition-colors hover:bg-destructive/10 disabled:opacity-60"
+        // Acción destructiva: separada del resto y con su color semántico.
+        // No usa .btn-* para que el borde rojo no dependa del orden de capas.
+        className="mt-8 flex min-h-11 w-full items-center justify-center rounded-xl border border-destructive/40 px-4 py-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
       >
-        {loggingOut ? "Cerrando sesión…" : "Cerrar Sesión"}
+        {loggingOut ? "Cerrando sesión…" : "Cerrar sesión"}
       </button>
     </div>
   );

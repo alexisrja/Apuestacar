@@ -12,19 +12,26 @@ export default function TestimonialCard({
   avatar,
 }: TestimonialProps) {
   return (
-    <div className="card-neon p-5">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent font-heading text-sm text-white">
-          {avatar}
-        </div>
-        <div>
-          <h4 className="font-heading text-sm text-white">{name}</h4>
-          <p className="font-body text-xs text-accent">Ganó: {prize}</p>
-        </div>
-      </div>
-      <p className="mt-3 font-body text-sm leading-relaxed text-foreground">
+    <figure className="card h-full p-5">
+      <blockquote className="text-sm leading-relaxed text-foreground">
         &ldquo;{text}&rdquo;
-      </p>
-    </div>
+      </blockquote>
+      <figcaption className="mt-5 flex items-center gap-3 border-t border-border pt-4">
+        <span
+          aria-hidden="true"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium text-white"
+        >
+          {avatar}
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-medium text-white">
+            {name}
+          </span>
+          <span className="block truncate text-xs text-secondary">
+            Ganó {prize}
+          </span>
+        </span>
+      </figcaption>
+    </figure>
   );
 }

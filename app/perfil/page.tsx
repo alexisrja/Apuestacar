@@ -25,9 +25,9 @@ interface Compra {
 }
 
 const estadoStyles: Record<Compra["estado"], string> = {
-  pendiente: "border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#FCD34D]",
-  confirmada: "border-accent/40 bg-accent/10 text-accent",
-  cancelada: "border-destructive/40 bg-destructive/10 text-[#FCA5A5]",
+  pendiente: "border-warning/40 bg-warning/10 text-warning",
+  confirmada: "border-success/40 bg-success/10 text-success",
+  cancelada: "border-destructive/40 bg-destructive/10 text-destructive",
 };
 
 const estadoLabel: Record<Compra["estado"], string> = {
@@ -75,10 +75,10 @@ export default async function PerfilPage() {
   const totalBoletos = boletos.reduce((sum, c) => sum + c.cantidad, 0);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <div className="page-fade">
         {/* ---------- Header ---------- */}
-        <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
+        <div className="card p-6 sm:p-8">
           <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-6">
             <AvatarUpload
               userId={user.id}
@@ -86,25 +86,25 @@ export default async function PerfilPage() {
               initials={initials}
             />
             <div className="min-w-0 flex-1 text-center sm:text-left">
-              <h1 className="truncate font-heading text-2xl text-white sm:text-3xl">
-                {displayName || "Mi Perfil"}
+              <h1 className="h-section truncate text-2xl text-white sm:text-3xl">
+                {displayName || "Mi perfil"}
               </h1>
-              <p className="mt-1 truncate font-body text-sm text-secondary">
+              <p className="mt-1 truncate text-sm text-secondary">
                 {user.email}
               </p>
-              <div className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
-                <span className="rounded-full border border-border bg-muted/60 px-3 py-1 font-body text-xs text-secondary">
+              <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
+                <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-secondary">
                   Miembro desde {memberSince}
                 </span>
-                <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 font-body text-xs text-accent">
+                <span className="num rounded-full border border-border bg-muted px-3 py-1 text-xs text-white">
                   {totalBoletos} boleto{totalBoletos === 1 ? "" : "s"}
                 </span>
                 {admin && (
                   <Link
                     href="/admin"
-                    className="rounded-full border border-primary bg-primary/20 px-3 py-1 font-heading text-xs text-white transition-colors hover:bg-primary/40"
+                    className="rounded-full border border-primary/50 bg-primary/15 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-primary/25"
                   >
-                    ⚙ Panel admin
+                    Panel admin
                   </Link>
                 )}
               </div>
@@ -113,77 +113,69 @@ export default async function PerfilPage() {
         </div>
 
         {/* ---------- Mis Boletos ---------- */}
-        <div className="mt-8">
-          <div className="flex items-center justify-between">
-            <h2 className="font-heading text-xl text-white">
-              Mis <span className="text-gradient">Boletos</span>
-            </h2>
+        <div className="mt-10">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">Compras</p>
+              <h2 className="h-section mt-2 text-xl text-white">Mis boletos</h2>
+            </div>
             <Link
               href="/boletos"
-              className="font-body text-sm text-secondary transition-colors hover:text-white"
+              className="flex min-h-11 items-center text-sm text-secondary transition-colors hover:text-white"
             >
               Comprar más →
             </Link>
           </div>
-          <div className="neon-line !mx-0 !my-4 !w-16" />
 
           {boletos.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-surface/60 p-8 text-center">
-              <div className="text-4xl" aria-hidden="true">
-                🎫
-              </div>
-              <p className="mt-3 font-heading text-sm text-white">
+            <div className="card mt-6 p-8 text-center">
+              <p className="h-section text-base text-white">
                 Aún no tienes boletos
               </p>
-              <p className="mt-1 font-body text-xs text-secondary">
-                Las compras que realices estando dentro de tu cuenta aparecerán
-                aquí.
+              <p className="measure mx-auto mt-2 text-sm text-secondary">
+                Las compras que hagas con la sesión iniciada aparecen aquí.
+                También puedes comprar sin cuenta, pero entonces no quedan
+                guardadas.
               </p>
-              <Link
-                href="/boletos"
-                className="btn-accent mt-5 inline-block text-sm"
-              >
+              <Link href="/boletos" className="btn-accent mt-6 text-sm">
                 Ver sorteos
               </Link>
             </div>
           ) : (
-            <ul className="space-y-3">
+            <ul className="mt-6 space-y-3">
               {boletos.map((c) => (
-                <li
-                  key={c.id}
-                  className="rounded-xl border border-border bg-surface p-4 transition-colors hover:border-primary sm:p-5"
-                >
+                <li key={c.id} className="card card-hover p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-heading text-xs text-secondary">
-                        SORTEO #{c.sorteo_numero ?? c.sorteo_id}
+                      <p className="eyebrow">
+                        Sorteo {c.sorteo_numero ?? c.sorteo_id}
                         {c.sorteo_titulo ? ` · ${c.sorteo_titulo}` : ""}
                       </p>
                       {c.sorteo_premio && (
-                        <p className="mt-0.5 truncate font-heading text-base text-white">
+                        <p className="h-section mt-1.5 truncate text-base text-white">
                           {c.sorteo_premio}
                         </p>
                       )}
                     </div>
                     <span
-                      className={`shrink-0 rounded-full border px-2.5 py-1 font-body text-xs ${estadoStyles[c.estado]}`}
+                      className={`shrink-0 rounded-full border px-2.5 py-1 text-xs ${estadoStyles[c.estado]}`}
                     >
                       {estadoLabel[c.estado]}
                     </span>
                   </div>
 
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
                     {c.numeros.map((n) => (
-                      <span
+                      <li
                         key={n}
-                        className="rounded-md border border-border bg-muted px-2 py-0.5 font-heading text-xs text-foreground"
+                        className="num rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-white"
                       >
                         {n}
-                      </span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
 
-                  <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-3 font-body text-xs">
+                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-xs">
                     <span className="text-secondary">
                       {new Date(c.created_at).toLocaleDateString("es-MX", {
                         day: "numeric",
@@ -191,9 +183,9 @@ export default async function PerfilPage() {
                         year: "numeric",
                       })}
                     </span>
-                    <span className="text-foreground">
+                    <span className="text-secondary">
                       {c.cantidad} boleto{c.cantidad === 1 ? "" : "s"} ·{" "}
-                      <span className="font-heading text-accent">
+                      <span className="num font-medium text-white">
                         ${c.total} MXN
                       </span>
                     </span>
@@ -205,19 +197,16 @@ export default async function PerfilPage() {
         </div>
 
         {/* ---------- Settings / actions ---------- */}
-        <div className="mt-8 rounded-2xl border border-border bg-surface p-6 sm:p-8">
-          <h2 className="font-heading text-lg text-white">Ajustes de cuenta</h2>
+        <div className="card mt-10 p-6 sm:p-8">
+          <h2 className="h-section text-lg text-white">Ajustes de cuenta</h2>
           <ProfileActions initialName={displayName} />
           {admin && (
-            <div className="mt-6 rounded-xl border border-primary/30 bg-primary/10 p-4">
-              <p className="font-heading text-sm text-white">Panel de control</p>
-              <p className="mt-1 font-body text-xs text-secondary">
-                Tienes acceso administrativo al panel del sitio.
+            <div className="mt-6 rounded-xl border border-border bg-muted p-4">
+              <p className="text-sm font-medium text-white">Panel de control</p>
+              <p className="mt-1 text-xs text-secondary">
+                Tu cuenta tiene acceso administrativo.
               </p>
-              <Link
-                href="/admin"
-                className="btn-outline mt-4 inline-flex text-sm"
-              >
+              <Link href="/admin" className="btn-outline mt-4 text-sm">
                 Ir al panel de control
               </Link>
             </div>

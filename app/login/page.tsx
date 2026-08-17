@@ -36,6 +36,10 @@ function LoginForm() {
   const next = getNext();
   const vieneDeCompra = next.includes("/comprar");
 
+  // 44px de alto mínimo: es un objetivo táctil, no sólo una caja de texto.
+  const campoBase =
+    "h-12 w-full rounded-xl border border-border bg-muted px-4 text-base text-white placeholder-secondary/60 outline-none transition-colors focus:border-primary";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -106,28 +110,25 @@ function LoginForm() {
   return (
     <div className="mx-auto flex min-h-[80dvh] max-w-md flex-col justify-center px-4 py-12">
       <div className="page-fade">
-        <div className="text-center">
-          <h1 className="font-heading text-3xl text-white sm:text-4xl">
-            {mode === "signin" ? "Iniciar " : "Crear "}
-            <span className="text-gradient">
-              {mode === "signin" ? "Sesión" : "Cuenta"}
-            </span>
+        <div>
+          <p className="eyebrow">Cuenta</p>
+          <h1 className="display mt-3 text-3xl text-white sm:text-4xl">
+            {mode === "signin" ? "Inicia sesión" : "Crea tu cuenta"}
           </h1>
-          <div className="neon-line" />
-          <p className="font-body text-sm text-secondary">
+          <p className="mt-3 text-sm text-secondary">
             {mode === "signin"
-              ? "Accede para ver tu perfil y tus boletos."
-              : "Regístrate para participar y seguir tus sorteos."}
+              ? "Entra para ver tus boletos y el estado de tus compras."
+              : "Con cuenta guardas tus compras y sigues cada sorteo desde Mi perfil."}
           </p>
           {vieneDeCompra && (
-            <div className="mx-auto mt-4 max-w-sm rounded-lg border border-accent/40 bg-accent/10 px-3 py-3 font-body text-sm text-accent">
-              <p>
-                Con cuenta sigues tus boletos desde Mi Perfil. Al entrar te
-                regresamos a tu compra.
+            <div className="card mt-5 p-4">
+              <p className="text-sm text-secondary">
+                Al entrar te devolvemos a tu compra con los números que ya
+                elegiste.
               </p>
               <Link
                 href={next}
-                className="mt-2 inline-block font-heading text-xs text-secondary underline-offset-4 transition-colors hover:text-white hover:underline"
+                className="mt-3 inline-flex min-h-11 items-center text-sm text-primary underline-offset-4 hover:underline"
               >
                 Prefiero comprar sin cuenta →
               </Link>
@@ -135,17 +136,14 @@ function LoginForm() {
           )}
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-8 rounded-xl border border-border bg-surface p-6 sm:p-8"
-        >
+        <form onSubmit={handleSubmit} className="card mt-8 p-6 sm:p-8">
           <div className="space-y-5">
             <div>
               <label
                 htmlFor="email"
-                className="block font-heading text-sm text-secondary"
+                className="block text-sm font-medium text-foreground"
               >
-                Correo Electrónico
+                Correo electrónico
               </label>
               <input
                 id="email"
@@ -155,14 +153,14 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="correo@ejemplo.com"
-                className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                className={`mt-1.5 ${campoBase}`}
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block font-heading text-sm text-secondary"
+                className="block text-sm font-medium text-foreground"
               >
                 Contraseña
               </label>
@@ -178,12 +176,12 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-lg border border-border bg-muted px-4 py-3 pr-20 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                  className={`${campoBase} pr-24`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 font-body text-xs text-secondary transition-colors hover:text-white"
+                  className="absolute right-1.5 top-1/2 flex h-11 -translate-y-1/2 items-center rounded-lg px-3 text-xs text-secondary transition-colors hover:text-white"
                   aria-label={
                     showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
                   }
@@ -191,7 +189,7 @@ function LoginForm() {
                   {showPassword ? "Ocultar" : "Mostrar"}
                 </button>
               </div>
-              <p className="mt-1.5 font-body text-xs text-secondary/70">
+              <p className="mt-1.5 text-xs text-secondary">
                 Mínimo 6 caracteres.
               </p>
             </div>
@@ -200,9 +198,9 @@ function LoginForm() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block font-heading text-sm text-secondary"
+                  className="block text-sm font-medium text-foreground"
                 >
-                  Nombre Completo
+                  Nombre completo
                 </label>
                 <input
                   id="name"
@@ -211,7 +209,7 @@ function LoginForm() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Ej: Juan Pérez"
-                  className="mt-1.5 w-full rounded-lg border border-border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/40 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                  className={`mt-1.5 ${campoBase}`}
                 />
               </div>
             )}
@@ -221,7 +219,7 @@ function LoginForm() {
             <p
               role="alert"
               aria-live="assertive"
-              className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 font-body text-sm text-[#FCA5A5]"
+              className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2.5 text-sm text-destructive"
             >
               {error}
             </p>
@@ -230,7 +228,7 @@ function LoginForm() {
             <p
               role="status"
               aria-live="polite"
-              className="mt-4 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 font-body text-sm text-accent"
+              className="mt-4 rounded-lg border border-success/40 bg-success/10 px-3 py-2.5 text-sm text-success"
             >
               {notice}
             </p>
@@ -239,27 +237,27 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className={`btn-primary mt-6 w-full ${
-              loading ? "cursor-not-allowed opacity-60" : ""
+            className={`btn-accent mt-6 w-full ${
+              loading ? "cursor-not-allowed opacity-50" : ""
             }`}
           >
             {loading
               ? "Procesando…"
               : mode === "signin"
                 ? "Entrar"
-                : "Registrarme"}
+                : "Crear cuenta"}
           </button>
 
           <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-border" />
-            <span className="font-body text-xs text-secondary">o</span>
-            <span className="h-px flex-1 bg-border" />
+            <span className="hairline flex-1" />
+            <span className="text-xs text-secondary">o</span>
+            <span className="hairline flex-1" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogle}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-muted px-4 py-3 font-heading text-sm text-white transition-colors hover:border-primary"
+            className="btn-primary w-full text-sm"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -271,7 +269,7 @@ function LoginForm() {
           </button>
         </form>
 
-        <p className="mt-6 text-center font-body text-sm text-secondary">
+        <p className="mt-6 text-center text-sm text-secondary">
           {mode === "signin" ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
           <button
             type="button"
@@ -281,16 +279,16 @@ function LoginForm() {
               setNotice(null);
               setName("");
             }}
-            className="font-heading text-accent underline-offset-4 hover:underline"
+            className="font-medium text-primary underline-offset-4 hover:underline"
           >
-            {mode === "signin" ? "Regístrate" : "Inicia sesión"}
+            {mode === "signin" ? "Crea una" : "Inicia sesión"}
           </button>
         </p>
 
-        <p className="mt-4 text-center">
+        <p className="mt-2 text-center">
           <Link
             href="/"
-            className="font-body text-xs text-secondary transition-colors hover:text-white"
+            className="inline-flex min-h-11 items-center text-xs text-secondary transition-colors hover:text-white"
           >
             ← Volver al inicio
           </Link>

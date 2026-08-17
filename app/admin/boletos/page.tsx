@@ -24,9 +24,9 @@ interface CompraRow {
 }
 
 const estadoStyles: Record<Estado, string> = {
-  pendiente: "border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#FCD34D]",
-  confirmada: "border-accent/40 bg-accent/10 text-accent",
-  cancelada: "border-destructive/40 bg-destructive/10 text-[#FCA5A5]",
+  pendiente: "border-warning/40 bg-warning/10 text-warning",
+  confirmada: "border-success/40 bg-success/10 text-success",
+  cancelada: "border-destructive/40 bg-destructive/10 text-destructive",
 };
 
 const estadoLabel: Record<Estado, string> = {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Sorteo } from "@/app/data/sorteos";
+import Meter from "@/components/meter";
 
 interface Props {
   sorteo: Sorteo | null;
@@ -35,103 +36,106 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
 
   if (!sorteo) return null;
 
-  const pct = Math.round((sorteo.vendidos / sorteo.totalBoletos) * 100);
-
   return (
+    // Tarea modal: el fondo se atenúa y se empuja hacia atrás para que sólo
+    // haya una cosa que atender.
     <div
-      className="scrim-fade fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className="scrim-fade fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="sorteo-modal-title"
     >
       <div
-        className="modal-pop card-neon relative max-h-[90dvh] w-full max-w-md overflow-y-auto p-6 sm:p-8"
+        className="modal-pop glass-thick relative max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:rounded-2xl sm:pb-0"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          ref={closeRef}
-          type="button"
-          onClick={onClose}
-          aria-label="Cerrar"
-          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full border border-border text-secondary transition-colors hover:border-primary hover:text-white"
-        >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
+        <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl bg-muted">
+          {sorteo.imagen ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={sorteo.imagen}
+              alt={sorteo.premio}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span
+              className="flex h-full w-full items-center justify-center text-6xl"
+              aria-hidden="true"
+            >
+              {sorteo.emoji}
+            </span>
+          )}
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="glass absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full text-white"
           >
-            <path
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+              aria-hidden="true"
+            >
+              <path d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-        <div className="text-center">
-          <span className="rounded-full border border-border bg-muted/50 px-3 py-1 font-heading text-xs text-secondary">
-            SORTEO #{sorteo.numero} · {sorteo.titulo}
-          </span>
-          <div className="mt-4 text-5xl" aria-hidden="true">
-            {sorteo.emoji}
-          </div>
+        <div className="p-6">
+          <p className="eyebrow">
+            Sorteo {sorteo.numero} · {sorteo.fechaLabel}
+          </p>
           <h2
             id="sorteo-modal-title"
-            className="mt-3 font-heading text-2xl text-white"
+            className="h-section mt-2 text-2xl text-white"
           >
-            <span className="text-gradient">{sorteo.premio}</span>
+            {sorteo.premio}
           </h2>
-          <p className="mt-1 font-heading text-xl text-accent glow-text">
-            {sorteo.valor}
+          <p className="mt-1 text-sm text-secondary">{sorteo.valor}</p>
+
+          {sorteo.descripcion && (
+            <p className="mt-4 text-sm leading-relaxed text-secondary">
+              {sorteo.descripcion}
+            </p>
+          )}
+
+          <Meter
+            vendidos={sorteo.vendidos}
+            total={sorteo.totalBoletos}
+            className="mt-6"
+          />
+
+          <p className="mt-4 text-sm text-secondary">
+            Boleto{" "}
+            <span className="num font-medium text-white">
+              ${sorteo.precioBoleto}
+            </span>{" "}
+            MXN
           </p>
-        </div>
 
-        <p className="mt-4 font-body text-sm leading-relaxed text-secondary">
-          {sorteo.descripcion}
-        </p>
-
-        <div className="mt-5">
-          <div className="flex justify-between font-body text-xs text-secondary">
-            <span>
-              <span className="font-heading text-white">{pct}%</span> vendido
-            </span>
-            <span>
-              Boleto:{" "}
-              <span className="font-heading text-accent">
-                ${sorteo.precioBoleto} MXN
-              </span>
-            </span>
+          <div className="mt-6 flex flex-col gap-3">
+            <Link
+              href={`/boletos/${sorteo.id}/comprar`}
+              className="btn-accent w-full text-sm"
+              onClick={onClose}
+            >
+              Comprar boletos
+            </Link>
+            <Link
+              href={`/boletos/${sorteo.id}`}
+              className="btn-outline w-full text-sm"
+              onClick={onClose}
+            >
+              Ver el sorteo completo
+            </Link>
           </div>
-          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-          <p className="mt-1.5 font-body text-xs text-secondary">
-            Sorteo el {sorteo.fechaLabel}
-          </p>
-        </div>
-
-        <div className="mt-6 flex flex-col gap-3">
-          <Link
-            href={`/boletos/${sorteo.id}/comprar`}
-            className="btn-accent text-center text-sm glow-accent"
-            onClick={onClose}
-          >
-            Comprar Boletos
-          </Link>
-          <Link
-            href={`/boletos/${sorteo.id}`}
-            className="btn-outline text-center text-sm"
-            onClick={onClose}
-          >
-            Ver sorteo completo
-          </Link>
         </div>
       </div>
     </div>

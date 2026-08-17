@@ -38,34 +38,26 @@ function StepRail({ step }: { step: Step }) {
   const actual = pasoActual(step);
   return (
     <ol
-      className="mx-auto mt-6 flex max-w-md items-center gap-2"
+      className="flex max-w-md items-center gap-2"
       aria-label="Progreso de la compra"
     >
       {PASOS.map((nombre, i) => {
         const hecho = i < actual;
         const activo = i === actual;
         return (
-          <li key={nombre} className="flex flex-1 flex-col gap-1.5">
+          <li key={nombre} className="flex flex-1 flex-col gap-2">
             <span
-              className={`h-1 rounded-full transition-colors duration-300 ${
-                hecho
-                  ? "bg-primary"
-                  : activo
-                    ? "bg-gradient-to-r from-primary to-accent"
-                    : "bg-border/60"
+              className={`h-[3px] rounded-full transition-colors duration-200 ${
+                hecho || activo ? "bg-primary" : "bg-border"
               }`}
             />
             <span
-              className={`font-heading text-[0.65rem] tracking-wider transition-colors duration-300 ${
-                activo
-                  ? "text-accent"
-                  : hecho
-                    ? "text-secondary"
-                    : "text-secondary/50"
+              className={`eyebrow transition-colors duration-200 ${
+                activo ? "text-white" : hecho ? "" : "opacity-50"
               }`}
               aria-current={activo ? "step" : undefined}
             >
-              {i + 1}. {nombre.toUpperCase()}
+              {i + 1}. {nombre}
             </span>
           </li>
         );
@@ -109,6 +101,8 @@ export default function TicketSelector({
   const disponibles = allNumbers.length - taken.size;
   const [cantidadAleatoria, setCantidadAleatoria] = useState("5");
   const [filtro, setFiltro] = useState("");
+  // Último número tomado: recibe el golpe de confirmación una sola vez.
+  const [pulso, setPulso] = useState<string | null>(null);
   const [step, setStep] = useState<Step>(promo ? "promo" : "select");
   // Active hold for the current selection: id (to release) + expiry (countdown).
   const [reservaId, setReservaId] = useState<string | null>(null);
@@ -184,9 +178,14 @@ export default function TicketSelector({
     if (taken.has(num)) return;
     setReservaError(null);
     setSelected((prev) => {
-      if (prev.includes(num)) return prev.filter((n) => n !== num);
+      if (prev.includes(num)) {
+        setPulso(null);
+        return prev.filter((n) => n !== num);
+      }
       // En modo promo no se permite exceder la cantidad del paquete.
       if (limite && prev.length >= limite) return prev;
+      // Marca cuál acaba de tomarse para que ese —y sólo ese— dé el golpe.
+      setPulso(num);
       return [...prev, num];
     });
   };
@@ -312,100 +311,98 @@ export default function TicketSelector({
     ? allNumbers.filter((n) => n.includes(filtro.replace(/\D/g, "")))
     : allNumbers;
 
+  // 48px de alto y texto de 16px: objetivo táctil cómodo y sin auto-zoom en iOS.
   const inputBase =
-    "w-full rounded-lg border bg-muted px-4 py-3 font-body text-sm text-white placeholder-secondary/50 outline-none transition-colors focus:ring-1";
+    "mt-1.5 h-12 w-full rounded-xl border bg-muted px-4 text-base text-white placeholder-secondary/60 outline-none transition-colors";
   const inputEstado = (campo: keyof FormData) =>
     tocado[campo] && errores[campo]
-      ? "border-destructive/70 focus:border-destructive focus:ring-destructive"
-      : "border-border focus:border-primary focus:ring-primary";
+      ? "border-destructive focus:border-destructive"
+      : "border-border focus:border-primary";
+  const labelBase = "block text-sm font-medium text-foreground";
+  const errorBase = "mt-1.5 text-xs text-destructive";
 
   return (
     <div className="page-fade">
-      <div className="text-center">
-        <h1 className="font-heading text-3xl leading-tight tracking-tight text-white sm:text-4xl">
-          {step === "promo" && "Tu "}
-          {step === "select" && "Elige tus "}
-          {step === "form" && "Tus Datos "}
-          {step === "sent" && "Solicitud "}
-          <span className="text-gradient">
-            {step === "promo" && "Promo"}
-            {step === "select" && "Números"}
-            {step === "form" && "Personales"}
-            {step === "sent" && "Enviada"}
-          </span>
-        </h1>
-        <p className="mt-2 font-heading text-sm tracking-wider text-secondary">
-          SORTEO #{sorteo.numero} · {sorteo.titulo}
+      <div>
+        <p className="eyebrow">
+          Sorteo {sorteo.numero} · {sorteo.titulo}
         </p>
+        <h1 className="display mt-3 text-3xl text-white sm:text-4xl">
+          {step === "promo" && "Elige cómo armar tu paquete"}
+          {step === "select" && "Elige tus números"}
+          {step === "form" && "Tus datos"}
+          {step === "sent" && "Solicitud enviada"}
+        </h1>
 
-        <StepRail step={step} />
+        <div className="mt-6">
+          <StepRail step={step} />
+        </div>
 
         {step === "select" && promo && (
-          <p className="mx-auto mt-5 max-w-lg font-body text-sm text-secondary">
-            Selecciona{" "}
-            <span className="font-heading tabular-nums text-accent">
+          <p className="measure mt-6 text-sm text-secondary">
+            Llevas{" "}
+            <span className="num font-medium text-white">
               {selected.length} de {promo.cantidad}
             </span>{" "}
-            boletos de tu paquete.
+            boletos del paquete.
           </p>
         )}
         {step === "select" && !promo && (
-          <p className="mx-auto mt-5 max-w-lg font-body text-sm text-secondary">
+          <p className="measure mt-6 text-sm text-secondary">
             Cada boleto cuesta{" "}
-            <span className="font-heading tabular-nums text-accent">
-              ${sorteo.precioBoleto} MXN
-            </span>
-            . Quedan{" "}
-            <span className="font-heading tabular-nums text-white">
-              {disponibles}
+            <span className="num font-medium text-white">
+              ${sorteo.precioBoleto}
             </span>{" "}
-            de {sorteo.totalBoletos} disponibles.
+            MXN. Quedan{" "}
+            <span className="num font-medium text-white">{disponibles}</span> de{" "}
+            <span className="num">{sorteo.totalBoletos}</span> disponibles.
           </p>
         )}
         {step === "select" && !userId && (
-          <p className="mx-auto mt-2 max-w-lg font-body text-xs text-secondary/80">
+          <p className="measure mt-2 text-sm text-secondary">
             Puedes comprar sin cuenta.{" "}
             <Link
               href={`/login${volverUrl ? `?next=${encodeURIComponent(volverUrl)}` : ""}`}
-              className="text-accent underline-offset-4 hover:underline"
+              className="text-primary underline-offset-4 hover:underline"
             >
               Inicia sesión
             </Link>{" "}
-            si quieres seguir tus boletos desde Mi Perfil.
+            si quieres que tus boletos queden guardados en Mi perfil.
           </p>
         )}
         {step === "select" && !promo && (
-          <div className="mx-auto mt-4 flex max-w-lg flex-wrap items-center justify-center gap-2">
+          <ul className="mt-5 flex flex-wrap items-center gap-2">
             {PROMOS.map((p) => {
               const activa = selected.length === p.cantidad;
               return (
-                <span
+                <li
                   key={p.cantidad}
-                  className={`rounded-full border px-3 py-1 font-heading text-xs tabular-nums transition-colors ${
+                  className={`num rounded-full border px-3 py-1 text-xs transition-colors ${
                     activa
-                      ? "border-accent bg-accent/20 text-accent glow-text"
+                      ? "border-primary bg-primary/15 text-white"
                       : "border-border bg-muted text-secondary"
                   }`}
                 >
-                  {p.cantidad} boletos por ${p.precio} MXN
-                </span>
+                  {p.cantidad} boletos · ${p.precio} MXN
+                  {activa && <span className="ml-1.5">✓</span>}
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
         {step === "form" && (
-          <p className="mx-auto mt-5 max-w-lg font-body text-sm text-secondary">
+          <p className="measure mt-6 text-sm text-secondary">
             Con estos datos te confirmamos el pago de{" "}
-            <span className="font-heading tabular-nums text-primary">
+            <span className="num font-medium text-white">
               {selected.length}
             </span>{" "}
-            {selected.length === 1 ? "boleto" : "boletos"}.
+            {selected.length === 1 ? "boleto" : "boletos"} por WhatsApp.
           </p>
         )}
         {step === "promo" && promo && (
-          <p className="mx-auto mt-5 max-w-lg font-body text-sm text-secondary">
+          <p className="measure mt-6 text-sm text-secondary">
             Paquete de{" "}
-            <span className="font-heading tabular-nums text-accent">
+            <span className="num font-medium text-white">
               {promo.cantidad} boletos por ${promo.precio} MXN
             </span>
             . ¿Cómo quieres tus números?
@@ -414,39 +411,32 @@ export default function TicketSelector({
       </div>
 
       {step === "promo" && promo && (
-        <div className="mx-auto mt-8 grid max-w-2xl gap-5 sm:grid-cols-2">
+        <div className="mt-8 grid max-w-2xl gap-4 sm:grid-cols-2">
           <button
             type="button"
             onClick={() => {
               setSelected([]);
               setStep("select");
             }}
-            className="boleto group rounded-2xl border border-primary/50 bg-gradient-to-br from-primary/15 to-surface p-7 text-center hover:-translate-y-1 hover:border-primary"
+            className="boleto card card-hover p-6 text-left"
           >
-            <div className="text-4xl" aria-hidden="true">
-              ✋
-            </div>
-            <p className="mt-3 font-heading text-lg text-white">
-              Elegir yo mismo
-            </p>
-            <p className="mt-2 font-body text-sm text-secondary">
-              Escoge tus {promo.cantidad} números de la suerte uno por uno.
+            <p className="h-section text-lg text-white">Los elijo yo</p>
+            <p className="mt-2 text-sm text-secondary">
+              Escoges tus {promo.cantidad} números uno por uno en la cuadrícula.
             </p>
           </button>
           <button
             type="button"
             onClick={() => apartarYAvanzar(pickRandom(promo.cantidad))}
             disabled={isReserving}
-            className="boleto group rounded-2xl border border-accent/60 bg-gradient-to-br from-accent/15 to-surface p-7 text-center hover:-translate-y-1 hover:border-accent disabled:cursor-not-allowed disabled:opacity-50"
+            className="boleto card card-hover p-6 text-left disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <div className="text-4xl" aria-hidden="true">
-              🎲
-            </div>
-            <p className="mt-3 font-heading text-lg text-white">
-              {isReserving ? "Apartando…" : "Números aleatorios"}
+            <p className="h-section text-lg text-white">
+              {isReserving ? "Apartando…" : "Elígelos por mí"}
             </p>
-            <p className="mt-2 font-body text-sm text-secondary">
-              Te asignamos {promo.cantidad} números al azar y listo.
+            <p className="mt-2 text-sm text-secondary">
+              Te asignamos {promo.cantidad} números al azar de los que quedan
+              libres.
             </p>
           </button>
         </div>
@@ -455,20 +445,23 @@ export default function TicketSelector({
       {step === "select" && (
         <>
           {!promo && (
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 rounded-xl border border-border bg-surface/60 p-4 sm:flex-row">
-              <p className="font-heading text-sm text-secondary">
-                ¿Sin tiempo de elegir? Deja que la suerte decida:
+            <div className="card mt-8 flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-secondary">
+                ¿Sin tiempo de elegir? Te asignamos números libres al azar.
               </p>
               <div className="flex items-center gap-2">
+                <label htmlFor="cantidad-aleatoria" className="sr-only">
+                  Cantidad de boletos aleatorios
+                </label>
                 <input
+                  id="cantidad-aleatoria"
                   type="number"
                   min={1}
                   max={disponibles}
                   inputMode="numeric"
-                  aria-label="Cantidad de boletos aleatorios"
                   value={cantidadAleatoria}
                   onChange={(e) => setCantidadAleatoria(e.target.value)}
-                  className="h-11 w-20 rounded-lg border border-border bg-muted px-3 text-center font-heading text-sm tabular-nums text-white outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="num h-11 w-20 rounded-xl border border-border bg-muted px-3 text-center text-base text-white outline-none transition-colors focus:border-primary"
                 />
                 <button
                   type="button"
@@ -479,9 +472,9 @@ export default function TicketSelector({
                     );
                     pickRandom(n);
                   }}
-                  className="btn-accent boleto text-sm whitespace-nowrap"
+                  className="btn-primary whitespace-nowrap text-sm"
                 >
-                  🎲 Aleatorios
+                  Elegir al azar
                 </button>
               </div>
             </div>
@@ -490,25 +483,25 @@ export default function TicketSelector({
           {reservaError && (
             <p
               role="alert"
-              className="mx-auto mt-6 max-w-lg rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-center font-body text-sm text-[#FCA5A5]"
+              className="mt-6 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive"
             >
               {reservaError}
             </p>
           )}
 
           {selected.length > 0 && (
-            <div className="materialize mt-8 rounded-xl border border-border/70 bg-surface/50 p-4">
-              <p className="font-heading text-xs tracking-wider text-secondary">
-                TUS NÚMEROS ({selected.length}
+            <div className="materialize card mt-8 p-4">
+              <p className="eyebrow">
+                Tus números ({selected.length}
                 {limite ? ` / ${limite}` : ""})
               </p>
-              <ul className="mt-2.5 flex flex-wrap gap-2">
+              <ul className="mt-3 flex flex-wrap gap-2">
                 {selected.map((num) => (
                   <li key={num}>
                     <button
                       type="button"
                       onClick={() => toggleNumber(num)}
-                      className="boleto flex h-9 items-center gap-1.5 rounded-full border border-primary/60 bg-primary/15 pl-3 pr-2 font-heading text-sm text-white hover:border-destructive/70 hover:bg-destructive/15"
+                      className="boleto num flex h-11 items-center gap-2 rounded-full border border-primary/60 bg-primary/15 pl-3.5 pr-3 text-sm text-white hover:border-destructive/70 hover:bg-destructive/15"
                       aria-label={`Quitar el número ${num}`}
                     >
                       {num}
@@ -523,12 +516,12 @@ export default function TicketSelector({
           )}
 
           {allNumbers.length > BUSCADOR_DESDE && (
-            <div className="mt-6">
+            <div className="mt-8">
               <label
                 htmlFor="filtro-numero"
-                className="block font-heading text-xs tracking-wider text-secondary"
+                className="block text-sm font-medium text-foreground"
               >
-                BUSCAR NÚMERO
+                Buscar un número
               </label>
               <input
                 id="filtro-numero"
@@ -537,24 +530,24 @@ export default function TicketSelector({
                 value={filtro}
                 onChange={(e) => setFiltro(e.target.value)}
                 placeholder="Ej: 07"
-                className="mt-1.5 h-11 w-full max-w-xs rounded-lg border border-border bg-muted px-4 font-heading text-sm tabular-nums text-white placeholder-secondary/50 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                className="num mt-1.5 h-12 w-full max-w-xs rounded-xl border border-border bg-muted px-4 text-base text-white placeholder-secondary/60 outline-none transition-colors focus:border-primary"
               />
             </div>
           )}
 
           {visibles.length === 0 ? (
-            <p className="mt-8 rounded-xl border border-border bg-surface/60 p-8 text-center font-body text-sm text-secondary">
+            <p className="card mt-8 p-8 text-center text-sm text-secondary">
               Ningún boleto contiene “{filtro}”.{" "}
               <button
                 type="button"
                 onClick={() => setFiltro("")}
-                className="font-heading text-accent underline-offset-4 hover:underline"
+                className="text-primary underline-offset-4 hover:underline"
               >
                 Ver todos
               </button>
             </p>
           ) : (
-            <div className="mt-6 grid grid-cols-5 gap-2 pb-4 sm:grid-cols-10">
+            <div className="mt-6 grid grid-cols-5 gap-2 pb-4 sm:grid-cols-8 lg:grid-cols-10">
               {visibles.map((num) => {
                 const isSelected = selected.includes(num);
                 const isTaken = taken.has(num);
@@ -573,14 +566,16 @@ export default function TicketSelector({
                     onClick={() => toggleNumber(num)}
                     aria-pressed={isSelected}
                     aria-label={`Número ${num}${isSelected ? ", seleccionado" : ""}${isTaken ? ", no disponible" : ""}${bloqueado ? ", paquete completo" : ""}`}
-                    className={`boleto flex h-12 items-center justify-center rounded-lg border text-sm font-heading ${
+                    className={`boleto num flex h-12 items-center justify-center rounded-xl border text-sm ${
+                      isSelected && pulso === num ? "boleto-pop" : ""
+                    } ${
                       isTaken
-                        ? "cursor-not-allowed border-destructive/30 bg-destructive/5 text-[#FCA5A5]/60 line-through"
+                        ? "cursor-not-allowed border-transparent bg-muted text-secondary/40 line-through"
                         : isSelected
-                          ? "boleto-on border-primary bg-primary text-white"
+                          ? "boleto-on border-primary bg-primary font-medium text-white"
                           : bloqueado
-                            ? "cursor-not-allowed border-border/50 bg-muted/40 text-foreground/30"
-                            : "border-border bg-muted text-foreground hover:border-primary hover:bg-primary/20"
+                            ? "cursor-not-allowed border-border/60 bg-muted text-secondary"
+                            : "border-border bg-muted text-foreground hover:border-border-strong hover:bg-surface-hover"
                     }`}
                   >
                     {isTaken ? "✕" : num}
@@ -590,44 +585,47 @@ export default function TicketSelector({
             </div>
           )}
 
-          <div className="taquilla sticky bottom-4 mt-8 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
-            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-              <div className="text-center sm:text-left">
-                <p className="font-heading text-xs tracking-wider text-secondary">
-                  BOLETOS
-                </p>
-                <p className="font-heading text-2xl tabular-nums text-white">
-                  {selected.length}
-                </p>
-              </div>
-              <div className="text-center sm:text-right">
-                <p className="font-heading text-xs tracking-wider text-secondary">
-                  TOTAL
-                </p>
-                <p className="font-heading text-3xl tabular-nums text-accent glow-text">
-                  ${total}
-                </p>
-                {promoActiva && ahorro > 0 && (
-                  <p className="font-heading text-xs tabular-nums text-primary">
-                    Promo aplicada · ahorras ${ahorro}
+          {/* Taquilla: capa flotante bajo la que pasa la cuadrícula. */}
+          <div className="taquilla sticky bottom-4 mt-8 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-6">
+                {/* La cifra se renueva al cambiar: el total no salta en
+                    silencio, se ve que cambió porque tocaste un número. */}
+                <div>
+                  <p className="eyebrow">Boletos</p>
+                  <p className="num mt-1 text-xl font-medium text-white">
+                    <span key={selected.length} className="cifra-in inline-block">
+                      {selected.length}
+                    </span>
+                    {limite ? (
+                      <span className="text-secondary">/{limite}</span>
+                    ) : null}
                   </p>
-                )}
+                </div>
+                <div>
+                  <p className="eyebrow">Total</p>
+                  <p className="num mt-1 text-2xl font-medium text-white">
+                    <span key={total} className="cifra-in inline-block">
+                      ${total}
+                    </span>
+                  </p>
+                </div>
               </div>
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
                 {promo && (
                   <button
                     type="button"
                     onClick={() => pickRandom(promo.cantidad)}
-                    className="btn-outline boleto w-full text-sm sm:w-auto"
+                    className="btn-primary w-full text-sm sm:w-auto"
                   >
-                    🎲 Sorpréndeme
+                    Elegir al azar
                   </button>
                 )}
                 <button
                   type="button"
                   disabled={!puedeAvanzar || isReserving}
                   onClick={() => apartarYAvanzar(selected)}
-                  className={`btn-accent boleto w-full sm:w-auto ${
+                  className={`btn-accent w-full sm:w-auto ${
                     !puedeAvanzar || isReserving
                       ? "cursor-not-allowed opacity-50"
                       : ""
@@ -637,8 +635,13 @@ export default function TicketSelector({
                 </button>
               </div>
             </div>
+            {promoActiva && ahorro > 0 && (
+              <p className="num mt-3 text-xs text-success">
+                Paquete de {promoActiva.cantidad} aplicado · ahorras ${ahorro}
+              </p>
+            )}
             {!puedeAvanzar && (
-              <p className="mt-3 text-center font-body text-xs text-secondary sm:text-right">
+              <p className="mt-3 text-xs text-secondary">
                 {limite
                   ? `Te ${faltan === 1 ? "falta" : "faltan"} ${faltan} ${faltan === 1 ? "boleto" : "boletos"} para completar el paquete.`
                   : "Elige al menos un número para continuar."}
@@ -652,22 +655,17 @@ export default function TicketSelector({
         <>
           {expiresAt && (
             <div
-              className={`materialize mx-auto mt-8 flex max-w-lg items-start gap-3 rounded-xl border px-4 py-3 ${
-                vencido
-                  ? "border-destructive/50 bg-destructive/10"
-                  : porVencer
-                    ? "border-destructive/40 bg-destructive/5"
-                    : "border-accent/40 bg-accent/10"
+              className={`materialize mt-8 max-w-lg rounded-xl border px-4 py-3.5 ${
+                vencido || porVencer
+                  ? "border-destructive/40 bg-destructive/10"
+                  : "border-border bg-muted"
               }`}
               role="status"
               aria-live="polite"
             >
-              <span className="text-lg leading-none" aria-hidden="true">
-                {vencido ? "⌛" : "⏳"}
-              </span>
               {vencido ? (
-                <div className="font-body text-sm text-secondary">
-                  <p className="font-heading text-[#FCA5A5]">
+                <div className="text-sm text-secondary">
+                  <p className="font-medium text-destructive">
                     Tu apartado venció
                   </p>
                   <p className="mt-1">
@@ -678,22 +676,24 @@ export default function TicketSelector({
                     type="button"
                     disabled={isReserving}
                     onClick={() => apartarYAvanzar(selected)}
-                    className="btn-accent boleto mt-3 text-sm"
+                    className="btn-accent mt-4 text-sm"
                   >
                     {isReserving ? "Apartando…" : "Apartar de nuevo"}
                   </button>
                 </div>
               ) : (
-                <p className="font-body text-sm text-secondary">
-                  Apartamos tus boletos{" "}
+                <p className="text-sm text-secondary">
+                  Tus boletos quedan apartados{" "}
                   <span
-                    className={`font-heading tabular-nums ${
-                      porVencer ? "timer-urgent text-[#FCA5A5]" : "text-accent"
+                    className={`num font-medium ${
+                      porVencer
+                        ? "timer-urgent text-destructive"
+                        : "text-white"
                     }`}
                   >
                     {mmss}
                   </span>{" "}
-                  más. Confirma tu pago antes de que termine o volverán a estar
+                  más. Confirma el pago antes de que termine o volverán a estar
                   disponibles.
                 </p>
               )}
@@ -703,13 +703,13 @@ export default function TicketSelector({
           <form
             onSubmit={handleFormSubmit}
             noValidate
-            className="mx-auto mt-6 max-w-lg rounded-xl border border-border bg-surface p-6 sm:p-8"
+            className="card mt-6 max-w-lg p-6 sm:p-8"
           >
-            <p className="font-body text-xs text-secondary">
+            <p className="text-xs text-secondary">
               {userId ? (
                 <>
                   Compra ligada a tu cuenta
-                  {userEmail ? ` · ${userEmail}` : ""}. Aparecerá en Mi Perfil.
+                  {userEmail ? ` · ${userEmail}` : ""}. Aparecerá en Mi perfil.
                 </>
               ) : (
                 <>Compra como invitado. No necesitas cuenta para continuar.</>
@@ -720,7 +720,7 @@ export default function TicketSelector({
               <div>
                 <label
                   htmlFor="nombre"
-                  className="block font-heading text-sm text-secondary"
+                  className={labelBase}
                 >
                   Nombre completo
                 </label>
@@ -740,13 +740,13 @@ export default function TicketSelector({
                     tocado.nombre && errores.nombre ? "nombre-error" : undefined
                   }
                   placeholder="Ej: Juan Pérez"
-                  className={`mt-1.5 ${inputBase} ${inputEstado("nombre")}`}
+                  className={`${inputBase} ${inputEstado("nombre")}`}
                 />
                 {tocado.nombre && errores.nombre && (
                   <p
                     id="nombre-error"
                     role="alert"
-                    className="mt-1.5 font-body text-xs text-[#FCA5A5]"
+                    className={errorBase}
                   >
                     {errores.nombre}
                   </p>
@@ -755,7 +755,7 @@ export default function TicketSelector({
               <div>
                 <label
                   htmlFor="telefono"
-                  className="block font-heading text-sm text-secondary"
+                  className={labelBase}
                 >
                   WhatsApp
                 </label>
@@ -778,20 +778,20 @@ export default function TicketSelector({
                       : "telefono-ayuda"
                   }
                   placeholder="Ej: 5512345678"
-                  className={`mt-1.5 tabular-nums ${inputBase} ${inputEstado("telefono")}`}
+                  className={`num ${inputBase} ${inputEstado("telefono")}`}
                 />
                 {tocado.telefono && errores.telefono ? (
                   <p
                     id="telefono-error"
                     role="alert"
-                    className="mt-1.5 font-body text-xs text-[#FCA5A5]"
+                    className={errorBase}
                   >
                     {errores.telefono}
                   </p>
                 ) : (
                   <p
                     id="telefono-ayuda"
-                    className="mt-1.5 font-body text-xs text-secondary/70"
+                    className="mt-1.5 text-xs text-secondary"
                   >
                     A este número te confirmamos el pago. 10 dígitos, sin lada
                     internacional.
@@ -801,7 +801,7 @@ export default function TicketSelector({
               <div>
                 <label
                   htmlFor="email"
-                  className="block font-heading text-sm text-secondary"
+                  className={labelBase}
                 >
                   Correo electrónico
                 </label>
@@ -820,13 +820,13 @@ export default function TicketSelector({
                     tocado.email && errores.email ? "email-error" : undefined
                   }
                   placeholder="Ej: correo@ejemplo.com"
-                  className={`mt-1.5 ${inputBase} ${inputEstado("email")}`}
+                  className={`${inputBase} ${inputEstado("email")}`}
                 />
                 {tocado.email && errores.email && (
                   <p
                     id="email-error"
                     role="alert"
-                    className="mt-1.5 font-body text-xs text-[#FCA5A5]"
+                    className={errorBase}
                   >
                     {errores.email}
                   </p>
@@ -834,49 +834,47 @@ export default function TicketSelector({
               </div>
             </div>
 
-            <div className="mt-6 rounded-lg border border-border/50 bg-muted/50 p-4">
-              <p className="font-heading text-xs tracking-wider text-secondary">
-                RESUMEN
-              </p>
-              <dl className="mt-2 space-y-1.5 font-body text-sm">
-                <div className="flex justify-between gap-4 text-foreground">
+            <div className="mt-6 rounded-xl border border-border bg-muted p-4">
+              <p className="eyebrow">Resumen</p>
+              <dl className="mt-3 space-y-2 text-sm">
+                <div className="flex justify-between gap-4">
                   <dt className="text-secondary">Sorteo</dt>
-                  <dd className="text-right">
-                    #{sorteo.numero} {sorteo.titulo}
+                  <dd className="text-right text-foreground">
+                    {sorteo.numero} · {sorteo.titulo}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-4 text-foreground">
-                  <dt className="text-secondary">Boletos</dt>
-                  <dd className="text-right tabular-nums">
+                <div className="flex justify-between gap-4">
+                  <dt className="text-secondary">Números</dt>
+                  <dd className="num text-right text-foreground">
                     {selected.join(", ")}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-4 text-foreground">
+                <div className="flex justify-between gap-4">
                   <dt className="text-secondary">Cantidad</dt>
-                  <dd className="tabular-nums">{selected.length}</dd>
+                  <dd className="num text-foreground">{selected.length}</dd>
                 </div>
-                <div className="flex justify-between gap-4 border-t border-border/60 pt-1.5 font-heading text-accent">
+                <div className="flex justify-between gap-4 border-t border-border pt-2.5 font-medium text-white">
                   <dt>Total</dt>
-                  <dd className="tabular-nums">${total} MXN</dd>
+                  <dd className="num">${total} MXN</dd>
                 </div>
               </dl>
             </div>
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={() => {
                   soltarReserva();
                   setStep(promo ? "promo" : "select");
                 }}
-                className="btn-outline boleto flex-1 text-center text-sm"
+                className="btn-outline flex-1 text-sm"
               >
                 Cambiar números
               </button>
               <button
                 type="submit"
                 disabled={vencido}
-                className={`btn-accent boleto flex-1 text-sm ${
+                className={`btn-accent flex-1 text-sm ${
                   vencido ? "cursor-not-allowed opacity-50" : ""
                 }`}
               >
@@ -888,62 +886,60 @@ export default function TicketSelector({
       )}
 
       {step === "sent" && (
-        <div className="mx-auto mt-8 max-w-lg text-center">
-          <div className="materialize rounded-xl border border-border bg-surface p-8">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+        <div className="mt-8 max-w-lg">
+          <div className="materialize card p-6 sm:p-8">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-success/15">
               <svg
-                className="h-8 w-8 text-primary"
+                className="h-6 w-6 text-success"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 aria-hidden="true"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
+                <path d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="mt-4 font-heading text-xl text-white">
-              Solicitud enviada
+            <h2 className="h-section mt-4 text-xl text-white">
+              Tu solicitud salió a WhatsApp
             </h2>
-            <p className="mt-2 font-body text-sm text-secondary">
-              Te abrimos WhatsApp con los datos de tu compra. Un asesor te
-              confirma la disponibilidad y el pago.
+            <p className="mt-2 text-sm text-secondary">
+              Abrimos WhatsApp con los datos de tu compra. Un asesor confirma la
+              disponibilidad y te pasa los datos de pago.
             </p>
 
-            <p className="mt-4 font-body text-sm text-foreground">
-              <span className="text-secondary">Tus números: </span>
-              <span className="font-heading tabular-nums text-white">
+            <div className="mt-5 rounded-xl border border-border bg-muted p-4">
+              <p className="eyebrow">Tus números</p>
+              <p className="num mt-2 text-sm text-white">
                 {selected.join(", ")}
-              </span>
-            </p>
+              </p>
+            </div>
 
             {waUrl && (
               <a
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-accent boleto mt-6 inline-block text-sm"
+                className="btn-accent mt-6 w-full text-sm"
               >
                 Abrir WhatsApp
               </a>
             )}
-            <p className="mt-2 font-body text-xs text-secondary/70">
-              ¿No se abrió? Usa el botón de arriba.
+            <p className="mt-2 text-xs text-secondary">
+              Si tu navegador bloqueó la ventana, entra con este botón.
             </p>
 
             {!userId && (
-              <p className="mt-6 border-t border-border/60 pt-5 font-body text-sm text-secondary">
+              <p className="mt-6 border-t border-border pt-5 text-sm text-secondary">
                 <Link
                   href={`/login${volverUrl ? `?next=${encodeURIComponent(volverUrl)}` : ""}`}
-                  className="font-heading text-accent underline-offset-4 hover:underline"
+                  className="font-medium text-primary underline-offset-4 hover:underline"
                 >
                   Crea tu cuenta
                 </Link>{" "}
-                para ver tus próximas compras en Mi Perfil.
+                y tus próximas compras quedan guardadas en Mi perfil.
               </p>
             )}
 
@@ -961,7 +957,7 @@ export default function TicketSelector({
                 setFiltro("");
                 setStep("select");
               }}
-              className="btn-primary boleto mt-6"
+              className="btn-primary mt-6 w-full text-sm"
             >
               Comprar más boletos
             </button>

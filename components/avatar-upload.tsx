@@ -96,12 +96,12 @@ export default function AvatarUpload({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-accent font-heading text-3xl text-background">
+          <span className="flex h-full w-full items-center justify-center bg-muted font-heading text-3xl font-semibold text-white">
             {initials}
           </span>
         )}
 
-        <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-background/75 py-1 font-body text-[10px] text-accent opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-background/80 py-1.5 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
           {uploading ? (
             "Subiendo…"
           ) : (
@@ -136,7 +136,7 @@ export default function AvatarUpload({
       {error && (
         <p
           role="alert"
-          className="mt-2 max-w-[16rem] text-center font-body text-xs text-[#FCA5A5]"
+          className="mt-2 max-w-[16rem] text-center text-xs text-destructive"
         >
           {error}
         </p>

@@ -30,7 +30,7 @@ function AccountIcon({
         src={avatarUrl}
         alt=""
         loading="lazy"
-        className="-my-0.5 h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-accent/50"
+        className="-my-0.5 h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-border-strong"
       />
     );
   }
@@ -78,14 +78,18 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`transition-colors ${
-        mobile ? "block py-2" : ""
-      } font-body text-sm font-medium ${
-        active
-          ? "text-accent"
-          : "text-foreground hover:text-secondary"
-      }`}
+      aria-current={active ? "page" : undefined}
+      className={`relative flex items-center gap-2 text-sm font-medium transition-colors ${
+        mobile ? "min-h-11 py-1" : ""
+      } ${active ? "text-white" : "text-secondary hover:text-white"}`}
     >
+      {/* La ubicación actual se marca con una señal propia, no sólo con color. */}
+      <span
+        aria-hidden="true"
+        className={`h-1.5 w-1.5 rounded-full bg-primary transition-opacity ${
+          active ? "opacity-100" : "opacity-0"
+        }`}
+      />
       {label}
     </Link>
   );
@@ -96,6 +100,20 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  // El panel sigue montado mientras se repliega: si desapareciera al instante
+  // no habría salida que ver. Se desmonta cuando termina la animación.
+  const [cerrando, setCerrando] = useState(false);
+
+  const cerrarPanel = () => {
+    // Con movimiento reducido la animación está anulada, así que `animationend`
+    // nunca llegaría y el panel se quedaría abierto: ahí se cierra directo.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setOpen(false);
+      return;
+    }
+    setCerrando(true);
+  };
 
   useEffect(() => {
     if (!supabaseConfigured) return;
@@ -131,28 +149,42 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // El menú móvil se cierra desde el propio enlace que se tocó; no hace falta
+  // sincronizarlo con la ruta después del render.
+
+  // El filo de la barra sólo aparece cuando hay contenido pasando por debajo:
+  // en el tope de la página la barra no separa nada, así que no dibuja nada.
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const accountHref = signedIn ? "/perfil" : "/login";
-  const accountLabel = signedIn ? "Mi Perfil" : "Iniciar Sesión";
+  const accountLabel = signedIn ? "Mi perfil" : "Iniciar sesión";
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+    <nav
+      className={`sticky top-0 z-50 border-b transition-colors duration-200 ${
+        scrolled
+          ? "glass border-border"
+          : "border-transparent bg-background"
+      }`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="font-heading text-xl tracking-wider text-white glow-text"
+          className="font-heading text-lg font-bold tracking-[-0.02em] text-white"
         >
           RIFAS JAPS
         </Link>
 
         <button
-          className="flex flex-col gap-1 sm:hidden"
-          onClick={() => setOpen(!open)}
+          className="-mr-2 flex h-11 w-11 flex-col items-center justify-center gap-1 sm:hidden"
+          onClick={() => (open ? cerrarPanel() : setOpen(true))}
           aria-label="Menú de navegación"
           aria-expanded={open}
         >
@@ -167,7 +199,7 @@ export default function Navbar() {
           />
         </button>
 
-        <div className="hidden items-center gap-8 sm:flex">
+        <div className="hidden items-center gap-7 sm:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.href}
@@ -180,14 +212,21 @@ export default function Navbar() {
             <AccountIcon signedIn={signedIn} avatarUrl={avatarUrl} />
             <span>{accountLabel}</span>
           </Link>
-          <Link href="/boletos" className="btn-accent text-sm py-2! px-5!">
-            Comprar Boletos
+          <Link href="/boletos" className="btn-accent min-h-0! px-5! py-2! text-sm">
+            Comprar boletos
           </Link>
         </div>
       </div>
 
       {open && (
-        <div className="border-t border-border bg-background px-4 pb-4 pt-2 sm:hidden">
+        <div
+          className={`${cerrando ? "panel-cierra" : "panel-abre"} border-t border-border bg-background px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2 sm:hidden`}
+          onAnimationEnd={() => {
+            if (!cerrando) return;
+            setCerrando(false);
+            setOpen(false);
+          }}
+        >
           {navLinks.map((link) => (
             <NavLink
               key={link.href}
@@ -195,23 +234,23 @@ export default function Navbar() {
               label={link.label}
               active={isActive(link.href)}
               mobile
-              onClick={() => setOpen(false)}
+              onClick={cerrarPanel}
             />
           ))}
           <Link
             href={accountHref}
             className="btn-login mt-2 w-full justify-center text-sm"
-            onClick={() => setOpen(false)}
+            onClick={cerrarPanel}
           >
             <AccountIcon signedIn={signedIn} avatarUrl={avatarUrl} />
             <span>{accountLabel}</span>
           </Link>
           <Link
             href="/boletos"
-            className="btn-accent mt-3 block text-center text-sm"
-            onClick={() => setOpen(false)}
+            className="btn-accent mt-3 w-full text-sm"
+            onClick={cerrarPanel}
           >
-            Comprar Boletos
+            Comprar boletos
           </Link>
         </div>
       )}

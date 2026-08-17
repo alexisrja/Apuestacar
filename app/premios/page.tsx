@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import { ViewTransition } from "react";
 import { getSorteos } from "@/lib/sorteos";
 import Reveal from "@/components/reveal";
+import Meter from "@/components/meter";
 
 export const metadata: Metadata = {
   title: "Premios y Rifas Activas",
@@ -18,72 +19,104 @@ export default async function PremiosPage() {
   );
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-      <div className="page-fade text-center">
-        <h1 className="font-heading text-3xl text-white sm:text-4xl">
-          Nuestros <span className="text-gradient">Premios</span>
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <header className="page-fade">
+        <p className="eyebrow">Premios</p>
+        <h1 className="display mt-3 text-3xl text-white sm:text-5xl">
+          Lo que está en juego
         </h1>
-        <div className="neon-line" />
-        <p className="mx-auto mt-4 max-w-lg font-body text-sm text-secondary">
-          Estos son los increíbles premios que puedes ganar en nuestros sorteos
-          activos y próximos. ¡Compra tus boletos y participa!
+        <p className="measure mt-3 text-sm text-secondary">
+          Premios de los sorteos activos y de los que abren próximamente.
         </p>
-      </div>
+      </header>
 
       {activeSorteos.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-border bg-surface/60 p-10 text-center">
-          <p className="font-body text-sm text-secondary">
-            Próximamente estaremos anunciando nuevos premios. Vuelve pronto.
+        <div className="card mt-10 p-10 text-center">
+          <p className="h-section text-lg text-white">
+            Todavía no hay premios publicados
+          </p>
+          <p className="measure mx-auto mt-2 text-sm text-secondary">
+            Estamos cerrando los premios del siguiente sorteo. Vuelve pronto.
           </p>
         </div>
       ) : (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {activeSorteos.map((s, i) => (
             <Reveal key={s.id} delay={i * 80}>
-              <div className="card-neon group overflow-hidden">
-                <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30">
-                  {s.imagen ? (
-                    <img
-                      src={s.imagen}
-                      alt={s.premio}
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-5xl">{s.emoji}</span>
-                  )}
-                </div>
-                <div className="p-5">
-                  <h3 className="font-heading text-lg text-white">
-                    {s.premio}
-                  </h3>
-                  <p className="mt-1 font-body text-sm text-secondary">
-                    {s.descripcion || `Sorteo #${s.numero} — ${s.titulo}`}
+              <article className="card card-hover flex h-full flex-col overflow-hidden">
+                <ViewTransition name={`premio-${s.id}`} share="morph">
+                  <div className="zoom-marco relative aspect-[16/10] bg-muted">
+                    {s.imagen ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={s.imagen}
+                        alt={s.premio}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span
+                        className="flex h-full w-full items-center justify-center text-5xl"
+                        aria-hidden="true"
+                      >
+                        {s.emoji}
+                      </span>
+                    )}
+                    {s.estado === "proximo" && (
+                      <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium text-white">
+                        Próximamente
+                      </span>
+                    )}
+                  </div>
+                </ViewTransition>
+
+                <div className="flex flex-1 flex-col p-5">
+                  <p className="eyebrow">
+                    Sorteo {s.numero} · {s.fechaLabel}
                   </p>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="glow-text font-heading text-sm text-accent">
-                      {s.valor}
-                    </span>
+                  <h2 className="h-section mt-2 text-lg text-white">
+                    {s.premio}
+                  </h2>
+                  <p className="mt-1.5 text-sm text-secondary">
+                    {s.descripcion || s.titulo}
+                  </p>
+                  <p className="num mt-3 text-sm font-medium text-white">
+                    {s.valor}
+                  </p>
+
+                  {s.estado === "activo" && (
+                    <Meter
+                      vendidos={s.vendidos}
+                      total={s.totalBoletos}
+                      className="mt-5"
+                    />
+                  )}
+
+                  <div className="mt-auto pt-5">
                     <Link
                       href={`/boletos/${s.id}`}
-                      className="font-body text-xs text-foreground transition-colors hover:text-white"
+                      transitionTypes={["nav-forward"]}
+                      className="btn-outline w-full text-sm"
                     >
-                      Comprar boleto →
+                      Ver el sorteo
                     </Link>
                   </div>
                 </div>
-              </div>
+              </article>
             </Reveal>
           ))}
         </div>
       )}
 
-      <div className="mt-12 text-center">
-        <p className="font-body text-sm text-secondary">
-          ¿Listo para ganar alguno de estos premios?
+      <div className="card glass-thick mt-14 p-8 text-center sm:p-12">
+        <h2 className="h-section text-2xl text-white">
+          ¿Ya sabes cuál quieres?
+        </h2>
+        <p className="measure mx-auto mt-2 text-sm text-secondary">
+          Elige tus números y aparta tus boletos. No necesitas cuenta.
         </p>
-        <Link href="/boletos" className="btn-accent mt-4 inline-block">
-          Comprar Boletos
+        <Link href="/boletos" className="btn-accent mt-6">
+          Comprar boletos
         </Link>
       </div>
     </div>
