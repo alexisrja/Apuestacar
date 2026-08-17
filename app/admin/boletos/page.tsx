@@ -7,9 +7,11 @@ type Estado = "pendiente" | "confirmada" | "cancelada";
 
 interface CompraRow {
   id: string;
-  user_id: string;
+  /** null = compra de invitado (sin cuenta). */
+  user_id: string | null;
   user_email: string | null;
   user_name: string | null;
+  telefono: string | null;
   sorteo_id: string;
   sorteo_numero: number | null;
   sorteo_titulo: string | null;
@@ -52,7 +54,7 @@ export default async function AdminBoletosPage({
   let query = supabase
     .from("compras")
     .select(
-      "id, user_id, user_email, user_name, sorteo_id, sorteo_numero, sorteo_titulo, sorteo_premio, numeros, cantidad, total, estado, created_at",
+      "id, user_id, user_email, user_name, telefono, sorteo_id, sorteo_numero, sorteo_titulo, sorteo_premio, numeros, cantidad, total, estado, created_at",
     )
     .order("created_at", { ascending: false });
 
@@ -108,8 +110,26 @@ export default async function AdminBoletosPage({
                     {c.sorteo_premio}
                   </p>
                 )}
+                <p className="mt-1 font-body text-[11px] text-secondary">
+                  <span className="text-foreground">
+                    {c.user_name ?? "Sin nombre"}
+                  </span>
+                  {c.telefono && (
+                    <>
+                      {" · "}
+                      <a
+                        href={`https://wa.me/${c.telefono.replace(/\D/g, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent underline-offset-2 hover:underline"
+                      >
+                        {c.telefono}
+                      </a>
+                    </>
+                  )}
+                  {c.user_email && ` · ${c.user_email}`}
+                </p>
                 <p className="mt-0.5 font-body text-[10px] text-secondary/70">
-                  {c.user_name ?? "Sin nombre"} · {c.user_email ?? c.user_id.slice(0, 8) + "…"} ·{" "}
                   {new Date(c.created_at).toLocaleString("es-MX", {
                     day: "numeric",
                     month: "short",
@@ -119,11 +139,21 @@ export default async function AdminBoletosPage({
                   })}
                 </p>
               </div>
-              <span
-                className={`shrink-0 rounded-full border px-2.5 py-1 font-body text-xs ${estadoStyles[c.estado]}`}
-              >
-                {estadoLabel[c.estado]}
-              </span>
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                <span
+                  className={`rounded-full border px-2.5 py-1 font-body text-xs ${estadoStyles[c.estado]}`}
+                >
+                  {estadoLabel[c.estado]}
+                </span>
+                {!c.user_id && (
+                  <span
+                    className="rounded-full border border-border bg-muted px-2 py-0.5 font-body text-[10px] text-secondary"
+                    title="Compra hecha sin cuenta"
+                  >
+                    Invitado
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="mt-3 flex flex-wrap gap-1.5">

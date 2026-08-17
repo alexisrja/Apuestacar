@@ -2,6 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { supabaseConfigured } from "@/lib/supabase/client";
+import { calcularTotal } from "@/lib/promos";
+import { getSorteo } from "@/lib/sorteos";
 
 export interface ReservaResult {
   ok: boolean;
@@ -91,4 +95,102 @@ export async function liberarReserva(
     revalidatePath(`/boletos/${sorteoId}/comprar`);
     revalidatePath(`/boletos/${sorteoId}`);
   }
+}
+
+export interface CompraInput {
+  sorteoId: string;
+  numeros: string[];
+  nombre: string;
+  telefono: string;
+  email: string;
+}
+
+export interface CompraResult {
+  ok: boolean;
+  compraId?: string;
+  error?: string;
+}
+
+/**
+ * Register a purchase request (the WhatsApp hand-off) so it shows up in the
+ * admin panel and, for signed-in users, in "Mis Boletos".
+ *
+ * Runs with the service role because guests have no session and there is no
+ * anon INSERT policy on `compras` — an anonymous insert policy would let anyone
+ * holding the public key fill the table. Everything the row is judged on is
+ * derived here, not taken from the client: the owner comes from the session
+ * cookie (never from a client-supplied id) and the total is recomputed from the
+ * sorteo's real price.
+ */
+export async function registrarCompra(
+  input: CompraInput,
+): Promise<CompraResult> {
+  const nombre = input.nombre?.trim() ?? "";
+  const telefono = input.telefono?.trim() ?? "";
+  const email = input.email?.trim() ?? "";
+  const numeros = [...new Set(input.numeros ?? [])];
+
+  if (numeros.length === 0) return { ok: false, error: "Selección vacía" };
+  if (nombre.length < 3) return { ok: false, error: "Nombre inválido" };
+  if (telefono.replace(/\D/g, "").length < 10) {
+    return { ok: false, error: "Teléfono inválido" };
+  }
+
+  const sorteo = await getSorteo(input.sorteoId);
+  if (!sorteo) return { ok: false, error: "Sorteo no encontrado" };
+
+  // Los números deben existir en este sorteo (evita filas con basura).
+  const fueraDeRango = numeros.some((n) => {
+    const v = Number(n);
+    return !Number.isInteger(v) || v < 1 || v > sorteo.totalBoletos;
+  });
+  if (fueraDeRango) return { ok: false, error: "Números inválidos" };
+
+  // El total NO se toma del cliente: se recalcula con el precio real y las
+  // promos vigentes.
+  const total = calcularTotal(numeros.length, sorteo.precioBoleto);
+
+  // Dueño de la compra: sólo el de la cookie de sesión. Sin sesión es invitado.
+  let userId: string | null = null;
+  let userEmail: string | null = null;
+  let userName: string | null = null;
+  if (supabaseConfigured) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      userId = user.id;
+      userEmail = user.email ?? null;
+      userName =
+        (user.user_metadata?.full_name as string | undefined) ?? null;
+    }
+  }
+
+  const { data, error } = await getAdminClient()
+    .from("compras")
+    .insert({
+      user_id: userId,
+      user_email: userEmail ?? (email || null),
+      user_name: userName ?? nombre,
+      telefono,
+      sorteo_id: sorteo.id,
+      sorteo_numero: sorteo.numero,
+      sorteo_titulo: sorteo.titulo,
+      sorteo_premio: sorteo.premio,
+      numeros,
+      cantidad: numeros.length,
+      total,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    return { ok: false, error: error?.message ?? "No se pudo guardar la compra" };
+  }
+
+  revalidatePath("/admin/boletos");
+  revalidatePath("/perfil");
+
+  return { ok: true, compraId: data.id };
 }

@@ -27,13 +27,14 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  // Destino tras autenticar. Llega como ?next=... cuando el usuario intentó
-  // comprar sin sesión; sólo aceptamos rutas internas para evitar open redirect.
+  // Destino tras autenticar. Llega como ?next=... cuando el usuario venía de
+  // una compra; sólo aceptamos rutas internas para evitar open redirect.
   const getNext = () => {
     const n = searchParams.get("next");
     return n && n.startsWith("/") ? n : "/";
   };
-  const requiereCompra = getNext().includes("/comprar");
+  const next = getNext();
+  const vieneDeCompra = next.includes("/comprar");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,11 +119,19 @@ function LoginForm() {
               ? "Accede para ver tu perfil y tus boletos."
               : "Regístrate para participar y seguir tus sorteos."}
           </p>
-          {requiereCompra && (
-            <p className="mx-auto mt-4 max-w-sm rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 font-body text-sm text-accent">
-              Necesitas una cuenta para comprar boletos. Inicia sesión o
-              regístrate y te regresamos a tu compra.
-            </p>
+          {vieneDeCompra && (
+            <div className="mx-auto mt-4 max-w-sm rounded-lg border border-accent/40 bg-accent/10 px-3 py-3 font-body text-sm text-accent">
+              <p>
+                Con cuenta sigues tus boletos desde Mi Perfil. Al entrar te
+                regresamos a tu compra.
+              </p>
+              <Link
+                href={next}
+                className="mt-2 inline-block font-heading text-xs text-secondary underline-offset-4 transition-colors hover:text-white hover:underline"
+              >
+                Prefiero comprar sin cuenta →
+              </Link>
+            </div>
           )}
         </div>
 

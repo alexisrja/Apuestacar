@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import TicketSelector from "@/components/ticket-selector";
 import { getSorteo, getTakenNumbers } from "@/lib/sorteos";
-import { createClient } from "@/lib/supabase/server";
-import { supabaseConfigured } from "@/lib/supabase/client";
 
 export default async function ComprarPage({
   params,
@@ -17,19 +15,11 @@ export default async function ComprarPage({
   const promoRaw = Array.isArray(promo) ? promo[0] : promo;
   const promoCantidad = promoRaw ? Number(promoRaw) : undefined;
 
-  // Comprar requiere cuenta: si no hay sesión, mandamos a registro/login y
-  // volvemos a esta misma página (con la promo) al terminar.
-  if (supabaseConfigured) {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      const promoQs = promoRaw ? `?promo=${encodeURIComponent(promoRaw)}` : "";
-      const next = `/boletos/${id}/comprar${promoQs}`;
-      redirect(`/login?next=${encodeURIComponent(next)}`);
-    }
-  }
+  // La compra es abierta: se puede completar con o sin cuenta. Si hay sesión,
+  // TicketSelector precarga los datos y guarda la compra en "Mis Boletos".
+  const volverUrl = `/boletos/${id}/comprar${
+    promoRaw ? `?promo=${encodeURIComponent(promoRaw)}` : ""
+  }`;
 
   const [sorteo, takenNumbers] = await Promise.all([
     getSorteo(id),
@@ -50,6 +40,7 @@ export default async function ComprarPage({
           sorteo={sorteo}
           takenNumbers={takenNumbers}
           promoCantidad={promoCantidad}
+          volverUrl={volverUrl}
         />
       </div>
     </div>
