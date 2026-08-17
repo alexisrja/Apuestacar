@@ -36,7 +36,9 @@ export default function SorteoCard({ sorteo }: { sorteo: Sorteo }) {
 
       <div className="flex flex-1 flex-col p-5">
         <p className="eyebrow">
-          Sorteo {sorteo.numero} · {sorteo.fechaLabel}
+          {[`Sorteo ${sorteo.numero}`, sorteo.fechaLabel]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
         <h3 className="h-section mt-2 text-xl text-white">{sorteo.premio}</h3>
         <p className="mt-1 text-sm text-secondary">{sorteo.valor}</p>

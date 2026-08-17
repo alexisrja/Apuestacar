@@ -60,7 +60,7 @@ export default async function SorteoDetailPage({
         <span aria-hidden="true">←</span> Todos los sorteos
       </Link>
 
-      <div className="mt-4 grid gap-10 lg:grid-cols-2 lg:gap-14">
+      <div className="mt-4 grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
         {/* Mismo nombre que en la tarjeta: la foto se transforma al entrar. */}
         <ViewTransition name={`premio-${sorteo.id}`} share="morph">
           <div className="card overflow-hidden lg:order-2">
@@ -86,7 +86,9 @@ export default async function SorteoDetailPage({
 
         <div className="lg:order-1">
           <p className="entra entra-1 eyebrow">
-            Sorteo {sorteo.numero} · {sorteo.titulo}
+            {[`Sorteo ${sorteo.numero}`, sorteo.titulo]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
           <h1 className="entra entra-2 display mt-4 text-4xl text-white sm:text-5xl">
             {sorteo.premio}
@@ -117,7 +119,9 @@ export default async function SorteoDetailPage({
           </Link>
 
           <Reveal delay={80} className="mt-10">
-            <p className="eyebrow">Cierra el {sorteo.fechaLabel}</p>
+            <p className="eyebrow">
+              {sorteo.fechaLabel ? `Cierra el ${sorteo.fechaLabel}` : "Cierra en"}
+            </p>
             <div className="mt-3">
               <Countdown targetDate={sorteo.fecha} />
             </div>

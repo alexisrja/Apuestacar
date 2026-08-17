@@ -91,7 +91,9 @@ export default function SorteoSlider({ sorteos }: { sorteos: Sorteo[] }) {
 
             <div className="flex flex-1 flex-col p-5">
               <p className="eyebrow">
-                Sorteo {sorteo.numero} · {sorteo.fechaLabel}
+                {[`Sorteo ${sorteo.numero}`, sorteo.fechaLabel]
+                  .filter(Boolean)
+                  .join(" · ")}
               </p>
               <h3 className="h-section mt-2 text-lg text-white">
                 {sorteo.premio}

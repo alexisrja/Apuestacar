@@ -90,7 +90,9 @@ export default function SorteoModal({ sorteo, onClose }: Props) {
 
         <div className="p-6">
           <p className="eyebrow">
-            Sorteo {sorteo.numero} · {sorteo.fechaLabel}
+            {[`Sorteo ${sorteo.numero}`, sorteo.fechaLabel]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
           <h2
             id="sorteo-modal-title"

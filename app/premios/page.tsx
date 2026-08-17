@@ -72,7 +72,9 @@ export default async function PremiosPage() {
 
                 <div className="flex flex-1 flex-col p-5">
                   <p className="eyebrow">
-                    Sorteo {s.numero} · {s.fechaLabel}
+                    {[`Sorteo ${s.numero}`, s.fechaLabel]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
                   <h2 className="h-section mt-2 text-lg text-white">
                     {s.premio}

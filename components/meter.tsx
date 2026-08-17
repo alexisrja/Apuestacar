@@ -50,7 +50,12 @@ export default function Meter({
         aria-valuemax={100}
         aria-label={`${pct}% de los boletos vendidos`}
       >
-        <span style={{ width: `${pct}%` }} />
+        {/* Con muy pocos vendidos el tramo mide menos de un píxel y la regla
+            parece un divisor suelto. Se le da un mínimo visible en cuanto hay
+            al menos una venta; la cifra exacta va al lado. */}
+        <span
+          style={{ width: seguros === 0 ? 0 : `max(6px, ${pct}%)` }}
+        />
       </div>
     </div>
   );

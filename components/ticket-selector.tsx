@@ -325,7 +325,7 @@ export default function TicketSelector({
     <div className="page-fade">
       <div>
         <p className="eyebrow">
-          Sorteo {sorteo.numero} · {sorteo.titulo}
+          {[`Sorteo ${sorteo.numero}`, sorteo.titulo].filter(Boolean).join(" · ")}
         </p>
         <h1 className="display mt-3 text-3xl text-white sm:text-4xl">
           {step === "promo" && "Elige cómo armar tu paquete"}
@@ -547,7 +547,7 @@ export default function TicketSelector({
               </button>
             </p>
           ) : (
-            <div className="mt-6 grid grid-cols-5 gap-2 pb-4 sm:grid-cols-8 lg:grid-cols-10">
+            <div className="mt-6 grid grid-cols-5 gap-2 pb-6 sm:grid-cols-8 lg:grid-cols-10">
               {visibles.map((num) => {
                 const isSelected = selected.includes(num);
                 const isTaken = taken.has(num);

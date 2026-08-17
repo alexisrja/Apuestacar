@@ -85,7 +85,9 @@ export default async function Home() {
               {/* Entrada en cascada: el ojo lee etiqueta, premio, precio,
                   disponibilidad y acción en ese orden. */}
               <p className="entra entra-1 eyebrow">
-                Sorteo {principal.numero} · {principal.fechaLabel}
+                {[`Sorteo ${principal.numero}`, principal.fechaLabel]
+                  .filter(Boolean)
+                  .join(" · ")}
               </p>
               <h1 className="entra entra-2 display mt-4 text-4xl text-white sm:text-6xl">
                 {principal.premio}
